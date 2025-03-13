@@ -24,6 +24,24 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 
 function App() {
   // Drawer
@@ -47,8 +65,16 @@ function App() {
         <li>
           <Drawer>
             <DrawerTrigger asChild>
-              <Button size="lg" variant="outline">
-                Tarea 1<Badge>C1</Badge>
+              <Button variant="outline">
+                <Label>
+                  Tarea 1 Lorem ipsum dolor sit amet consectetur, adipisicing
+                  elit. Distinctio, voluptas sunt Lorem ipsum dolor, sit amet
+                  consectetur adipisicing elit. Quod hic aliquam expedita
+                  molestias velit harum modi, nulla cumque voluptates. Nihil
+                  quae placeat quaerat, magni unde tempore? Illum deserunt
+                  consequatur aliquam?
+                </Label>
+                <Badge>C</Badge>
               </Button>
             </DrawerTrigger>
             <DrawerContent>
@@ -103,7 +129,10 @@ function App() {
         <li>
           <Drawer>
             <DrawerTrigger>
-              <Button variant="outline">Tarea 2</Button>
+              <Button variant="outline">
+                <Label>Tarea 2</Label>
+                <Badge>B</Badge>
+              </Button>
             </DrawerTrigger>
             <DrawerContent>
               <DrawerHeader>
@@ -122,24 +151,56 @@ function App() {
           </Drawer>
         </li>
       </ul>
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Button>Agrega Tarea</Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction>Continue</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <div className="flex justify-center gap-4 my-4">
+        <Button>Filter</Button>
+        <Button>Play</Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button>Add Task</Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <CardHeader>
+              <CardTitle>Create a new task</CardTitle>
+              <CardDescription>Add your new task in one-click.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form>
+                <div className="grid w-full items-center gap-4">
+                  <div className="flex flex-col space-y-1.5">
+                    <Label htmlFor="name">Task Name</Label>
+                    <Input id="name" placeholder="Name of your task" />
+                  </div>
+                  <div className="flex flex-col space-y-1.5">
+                    <Label htmlFor="prority">Prority</Label>
+                    <Select>
+                      <SelectTrigger id="prority">
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent position="popper">
+                        <SelectItem value="a">A</SelectItem>
+                        <SelectItem value="b">B</SelectItem>
+                        <SelectItem value="c">C</SelectItem>
+                        <SelectItem value="d">D</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex flex-col space-y-1.5">
+                    <Label htmlFor="description">Description</Label>
+                    <Textarea
+                      id="description"
+                      placeholder="Write a brief description about your new task"
+                    />
+                  </div>
+                </div>
+              </form>
+            </CardContent>
+            <CardFooter className="flex justify-between">
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <Button>Add</Button>
+            </CardFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
     </>
   );
 }
