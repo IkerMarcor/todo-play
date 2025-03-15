@@ -23,9 +23,8 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-
-const priorities = ["A", "B", "C", "D"];
-const time = [1, 2, 3, 4, 5, 6, 7, 8];
+import { priorities } from "@/constants/priorities";
+import { time } from "@/constants/time"
 
 export default function AddTaskButton() {
   const { tasks, increasePopulation, removeAllTasks, updateTasks } = useStore();
