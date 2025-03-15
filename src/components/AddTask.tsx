@@ -23,6 +23,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
+const priorities = ["A", "B", "C", "D"];
+const time = [1, 2, 3, 4, 5, 6, 7, 8];
+
 export default function AddTaskButton() {
   return (
     <AlertDialog>
@@ -49,10 +52,9 @@ export default function AddTaskButton() {
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent position="popper">
-                      <SelectItem value="a">A</SelectItem>
-                      <SelectItem value="b">B</SelectItem>
-                      <SelectItem value="c">C</SelectItem>
-                      <SelectItem value="d">D</SelectItem>
+                      {priorities.map((prority) => (
+                        <SelectItem value={prority}>{prority}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -63,10 +65,9 @@ export default function AddTaskButton() {
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent position="popper">
-                      <SelectItem value="1">1hr</SelectItem>
-                      <SelectItem value="2">2hr</SelectItem>
-                      <SelectItem value="3">3hr</SelectItem>
-                      <SelectItem value="4">4hr</SelectItem>
+                      {time.map((hour) => (
+                        <SelectItem value={hour.toString()}>{hour} hr</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
