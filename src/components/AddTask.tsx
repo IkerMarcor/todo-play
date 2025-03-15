@@ -52,8 +52,8 @@ export default function AddTaskButton() {
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent position="popper">
-                      {priorities.map((prority) => (
-                        <SelectItem value={prority}>{prority}</SelectItem>
+                      {priorities.map((prority, index) => (
+                        <SelectItem key={index} value={prority}>{prority}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -65,8 +65,8 @@ export default function AddTaskButton() {
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent position="popper">
-                      {time.map((hour) => (
-                        <SelectItem value={hour.toString()}>{hour} hr</SelectItem>
+                      {time.map((hour, index) => (
+                        <SelectItem key={index} value={hour.toString()}>{hour} hr</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
