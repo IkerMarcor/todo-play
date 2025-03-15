@@ -1,3 +1,4 @@
+import { useStore } from "@/store";
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -27,8 +28,18 @@ const priorities = ["A", "B", "C", "D"];
 const time = [1, 2, 3, 4, 5, 6, 7, 8];
 
 export default function AddTaskButton() {
+  const { tasks, increasePopulation, removeAllTasks, updateTasks } = useStore();
   return (
     <AlertDialog>
+      
+      <div>
+        <h1>Task Manager</h1>
+        <p>Current tasks: {tasks}</p>
+        <button onClick={increasePopulation}>Add Task</button>
+        <button onClick={removeAllTasks}>Remove All Tasks</button>
+        <button onClick={() => updateTasks(10)}>Set Tasks to 10</button>
+      </div>
+
       <AlertDialogTrigger asChild>
         <Button>Add Task</Button>
       </AlertDialogTrigger>
