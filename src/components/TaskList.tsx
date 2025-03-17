@@ -8,7 +8,6 @@ export default function TaskList() {
         <li key={index}>
           <Task
             name={task.name}
-            title={task.title}
             description={task.description}
             priority={task.priority}
             state={task.state}

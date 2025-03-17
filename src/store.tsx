@@ -1,15 +1,25 @@
 import { create } from 'zustand'
 
 interface StoreState {
-  tasks: number
-  increasePopulation: () => void
-  removeAllTasks: () => void
-  updateTasks: (newTasks: number) => void
+  name: string;
+  priority: string;
+  time: string;
+  description: string;
+  setName: (name: string) => void;
+  setPriority: (priority: string) => void;
+  setTime: (time: string) => void;
+  setDescription: (description: string) => void;
 }
 
 export const useStore = create<StoreState>((set) => ({
-  tasks: 0,
-  increasePopulation: () => set((state) => ({ tasks: state.tasks + 1 })),
-  removeAllTasks: () => set({ tasks: 0 }),
-  updateTasks: (newTasks) => set({ tasks: newTasks }),
-}))
+  name: "",
+  priority: "",
+  time: "",
+  description: "",
+  setName: (newName) => set({ name: newName }),
+  setPriority: (newPriority) => set({ priority:  newPriority}),
+  setTime: (newTime) => set({ time: newTime }),
+  setDescription: (newDescription) => set({ description: newDescription }),
+}));
+
+export default useStore;

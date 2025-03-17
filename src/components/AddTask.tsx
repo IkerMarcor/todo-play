@@ -24,21 +24,28 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { priorities } from "@/constants/priorities";
-import { time } from "@/constants/time"
+import { timeOptions } from "@/constants/timeOptions";
 
 export default function AddTaskButton() {
-  const { tasks, increasePopulation, removeAllTasks, updateTasks } = useStore();
+  const {
+    name,
+    priority,
+    time,
+    description,
+    setName,
+    setPriority,
+    setTime,
+    setDescription,
+  } = useStore();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log('Form Data:', { name, priority, time, description });
+    // Here you can send the data to an API or perform any other action
+  };
+
   return (
     <AlertDialog>
-      
-      <div>
-        <h1>Task Manager</h1>
-        <p>Current tasks: {tasks}</p>
-        <button onClick={increasePopulation}>Add Task</button>
-        <button onClick={removeAllTasks}>Remove All Tasks</button>
-        <button onClick={() => updateTasks(10)}>Set Tasks to 10</button>
-      </div>
-
       <AlertDialogTrigger asChild>
         <Button>Add Task</Button>
       </AlertDialogTrigger>
@@ -52,31 +59,40 @@ export default function AddTaskButton() {
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="name">Task Name</Label>
-                <Input id="name" placeholder="Name of your task" />
+                <Input
+                  id="name"
+                  placeholder="Name of your task"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
               </div>
               <div className="flex justify-between">
                 <div className="flex flex-col space-y-1.5">
                   <Label htmlFor="prority">Prority</Label>
-                  <Select>
+                  <Select value={priority} onValueChange={setPriority}>
                     <SelectTrigger id="prority">
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent position="popper">
                       {priorities.map((prority, index) => (
-                        <SelectItem key={index} value={prority}>{prority}</SelectItem>
+                        <SelectItem key={index} value={prority}>
+                          {prority}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="flex flex-col space-y-1.5">
                   <Label htmlFor="time">Time</Label>
-                  <Select>
+                  <Select value={time} onValueChange={setTime}>
                     <SelectTrigger id="time">
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent position="popper">
-                      {time.map((hour, index) => (
-                        <SelectItem key={index} value={hour.toString()}>{hour} hr</SelectItem>
+                      {timeOptions.map((hour, index) => (
+                        <SelectItem key={index} value={hour.toString()}>
+                          {hour} hr
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -88,6 +104,8 @@ export default function AddTaskButton() {
                 <Textarea
                   id="description"
                   placeholder="Write a brief description about your new task"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
                 />
               </div>
             </div>
@@ -95,7 +113,7 @@ export default function AddTaskButton() {
         </CardContent>
         <CardFooter className="flex justify-between">
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <Button>Add</Button>
+          <Button type="submit" onClick={handleSubmit}>Add</Button>
         </CardFooter>
       </AlertDialogContent>
     </AlertDialog>

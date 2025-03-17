@@ -20,7 +20,6 @@ import {
 
 interface Props {
   name: string;
-  title: string;
   description: string;
   priority: string;
   state: string;
@@ -28,7 +27,6 @@ interface Props {
 
 export default function TaskInProgress({
   name,
-  title,
   description,
   priority,
   state,
@@ -58,7 +56,7 @@ export default function TaskInProgress({
           <DrawerContent>
             <div className="mx-auto w-full max-w-sm">
               <DrawerHeader>
-                <DrawerTitle>{title}</DrawerTitle>
+                <DrawerTitle>{name}</DrawerTitle>
                 <DrawerDescription>{description}</DrawerDescription>
               </DrawerHeader>
               <div className="p-4 pb-0">

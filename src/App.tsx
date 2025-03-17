@@ -12,7 +12,6 @@ function App() {
   return (
     <>
       <TaskList/>
-
       <div className="flex justify-center gap-4 my-4">
         <Button>Filter</Button>
         <Button>
