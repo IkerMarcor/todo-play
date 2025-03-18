@@ -22,14 +22,14 @@ interface Props {
   name: string;
   description: string;
   priority: string;
-  state: string;
+  status: string;
 }
 
 export default function TaskInProgress({
   name,
   description,
   priority,
-  state,
+  status,
 }: Props) {
   const [progress, setProgress] = useState(5);
 
@@ -40,7 +40,7 @@ export default function TaskInProgress({
 
   return (
     <>
-      {state === "inProgress" ? (
+      {status === "inProgress" ? (
         <Drawer>
           <DrawerTrigger asChild>
             <Button variant="outline">
@@ -86,7 +86,7 @@ export default function TaskInProgress({
             </div>
           </DrawerContent>
         </Drawer>
-      ) : state === "Completed" ? (
+      ) : status === "Completed" ? (
         <Button variant="outline" disabled>
           <Label className="text-green-600 line-through">{name}</Label>
           <Badge variant="completed">

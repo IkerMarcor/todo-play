@@ -1,4 +1,4 @@
-import { useStore } from "@/store";
+import useTaskStore from "@/store";
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -25,22 +25,19 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { priorities } from "@/constants/priorities";
 import { timeOptions } from "@/constants/timeOptions";
+import { useState } from "react";
 
 export default function AddTaskButton() {
-  const {
-    name,
-    priority,
-    time,
-    description,
-    setName,
-    setPriority,
-    setTime,
-    setDescription,
-  } = useStore();
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [priority, setPriority] = useState("");
+  const [time, setTime] = useState("");
+  const { createTask } = useTaskStore();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('Form Data:', { name, priority, time, description });
+    console.log("Form Data:", { name, priority, time, description });
+    createTask(name, description, priority, time, "notStarted");
     // Here you can send the data to an API or perform any other action
   };
 
@@ -113,7 +110,9 @@ export default function AddTaskButton() {
         </CardContent>
         <CardFooter className="flex justify-between">
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <Button type="submit" onClick={handleSubmit}>Add</Button>
+          <Button type="submit" onClick={handleSubmit}>
+            Add
+          </Button>
         </CardFooter>
       </AlertDialogContent>
     </AlertDialog>
