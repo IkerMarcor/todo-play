@@ -1,29 +1,36 @@
 import { useState, useEffect } from "react";
 
-import Pause from "@/components/icons/Pause";
-import Play from "@/components/icons/Play";
-import Checkmark from "@/components/icons/Checkmark";
+import { BellRing, Check, Play, Pause} from "lucide-react";
+
+import { cn } from "@/lib/utils";
 
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
-import {
-  Drawer,
-  DrawerTrigger,
-  DrawerContent,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerDescription,
-  DrawerTitle,
-} from "@/components/ui/drawer";
-
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter} from "@/components/ui/card";
 interface Props {
   name: string;
   description: string;
   priority: string;
   status: string;
 }
+
+const notifications = [
+  {
+    title: "Your call has been confirmed.",
+    description: "1 hour ago",
+  },
+  {
+    title: "You have a new message!",
+    description: "1 hour ago",
+  },
+  {
+    title: "Your subscription is expiring soon!",
+    description: "2 hours ago",
+  },
+]
 
 export default function TaskInProgress({
   name,
@@ -41,56 +48,55 @@ export default function TaskInProgress({
   return (
     <>
       {status === "inProgress" ? (
-        <Drawer>
-          <DrawerTrigger asChild>
-            <Button variant="outline">
-              <div className="space-y-2">
-                <Label>{name}</Label>
-                <Progress value={progress} />
-              </div>
-              <Badge>
-                <Pause />
-              </Badge>
-            </Button>
-          </DrawerTrigger>
-          <DrawerContent>
-            <div className="mx-auto w-full max-w-sm">
-              <DrawerHeader>
-                <DrawerTitle>{name}</DrawerTitle>
-                <DrawerDescription>{description}</DrawerDescription>
-              </DrawerHeader>
-              <div className="p-4 pb-0">
-                <div className="flex items-center justify-center space-x-2">
-                  <div className="flex-1 text-center">
-                    <div className="text-[0.70rem] uppercase text-muted-foreground">
-                      Level
-                    </div>
-                    <div className="text-7xl font-bold tracking-tighter">
-                      {priority}
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-3 h-[120px]"></div>
-              </div>
-              <DrawerFooter>
-                {/* Uncomment these lines if needed */}
-                {/* 
-              <Progress value={progress} />
-              <div className="text-5xl font-bold">0:00</div> 
-              */}
-                <div className="my-3">
-                  <Button variant="secondary">Edit</Button>
-                  <Button variant="destructive">Eliminate</Button>
-                </div>
-              </DrawerFooter>
+        <Card>
+        <CardHeader>
+          <CardTitle>Notifications</CardTitle>
+          <CardDescription>You have 3 unread messages.</CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-4">
+          <div className=" flex items-center space-x-4 rounded-md border p-4">
+            <BellRing />
+            <div className="flex-1 space-y-1">
+              <p className="text-sm font-medium leading-none">
+                Push Notifications
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Send notifications to device.
+              </p>
             </div>
-          </DrawerContent>
-        </Drawer>
+            <Switch />
+          </div>
+          <div>
+            {notifications.map((notification, index) => (
+              <div
+                key={index}
+                className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0"
+              >
+                <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
+                <div className="space-y-1">
+                  <p className="text-sm font-medium leading-none">
+                    {notification.title}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {notification.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+        <CardFooter>
+          <Button className="w-full">
+            <Check /> Mark all as read
+          </Button>
+        </CardFooter>
+      </Card>
+                
       ) : status === "Completed" ? (
         <Button variant="outline" disabled>
           <Label className="text-green-600 line-through">{name}</Label>
           <Badge variant="completed">
-            <Checkmark />
+            <Check />
           </Badge>
         </Button>
       ) : (

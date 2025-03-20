@@ -26,33 +26,37 @@ import { Textarea } from "@/components/ui/textarea";
 import { priorities } from "@/constants/priorities";
 import { timeOptions } from "@/constants/timeOptions";
 import { useState } from "react";
+import { AlertDialogAction } from "@radix-ui/react-alert-dialog";
 
 export default function AddTaskButton() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("");
   const [time, setTime] = useState("");
+  const [open, setOpen] = useState(false);
   const { createTask } = useTaskStore();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Form Data:", { name, priority, time, description });
-    createTask(name, description, priority, time, "notStarted");
+    createTask(name, description, priority, time, "inProgress");
+    setOpen(false);
     // Here you can send the data to an API or perform any other action
   };
 
   return (
-    <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button>Add Task</Button>
+        <Button onClick={() => setOpen(true)}>Add Task</Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
-        <CardHeader>
-          <CardTitle>Create a new task</CardTitle>
-          <CardDescription>Add your new task in one-click.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form>
+        <form onSubmit={handleSubmit}>
+          <CardHeader>
+            <CardTitle>Create a new task</CardTitle>
+            <CardDescription>Add your new task in one-click.</CardDescription>
+          </CardHeader>
+
+          <CardContent>
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="name">Task Name</Label>
@@ -61,6 +65,7 @@ export default function AddTaskButton() {
                   placeholder="Name of your task"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  required={true}
                 />
               </div>
               <div className="flex justify-between">
@@ -103,17 +108,21 @@ export default function AddTaskButton() {
                   placeholder="Write a brief description about your new task"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
+                  required
                 />
               </div>
             </div>
-          </form>
-        </CardContent>
-        <CardFooter className="flex justify-between">
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <Button type="submit" onClick={handleSubmit}>
-            Add
-          </Button>
-        </CardFooter>
+          </CardContent>
+
+          <CardFooter className="flex justify-between">
+            <AlertDialogCancel onClick={() => setOpen(false)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction>
+              <Button type="submit">Add</Button>
+            </AlertDialogAction>
+          </CardFooter>
+        </form>
       </AlertDialogContent>
     </AlertDialog>
   );

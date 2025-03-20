@@ -1,6 +1,6 @@
 import "./App.css";
 
-import Play from "@/components/icons/Play";
+import { Play } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
