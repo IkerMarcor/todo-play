@@ -5,18 +5,18 @@ import { Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import AddTask from "@/components/AddTask";
-import TaskList from "@/components/TaskList"
+import TaskList from "@/components/TaskList";
+import { Card } from "@/components/ui/card";
 
 function App() {
-
   return (
     <>
-      <TaskList/>
-      <div className="flex justify-center gap-4 my-4">
-        <Button>Filter</Button>
-        <Button>
-          <Play />
-        </Button>
+      <Card>
+        <TaskList />
+      </Card>
+
+      <div className="flex justify-between my-4">
+        <Button className="w-2/5">Filter</Button>
         <AddTask />
       </div>
     </>

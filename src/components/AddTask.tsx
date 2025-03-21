@@ -47,7 +47,7 @@ export default function AddTaskButton() {
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button onClick={() => setOpen(true)}>Add Task</Button>
+        <Button className="w-2/5" onClick={() => setOpen(true)}>Add Task</Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <form onSubmit={handleSubmit}>

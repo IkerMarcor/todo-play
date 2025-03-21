@@ -7,11 +7,11 @@ export default function TaskList() {
   return (
     <>
       {tasks.length === 0 ? (
-        <h1>You haven't add a Task yet :/</h1>
+        <div className="h-80 flex items-center justify-center"><h1 className="align-middle">You haven't add a Task yet :/</h1></div>
       ) : (
         <ul>
           {tasks.map((task, index) => (
-            <li key={index}>
+            <li key={index} className="flex justify-center">
               <Task
                 name={task.name}
                 description={task.description}
