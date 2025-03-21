@@ -35,14 +35,14 @@ export default function TaskInProgress({
       {status === "inProgress" ? (
         <Card className="md:w-1/2 m-2">
           <CardHeader>
-            <CardTitle>{name}</CardTitle>
+            <h1 className="text-wrap break-all font-semibold line-clamp-2 text-xl">{name}</h1>
             <div className="flex justify-center">
               <Badge> Priority {priority}</Badge>
             </div>
           </CardHeader>
 
           <CardContent className="grid gap-4">
-            <CardDescription>{description}</CardDescription>
+            <p className="text-wrap break-all text-gray-500 line-clamp-8">{description}</p>
             <div className=" flex items-center space-x-4 rounded-md border p-4">
               <BellRing />
               <div className="flex-1 space-y-1">
