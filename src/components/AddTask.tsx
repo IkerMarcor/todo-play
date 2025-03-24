@@ -4,6 +4,7 @@ import {
   AlertDialogTrigger,
   AlertDialogContent,
   AlertDialogCancel,
+  AlertDialogDescription,
 } from "@/components/ui/alert-dialog";
 import {
   CardHeader,
@@ -32,7 +33,6 @@ import { useForm } from "react-hook-form";
 import { Schema, formSchema } from "@/components/types/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { priorities } from "@/constants/priorities";
@@ -45,19 +45,30 @@ export default function AddTaskButton() {
   const form = useForm<Schema>({
     mode: "all",
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      priority: "",
+      time: "",
+    },
   });
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState("");
-  const [time, setTime] = useState("");
+
+  const { reset, handleSubmit, control } = form;
+
   const [open, setOpen] = useState(false);
   const { createTask } = useTaskStore();
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     console.log(values);
-    createTask(values.name, values.description, values.priority, values.time, "inProgress");
+    createTask(
+      values.name,
+      values.description,
+      values.priority,
+      values.time,
+      "inProgress"
+    );
     setOpen(false);
-    // Here you can send the data to an API or perform any other action
+    reset();
   };
 
   return (
@@ -116,9 +127,6 @@ export default function AddTaskButton() {
                               ))}
                             </SelectContent>
                           </Select>
-                          <FormDescription>
-                            Please select the level of priority for the task
-                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -148,14 +156,12 @@ export default function AddTaskButton() {
                               ))}
                             </SelectContent>
                           </Select>
-                          <FormDescription>
-                          Please select the how much time will take to complete the task
-                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                   </div>
+                  <div></div>
                 </div>
                 <div className="flex flex-col space-y-1.5">
                   <FormField
@@ -179,7 +185,12 @@ export default function AddTaskButton() {
               </div>
             </CardContent>
             <CardFooter className="flex justify-between my-4">
-              <AlertDialogCancel onClick={() => setOpen(false)}>
+              <AlertDialogCancel
+                onClick={() => {
+                  setOpen(false);
+                  reset();
+                }}
+              >
                 Cancel
               </AlertDialogCancel>
               <AlertDialogAction>

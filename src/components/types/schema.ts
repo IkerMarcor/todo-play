@@ -1,5 +1,4 @@
 import { z } from "zod";
-import useTaskStore from "@/store";
 
 export const formSchema = z.object({
   name: z
@@ -12,7 +11,7 @@ export const formSchema = z.object({
     required_error: "Please select a priority to display.",
   }),
   time: z.string({
-    required_error: "Please choose a time to complete the task.",
+    required_error: "Please select a time to complete the task.",
   }),
   description: z
     .string()
