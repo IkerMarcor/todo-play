@@ -1,8 +1,4 @@
-import { useState, useEffect } from "react";
-
-import { BellRing, Check, Play, Pause, Space } from "lucide-react";
-
-import { cn } from "@/lib/utils";
+import { BellRing, Check, Play } from "lucide-react";
 
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -11,8 +7,6 @@ import { Switch } from "@/components/ui/switch";
 import {
   Card,
   CardHeader,
-  CardTitle,
-  CardDescription,
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
