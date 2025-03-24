@@ -4,7 +4,6 @@ import {
   AlertDialogTrigger,
   AlertDialogContent,
   AlertDialogCancel,
-  AlertDialogDescription,
 } from "@/components/ui/alert-dialog";
 import {
   CardHeader,
@@ -26,7 +25,6 @@ import {
   FormItem,
   FormLabel,
   FormControl,
-  FormDescription,
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
@@ -38,7 +36,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { priorities } from "@/constants/priorities";
 import { timeOptions } from "@/constants/timeOptions";
 import { useState } from "react";
-import { AlertDialogAction } from "@radix-ui/react-alert-dialog";
 import { z } from "zod";
 
 export default function AddTaskButton() {
@@ -48,27 +45,32 @@ export default function AddTaskButton() {
     defaultValues: {
       name: "",
       description: "",
-      priority: "",
-      time: "",
     },
   });
 
-  const { reset, handleSubmit, control } = form;
+  const {
+    control,
+    reset,
+    handleSubmit,
+    formState: { isValid },
+  } = form;
 
   const [open, setOpen] = useState(false);
   const { createTask } = useTaskStore();
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-    createTask(
-      values.name,
-      values.description,
-      values.priority,
-      values.time,
-      "inProgress"
-    );
-    setOpen(false);
-    reset();
+    if (isValid) {
+      console.log(values);
+      createTask(
+        values.name,
+        values.description,
+        values.priority,
+        values.time,
+        "inProgress"
+      );
+      setOpen(false);
+      reset();
+    }
   };
 
   return (
@@ -80,7 +82,7 @@ export default function AddTaskButton() {
       </AlertDialogTrigger>
       <AlertDialogContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
             <CardHeader>
               <CardTitle>Create a new task</CardTitle>
               <CardDescription>Add your new task in one-click.</CardDescription>
@@ -89,7 +91,7 @@ export default function AddTaskButton() {
               <div className="grid w-full items-center gap-4">
                 <div className="flex flex-col space-y-1.5">
                   <FormField
-                    control={form.control}
+                    control={control}
                     name="name"
                     render={({ field }) => (
                       <FormItem>
@@ -105,7 +107,7 @@ export default function AddTaskButton() {
                 <div className="flex justify-between">
                   <div className="flex flex-col space-y-1.5">
                     <FormField
-                      control={form.control}
+                      control={control}
                       name="priority"
                       render={({ field }) => (
                         <FormItem>
@@ -134,7 +136,7 @@ export default function AddTaskButton() {
                   </div>
                   <div className="flex flex-col space-y-1.5">
                     <FormField
-                      control={form.control}
+                      control={control}
                       name="time"
                       render={({ field }) => (
                         <FormItem>
@@ -165,7 +167,7 @@ export default function AddTaskButton() {
                 </div>
                 <div className="flex flex-col space-y-1.5">
                   <FormField
-                    control={form.control}
+                    control={control}
                     name="description"
                     render={({ field }) => (
                       <FormItem>
@@ -193,9 +195,7 @@ export default function AddTaskButton() {
               >
                 Cancel
               </AlertDialogCancel>
-              <AlertDialogAction>
-                <Button type="submit">Add</Button>
-              </AlertDialogAction>
+              <Button type="submit">Add</Button>
             </CardFooter>
           </form>
         </Form>
