@@ -11,7 +11,8 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 interface Props {
-  id: number
+  id: number;
+  index: number;
   name: string;
   description: string;
   priority: string;
@@ -21,6 +22,7 @@ import useTaskStore from "@/store"
 
 export default function TaskInProgress({
   id,
+  index,
   name,
   description,
   priority,
@@ -30,12 +32,14 @@ export default function TaskInProgress({
   return (
     <>
       {status === "inProgress" ? (
-        <Card className="md:w-1/2 m-2">
+        <Card>
           <CardHeader>
-            <h1 className="text-wrap break-all font-semibold line-clamp-2 text-xl">{name}</h1>
-            <div className="flex justify-center">
+            <div className="flex justify-between">
+              <Badge>{index}</Badge>
+              <div></div>
               <Badge> Priority {priority}</Badge>
             </div>
+            <h1 className="text-wrap break-all font-semibold line-clamp-2 text-xl">{name}</h1>
           </CardHeader>
 
           <CardContent className="grid gap-4">
