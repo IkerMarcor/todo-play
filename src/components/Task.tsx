@@ -1,4 +1,4 @@
-import { BellRing, Check, Play } from "lucide-react";
+import { BellRing, Check, Play, Trash2 } from "lucide-react";
 
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -11,19 +11,22 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 interface Props {
+  id: number
   name: string;
   description: string;
   priority: string;
   status: string;
 }
+import useTaskStore from "@/store"
 
 export default function TaskInProgress({
+  id,
   name,
   description,
   priority,
   status,
 }: Props) {
-
+  const { deleteTask } = useTaskStore();
   return (
     <>
       {status === "inProgress" ? (
@@ -50,9 +53,15 @@ export default function TaskInProgress({
               <Switch />
             </div>
           </CardContent>
-          <CardFooter className="justify-evenly">
-            <Button className="w-full" size={"lg"}>
+          <CardFooter className="flex-col">
+            <Button className="w-full m-1" size={"lg"}>
               <Check /> Mark as completed
+            </Button>
+            <Button className="w-full m-1" size={"lg"} variant={"destructive"}
+            onClick={() => {
+              deleteTask(id);
+            }}>
+              <Trash2 /> Delete
             </Button>
           </CardFooter>
         </Card>

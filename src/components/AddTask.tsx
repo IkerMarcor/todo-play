@@ -60,7 +60,7 @@ export default function AddTaskButton() {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (isValid) {
-      console.log(values);
+      //console.log(values);
       createTask(
         values.name,
         values.description,

@@ -13,6 +13,7 @@ export default function TaskList() {
           {tasks.map((task, index) => (
             <li key={index} className="flex justify-center">
               <Task
+                id={task.id}
                 name={task.name}
                 description={task.description}
                 priority={task.priority}

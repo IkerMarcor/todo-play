@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 // import { Priority } from "./constants/priorities";
 
 interface Task {
@@ -23,26 +24,28 @@ interface TaskStore {
   // updateTask: (id: number, updates: Partial<Omit<Task, 'id'>>) => void;
 }
 
-const useTaskStore = create<TaskStore>((set) => ({
-  tasks: [],
-  createTask: (name, description, priority, time, status) =>
-    set((state) => ({
-      tasks: [
-        ...state.tasks,
-        { id: Date.now(), name, description, priority, time, status },
-      ],
-    })),
-
-  deleteTask: (id) =>
-    set((state) => ({
-      tasks: state.tasks.filter((task) => task.id !== id),
-    })),
-
-  // updateTask: (id, updates) => set((state) => ({
-  //   tasks: state.tasks.map(task =>
-  //     task.id === id ? { ...task, ...updates } : task
-  //   )
-  // }))
-}));
+const useTaskStore = create<TaskStore>()(
+  //local storage middleware from zustand
+  persist(
+    (set) => ({
+      tasks: [],
+      createTask: (name, description, priority, time, status) =>
+        set((state) => ({
+          tasks: [
+            ...state.tasks,
+            { id: Date.now(), name, description, priority, time, status },
+          ],
+        })),
+      deleteTask: (id) =>
+        set((state) => ({
+          tasks: state.tasks.filter((task) => task.id !== id),
+        })),
+    }),
+    {
+      name: "task-storage",
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+);
 
 export default useTaskStore;
