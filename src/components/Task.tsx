@@ -1,5 +1,5 @@
 import { Check, Play } from "lucide-react";
-
+import DeleteTask from "./DeleteTask";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -46,7 +46,7 @@ export default function TaskInProgress(props: TaskContentProps) {
             <Button className="w-full m-1" size={"lg"}>
               <Check /> Mark as completed
             </Button>
-            {/* <DeleteTask id={props.id} /> */}
+            <DeleteTask id={props.id} />
           </CardFooter>
         </Card>
       ) : props.status === "Completed" ? (

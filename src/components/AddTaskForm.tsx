@@ -169,7 +169,7 @@ export default function AddTaskForm() {
           </div>
         </CardContent>
         <CardFooter className="flex justify-between my-4">
-          <Button type="submit">Add Task</Button>
+          <Button type="submit">Create Task</Button>
           <Button
             type="button"
             variant={"outline"}
