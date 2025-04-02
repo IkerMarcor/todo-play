@@ -49,7 +49,13 @@ export default function AddTaskForm() {
   const { setOpen } = useToggleStore();
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    createTask(values.name, values.description, values.priority, values.time, "inProgress");
+    createTask(
+      values.name,
+      values.description,
+      values.priority,
+      values.time,
+      "inProgress"
+    );
     setOpen(false);
     reset();
     toast("Your task has been successfully created!", {
@@ -89,7 +95,10 @@ export default function AddTaskForm() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Priority</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value || ""}>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value || ""}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select an option" />
@@ -115,7 +124,10 @@ export default function AddTaskForm() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Time</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value || ""}>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value || ""}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select an option" />
@@ -157,20 +169,22 @@ export default function AddTaskForm() {
           </div>
         </CardContent>
         <CardFooter className="flex justify-between my-4">
+          <Button type="submit">Add Task</Button>
           <Button
+            type="button"
+            variant={"outline"}
             onClick={() => {
               reset({
                 name: "",
                 description: "",
-                priority: undefined, 
+                priority: undefined,
                 time: undefined,
-              }, { keepErrors: false, keepDirty: false, keepTouched: false });
+              });
               setOpen(false);
             }}
           >
             Cancel
           </Button>
-          <Button type="submit">Add Task</Button>
         </CardFooter>
       </form>
     </Form>
