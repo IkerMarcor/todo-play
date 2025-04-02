@@ -21,7 +21,7 @@ interface TaskStore {
     status: string
   ) => void;
   deleteTask: (id: number) => void;
-  // updateTask: (id: number, updates: Partial<Omit<Task, 'id'>>) => void;
+  updateTask: (id: number, updatedData: Partial<Omit<Task, 'id'>>) => void;
 }
 
 const useTaskStore = create<TaskStore>()(
@@ -39,6 +39,12 @@ const useTaskStore = create<TaskStore>()(
       deleteTask: (id) =>
         set((state) => ({
           tasks: state.tasks.filter((task) => task.id !== id),
+        })),
+      updateTask: (id, updatedData) =>
+        set((state) => ({
+          tasks: state.tasks.map((task) =>
+            task.id === id ? { ...task, ...updatedData } : task
+          ),
         })),
     }),
     {

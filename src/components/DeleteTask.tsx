@@ -12,13 +12,9 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-import useTaskStore from "@/store";
+import useTaskStore from "@/store/useTaskStore";
 
-interface Props {
-  id: number;
-}
-
-export default function DeleteTask({ id }: Props) {
+export default function DeleteTask({ id }: { id: number }) {
   const { deleteTask } = useTaskStore();
   return (
     <AlertDialog>

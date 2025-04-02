@@ -1,11 +1,9 @@
-import { BellRing, Check, Play } from "lucide-react";
-
-import DeleteTask from "@/components/DeleteTask";
+import { Check, Play } from "lucide-react";
 
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
+import { Progress } from "@/components/ui/progress";
 import {
   Card,
   CardHeader,
@@ -39,23 +37,16 @@ export default function TaskInProgress(props: TaskContentProps) {
           <CardContent className="grid gap-4">
             <p className="text-gray-500 line-clamp-8">{props.description}</p>
             <div className=" flex items-center space-x-4 rounded-md border p-4">
-              <BellRing />
-              <div className="flex-1 space-y-1">
-                <p className="text-sm font-medium leading-none">
-                  Push Notifications
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Send notifications to device.
-                </p>
-              </div>
-              <Switch />
+              <p>20:20</p>
+              <Progress value={33} />
+              <p>40:00</p>
             </div>
           </CardContent>
           <CardFooter className="flex-col">
             <Button className="w-full m-1" size={"lg"}>
               <Check /> Mark as completed
             </Button>
-            <DeleteTask id={props.id} />
+            {/* <DeleteTask id={props.id} /> */}
           </CardFooter>
         </Card>
       ) : props.status === "Completed" ? (
