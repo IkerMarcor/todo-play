@@ -11,7 +11,7 @@ export default function TaskList() {
       ) : (
         <ul className="lg:grid lg:grid-cols-3">
           {tasks.map((task, index) => (
-            <li key={index} className="m-2 drop-shadow-md">
+            <li key={task.id} className="m-2 drop-shadow-md">
               <Task
                 id={task.id}
                 index={index + 1}

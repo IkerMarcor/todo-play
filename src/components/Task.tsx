@@ -1,4 +1,6 @@
-import { BellRing, Check, Play, Trash2 } from "lucide-react";
+import { BellRing, Check, Play } from "lucide-react";
+
+import DeleteTask from "@/components/DeleteTask";
 
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -10,7 +12,8 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-interface Props {
+
+interface TaskContentProps {
   id: number;
   index: number;
   name: string;
@@ -18,32 +21,23 @@ interface Props {
   priority: string;
   status: string;
 }
-import useTaskStore from "@/store"
 
-export default function TaskInProgress({
-  id,
-  index,
-  name,
-  description,
-  priority,
-  status,
-}: Props) {
-  const { deleteTask } = useTaskStore();
+export default function TaskInProgress(props: TaskContentProps) {
   return (
     <>
-      {status === "inProgress" ? (
-        <Card>
+      {props.status === "inProgress" ? (
+        <Card className="text-pretty break-words">
           <CardHeader>
             <div className="flex justify-between">
-              <Badge>{index}</Badge>
+              <Badge>{props.index}</Badge>
               <div></div>
-              <Badge> Priority {priority}</Badge>
+              <Badge> Priority {props.priority}</Badge>
             </div>
-            <h1 className="text-wrap break-all font-semibold line-clamp-2 text-xl">{name}</h1>
+            <h1 className="font-semibold line-clamp-2 text-xl">{props.name}</h1>
           </CardHeader>
 
           <CardContent className="grid gap-4">
-            <p className="text-wrap break-all text-gray-500 line-clamp-8">{description}</p>
+            <p className="text-gray-500 line-clamp-8">{props.description}</p>
             <div className=" flex items-center space-x-4 rounded-md border p-4">
               <BellRing />
               <div className="flex-1 space-y-1">
@@ -61,24 +55,19 @@ export default function TaskInProgress({
             <Button className="w-full m-1" size={"lg"}>
               <Check /> Mark as completed
             </Button>
-            <Button className="w-full m-1" size={"lg"} variant={"destructive"}
-            onClick={() => {
-              deleteTask(id);
-            }}>
-              <Trash2 /> Delete
-            </Button>
+            <DeleteTask id={props.id} />
           </CardFooter>
         </Card>
-      ) : status === "Completed" ? (
+      ) : props.status === "Completed" ? (
         <Button variant="outline" disabled>
-          <Label className="text-green-600 line-through">{name}</Label>
+          <Label className="text-green-600 line-through">{props.name}</Label>
           <Badge variant="completed">
             <Check />
           </Badge>
         </Button>
       ) : (
         <Button variant="outline" disabled>
-          <Label>{name}</Label>
+          <Label>{props.name}</Label>
           <Badge>
             <Play />
           </Badge>
