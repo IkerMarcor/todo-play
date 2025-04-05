@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/button";
 import useToggleStore from "@/store/useToggleStore";
 
 export default function AddTaskDialog() {
-  const { isOpen, setOpen } = useToggleStore();
+  const { addTaskToggle, setOpen } = useToggleStore();
   return (
-    <AlertDialog open={isOpen}>
-      <Button className="w-2/5 cursor-pointer" onClick={() => setOpen(true)}>
+    <AlertDialog open={addTaskToggle}>
+      <Button className="w-2/5" onClick={() => setOpen("addTaskToggle", true)}>
         <Plus/> New task
       </Button>
       <AlertDialogContent>

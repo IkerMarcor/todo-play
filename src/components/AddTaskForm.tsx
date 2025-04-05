@@ -56,7 +56,7 @@ export default function AddTaskForm() {
       values.time,
       "inProgress"
     );
-    setOpen(false);
+    setOpen("addTaskToggle", false);
     reset();
     toast("Your task has been successfully created!", {
       description: "Sunday, December 03, 2023 at 9:00 AM",
@@ -180,7 +180,7 @@ export default function AddTaskForm() {
                 priority: undefined,
                 time: undefined,
               });
-              setOpen(false);
+              setOpen("addTaskToggle", false);
             }}
           >
             Cancel

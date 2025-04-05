@@ -2,27 +2,30 @@ import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
 import useTaskStore from "@/store/useTaskStore";
+import useToggleStore from "@/store/useToggleStore";
 
 export default function DeleteTask({ id }: { id: number }) {
   const { deleteTask } = useTaskStore();
+  const { deleteTaskToggle, toggle } = useToggleStore();
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button className="w-full m-1" size={"lg"} variant={"destructive"}>
-          <Trash2 /> Delete
-        </Button>
-      </AlertDialogTrigger>
+    <AlertDialog open={deleteTaskToggle}>
+      <Button
+        className="w-full m-1"
+        size={"lg"}
+        variant={"destructive"}
+        type="button"
+        onClick={() => toggle("deleteTaskToggle")}
+      >
+        <Trash2 /> Delete
+      </Button>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
@@ -32,14 +35,19 @@ export default function DeleteTask({ id }: { id: number }) {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
+          <Button type="button" onClick={() => toggle("deleteTaskToggle")}>
+            Cancel
+          </Button>
+          <Button
+            type="button"
+            variant={"destructive"}
             onClick={() => {
               deleteTask(id);
+              toggle("deleteTaskToggle");
             }}
           >
             Continue
-          </AlertDialogAction>
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
