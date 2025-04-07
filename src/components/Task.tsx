@@ -10,6 +10,8 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
+import TaskTitle from "./TaskTitle";
+import TaskDescription from "./TaskDescription";
 
 interface TaskContentProps {
   id: number;
@@ -31,11 +33,11 @@ export default function TaskInProgress(props: TaskContentProps) {
               <div></div>
               <Badge> Priority {props.priority}</Badge>
             </div>
-            <h1 className="font-semibold line-clamp-2 text-xl">{props.name}</h1>
+            <TaskTitle title={props.name} />
           </CardHeader>
 
           <CardContent className="grid gap-4">
-            <p className="text-gray-500 line-clamp-8">{props.description}</p>
+            <TaskDescription description={props.description} />
             <div className=" flex items-center space-x-4 rounded-md border p-4">
               <p>20:20</p>
               <Progress value={33} />

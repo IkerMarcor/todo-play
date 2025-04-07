@@ -3,22 +3,14 @@ import Task from "@/components/Task";
 import useTaskStore from "@/store/useTaskStore";
 
 import {
-  Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent
-} from "@/components/ui/card";
-
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-
-import DeleteTask from "@/components/DeleteTask";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 export default function TaskList() {
   const { tasks } = useTaskStore();
@@ -29,8 +21,7 @@ export default function TaskList() {
       ) : (
         <ul className="sm:grid sm:grid-cols-2 xl:grid xl:grid-cols-3">
           {tasks.map((task, index) => (
-            
-            <li key={task.id} className="m-2 drop-shadow-sm hover:drop-shadow-xl hover:-translate-y-2 duration-300 ease-in-out cursor-pointer">
+            <li key={task.id} className="m-2 drop-shadow-sm hover:drop-shadow-xl hover:-translate-y-2 duration-300 ease-in-out">
               <Task
                 id={task.id}
                 index={index + 1}
