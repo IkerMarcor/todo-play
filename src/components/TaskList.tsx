@@ -2,16 +2,6 @@ import Task from "@/components/Task";
 // import tasks from "@/db/TableTasks";
 import useTaskStore from "@/store/useTaskStore";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-
 export default function TaskList() {
   const { tasks } = useTaskStore();
   return (

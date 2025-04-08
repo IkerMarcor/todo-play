@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Schema, formSchema } from "@/components/types/schema";
+import { Schema, formSchema } from "@/components/zod/schema";
 import {
   Select,
   SelectTrigger,

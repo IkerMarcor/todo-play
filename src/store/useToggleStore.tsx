@@ -1,12 +1,9 @@
+import {ToggleKey ,ToggleBooleans } from "@/types/toggleTypes";
 import { create } from "zustand";
 
-interface ToggleState {
-  addTaskToggle: boolean;
-  deleteTaskToggle: boolean;
-  updateTitleToggle:boolean;
-  updateDescriptionToggle: boolean;
-  setOpen: (key: keyof Omit<ToggleState, "setOpen" | "toggle">, value: boolean) => void;
-  toggle: (key: keyof Omit<ToggleState, "setOpen" | "toggle">) => void;
+interface ToggleState extends ToggleBooleans {
+  setOpen: (key: ToggleKey, value: boolean) => void;
+  toggle: (key: ToggleKey) => void;
 }
 
 const useToggleStore = create<ToggleState>((set) => ({
@@ -14,6 +11,7 @@ const useToggleStore = create<ToggleState>((set) => ({
   deleteTaskToggle: false,
   updateTitleToggle: false,
   updateDescriptionToggle:false,
+  updatePriorityToggle:false,
   setOpen: (key, value) => set((state) => ({...state, [key]: value})),
   toggle: (key) => set((state) => ({ ...state ,[key]: !state[key] })),
 }));

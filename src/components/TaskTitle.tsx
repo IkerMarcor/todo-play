@@ -10,18 +10,20 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import FixedDialogClose from "@/components/FixedDialogClose";
 
 export default function TaskTiltle({ title }: { title: string }) {
   const { setOpen, updateTitleToggle } = useToggleStore();
   return (
     <Dialog open={updateTitleToggle}>
       <button
-      className="cursor-pointer"
-      onClick={() => setOpen("updateTitleToggle", true)}
-    >
-      <h1 className="font-semibold line-clamp-2 text-xl">{title}</h1>
-    </button>
+        className="cursor-pointer"
+        onClick={() => setOpen("updateTitleToggle", true)}
+      >
+        <h1 className="font-semibold line-clamp-2 text-xl">{title}</h1>
+      </button>
       <DialogContent className="sm:max-w-[425px]">
+        <FixedDialogClose toggleKey="updateTitleToggle" />
         <DialogHeader>
           <DialogTitle>Edit Task Title</DialogTitle>
           <DialogDescription>
@@ -38,13 +40,6 @@ export default function TaskTiltle({ title }: { title: string }) {
         </div>
         <DialogFooter>
           <Button type="submit">Save changes</Button>
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={() => setOpen("updateTitleToggle", false)}
-          >
-            Close
-          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

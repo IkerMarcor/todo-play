@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import TaskTitle from "./TaskTitle";
 import TaskDescription from "./TaskDescription";
+import TaskPriority from "./TaskPriority";
 
 interface TaskContentProps {
   id: number;
@@ -29,9 +30,9 @@ export default function TaskInProgress(props: TaskContentProps) {
         <Card className="text-pretty break-words">
           <CardHeader>
             <div className="flex justify-between">
-              <Badge>{props.index}</Badge>
+              <Badge className="cursor-default">{props.index}</Badge>
               <div></div>
-              <Badge> Priority {props.priority}</Badge>
+              <TaskPriority priority={props.priority}/>
             </div>
             <TaskTitle title={props.name} />
           </CardHeader>
