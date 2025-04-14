@@ -31,7 +31,7 @@ export default function TimeSelect({ control }: { control: any }) {
             <SelectContent position="popper">
               {timeOptions.map((hour, index) => (
                 <SelectItem key={index} value={hour.toString()}>
-                  {hour}
+                  {hour} hrs
                 </SelectItem>
               ))}
             </SelectContent>

@@ -19,6 +19,7 @@ import TitleField from "@/components/TitleField";
 import DescriptionField from "@/components/DescriptionField";
 import PrioritySelect from "@/components/PrioritySelect";
 import TimeSelect from "@/components/TimeSelect";
+import { getTodayDate } from "@/constants";
 
 export default function AddTask() {
   const form = useForm<Schema>({
@@ -47,7 +48,7 @@ export default function AddTask() {
     setOpen("createTaskToggle", false);
     reset();
     toast("Your task has been successfully created!", {
-      description: "Sunday, December 03, 2023 at 9:00 AM",
+      description: getTodayDate(),
     });
   };
 

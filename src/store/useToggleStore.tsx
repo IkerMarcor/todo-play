@@ -7,11 +7,9 @@ interface ToggleState extends ToggleBooleans {
 }
 
 const useToggleStore = create<ToggleState>((set) => ({
-  addTaskToggle: false,
+  createTaskToggle: false,
   deleteTaskToggle: false,
-  updateTitleToggle: false,
-  updateDescriptionToggle:false,
-  updatePriorityToggle:false,
+  updateTaskToggle: false,
   setOpen: (key, value) => set((state) => ({...state, [key]: value})),
   toggle: (key) => set((state) => ({ ...state ,[key]: !state[key] })),
 }));

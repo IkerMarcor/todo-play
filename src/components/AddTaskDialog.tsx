@@ -1,9 +1,8 @@
 import { Plus } from "lucide-react"
-import AddTaskForm from "@/components/AddTask";
+import AddTask from "@/components/AddTask";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import useToggleStore from "@/store/useToggleStore";
-import FixedDialogClose from "@/components/FixedDialogClose"
 
 export default function AddTaskDialog() {
   const { createTaskToggle, setOpen } = useToggleStore();
@@ -13,8 +12,7 @@ export default function AddTaskDialog() {
         <Plus/> New task
       </Button>
       <DialogContent>
-        <FixedDialogClose toggleKey="createTaskToggle"/>
-        <AddTaskForm />
+        <AddTask />
       </DialogContent>
     </Dialog>
   );

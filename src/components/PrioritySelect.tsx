@@ -30,8 +30,8 @@ export default function PrioritySelect({ control }: { control: any }) {
             </FormControl>
             <SelectContent position="popper">
               {priorities.map((priority, index) => (
-                <SelectItem key={index} value={priority}>
-                  {priority}
+                <SelectItem key={index} value={priority.value}>
+                  {priority.label}
                 </SelectItem>
               ))}
             </SelectContent>

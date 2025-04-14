@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,6 +12,7 @@ import {
 
 import useTaskStore from "@/store/useTaskStore";
 import useToggleStore from "@/store/useToggleStore";
+import { getTodayDate } from "@/constants";
 
 export default function DeleteTask({ id }: { id: number }) {
   const { deleteTask } = useTaskStore();
@@ -44,6 +46,9 @@ export default function DeleteTask({ id }: { id: number }) {
             onClick={() => {
               deleteTask(id);
               toggle("deleteTaskToggle");
+              toast("Your task has been deleted", {
+                description: getTodayDate(),
+              });
             }}
           >
             Continue
