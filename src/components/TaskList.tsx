@@ -2,6 +2,7 @@ import Task from "@/components/Task";
 import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 import useTaskStore from "@/store/useTaskStore";
 import UpdateTask from "@/components/UpdateTask";
+import DeleteTask from "@/components/DeleteTask";
 
 export default function TaskList() {
   const { selectedTaskId } = useSelectedTaskStore();
@@ -28,6 +29,7 @@ export default function TaskList() {
             </li>
           ))}
           {selectedTaskId !== null && <UpdateTask id={selectedTaskId} />}
+          {selectedTaskId !== null && <DeleteTask id={selectedTaskId} />}
         </ul>
       )}
     </>

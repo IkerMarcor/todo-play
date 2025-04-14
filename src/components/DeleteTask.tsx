@@ -19,15 +19,6 @@ export default function DeleteTask({ id }: { id: number }) {
   const { deleteTaskToggle, toggle } = useToggleStore();
   return (
     <AlertDialog open={deleteTaskToggle}>
-      <Button
-        className="w-full m-1"
-        size={"lg"}
-        variant={"destructive"}
-        type="button"
-        onClick={() => toggle("deleteTaskToggle")}
-      >
-        <Trash2 /> Delete
-      </Button>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>

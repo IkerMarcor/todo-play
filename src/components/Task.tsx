@@ -1,5 +1,4 @@
-import { Check, Pencil, Play } from "lucide-react";
-import DeleteTask from "@/components/DeleteTask";
+import { Check, Pencil, Play, Trash2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -48,12 +47,23 @@ export default function Task(props: TaskContentProps) {
               <p>40:00</p>
             </div>
           </CardContent>
-          <CardFooter className="flex-col">
-            <Button className="w-full m-1" size={"lg"}>
+          <CardFooter className="flex-col space-y-2">
+            <Button className="w-full">
               <Check /> Mark as completed
             </Button>
-            <DeleteTask id={props.id} />
             <Button
+              className="w-full"
+              type="button"
+              variant={"destructive"}
+              onClick={() => {
+                setSelectedTaskId(props.id);
+                setOpen("deleteTaskToggle", true);
+              }}
+            >
+              <Trash2 /> Delete
+            </Button>
+            <Button
+            className="w-full"
               type="button"
               variant={"secondary"}
               onClick={() => {
