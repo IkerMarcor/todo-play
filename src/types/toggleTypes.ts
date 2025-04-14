@@ -1,14 +1,10 @@
 export type ToggleKey =
-  | "addTaskToggle"
+  | "createTaskToggle"
   | "deleteTaskToggle"
-  | "updateTitleToggle"
-  | "updateDescriptionToggle"
-  | "updatePriorityToggle";
+  | "updateTaskToggle";
 
 export interface ToggleBooleans {
-  addTaskToggle: boolean;
+  createTaskToggle: boolean;
   deleteTaskToggle: boolean;
-  updateTitleToggle: boolean;
-  updateDescriptionToggle: boolean;
-  updatePriorityToggle: boolean;
+  updateTaskToggle: boolean;
 }

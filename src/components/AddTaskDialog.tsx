@@ -1,19 +1,21 @@
 import { Plus } from "lucide-react"
-import AddTaskForm from "@/components/AddTaskForm";
-import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
+import AddTaskForm from "@/components/AddTask";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import useToggleStore from "@/store/useToggleStore";
+import FixedDialogClose from "@/components/FixedDialogClose"
 
 export default function AddTaskDialog() {
-  const { addTaskToggle, setOpen } = useToggleStore();
+  const { createTaskToggle, setOpen } = useToggleStore();
   return (
-    <AlertDialog open={addTaskToggle}>
-      <Button className="w-2/5" onClick={() => setOpen("addTaskToggle", true)}>
+    <Dialog open={createTaskToggle}>
+      <Button className="w-2/5" onClick={() => setOpen("createTaskToggle", true)}>
         <Plus/> New task
       </Button>
-      <AlertDialogContent>
+      <DialogContent>
+        <FixedDialogClose toggleKey="createTaskToggle"/>
         <AddTaskForm />
-      </AlertDialogContent>
-    </AlertDialog>
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -1,8 +1,10 @@
 import Task from "@/components/Task";
-// import tasks from "@/db/TableTasks";
+import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 import useTaskStore from "@/store/useTaskStore";
+import UpdateTask from "@/components/UpdateTask";
 
 export default function TaskList() {
+  const { selectedTaskId } = useSelectedTaskStore();
   const { tasks } = useTaskStore();
   return (
     <>
@@ -11,7 +13,10 @@ export default function TaskList() {
       ) : (
         <ul className="sm:grid sm:grid-cols-2 xl:grid xl:grid-cols-3">
           {tasks.map((task, index) => (
-            <li key={task.id} className="m-2 drop-shadow-sm hover:drop-shadow-xl hover:-translate-y-2 duration-300 ease-in-out">
+            <li
+              key={task.id}
+              className="m-2 drop-shadow-sm hover:drop-shadow-xl hover:-translate-y-2 duration-300 ease-in-out"
+            >
               <Task
                 id={task.id}
                 index={index + 1}
@@ -20,8 +25,9 @@ export default function TaskList() {
                 priority={task.priority}
                 status={task.status}
               />
-            </li>            
+            </li>
           ))}
+          {selectedTaskId !== null && <UpdateTask id={selectedTaskId} />}
         </ul>
       )}
     </>
