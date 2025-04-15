@@ -13,6 +13,7 @@ import {
 
 import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 import useToggleStore from "@/store/useToggleStore";
+import useCRUDTaskStore from "@/store/useCRUDTaskStore";
 
 interface TaskContentProps {
   id: number;
@@ -24,12 +25,13 @@ interface TaskContentProps {
 }
 
 export default function Task(props: TaskContentProps) {
+  const { updateTask } = useCRUDTaskStore();
   const { setSelectedTaskId } = useSelectedTaskStore();
   const { setOpen } = useToggleStore();
   return (
     <>
       {props.status === "inProgress" ? (
-        <Card className="text-pretty break-words">
+        <Card className="text-pretty break-words hover:drop-shadow-xl hover:-translate-y-2 duration-300 ease-in-out">
           <CardHeader>
             <div className="flex justify-between">
               <Badge className="cursor-default">{props.index}</Badge>
@@ -48,7 +50,13 @@ export default function Task(props: TaskContentProps) {
             </div>
           </CardContent>
           <CardFooter className="flex-col space-y-2">
-            <Button className="w-full">
+            <Button
+              className="w-full"
+              type="button"
+              onClick={() => {
+                updateTask(props.id, { status: "Completed" });
+              }}
+            >
               <Check /> Mark as completed
             </Button>
             <Button
@@ -63,7 +71,7 @@ export default function Task(props: TaskContentProps) {
               <Trash2 /> Delete
             </Button>
             <Button
-            className="w-full"
+              className="w-full"
               type="button"
               variant={"secondary"}
               onClick={() => {

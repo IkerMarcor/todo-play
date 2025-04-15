@@ -1,6 +1,6 @@
 import Task from "@/components/Task";
 import useSelectedTaskStore from "@/store/useSelectedTaskStore";
-import useTaskStore from "@/store/useTaskStore";
+import useTaskStore from "@/store/useCRUDTaskStore";
 import UpdateTask from "@/components/UpdateTask";
 import DeleteTask from "@/components/DeleteTask";
 
@@ -16,7 +16,7 @@ export default function TaskList() {
           {tasks.map((task, index) => (
             <li
               key={task.id}
-              className="m-2 drop-shadow-sm hover:drop-shadow-xl hover:-translate-y-2 duration-300 ease-in-out"
+              className="m-2 drop-shadow-sm"
             >
               <Task
                 id={task.id}

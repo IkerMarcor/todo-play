@@ -1,12 +1,15 @@
-export const priorities = [
+export const  priorities = ["A","B","C","D"] as const;
+export type Priority = (typeof priorities)[number];
+
+export const prioritiesLabel = [
     { label: "High (A)", value: "A" },
     { label: "Medium (B)", value: "B" },
     { label: "Low (C)", value: "C" },
     { label: "Very Low (D)", value: "D" },
   ] as const;
-export type Priority = (typeof priorities)[number]["value"];
+export type PriorityLabel = (typeof prioritiesLabel)[number]["value"];
 
-export const timeOptions = [1, 2, 3, 4, 5, 6, 7] as const;
+export const timeOptions = ["1", "2", "3", "4", "5", "6", "7"] as const;
 export type TimeValues = (typeof timeOptions)[number];
 
 export const daysOfWeek = [
@@ -41,5 +44,5 @@ export const getTodayDate = () => {
     monthsOfYear[d.getMonth()]
   } ${d.getDate()}, ${d.getFullYear()} at ${padTime(d.getHours())}:${padTime(
     d.getMinutes()
-  )}`;
+  )}` as string;
 };

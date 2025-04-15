@@ -12,7 +12,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { priorities } from "@/constants";
+import { prioritiesLabel } from "@/constants";
 
 export default function PrioritySelect({ control }: { control: any }) {
   return (
@@ -29,7 +29,7 @@ export default function PrioritySelect({ control }: { control: any }) {
               </SelectTrigger>
             </FormControl>
             <SelectContent position="popper">
-              {priorities.map((priority, index) => (
+              {prioritiesLabel.map((priority, index) => (
                 <SelectItem key={index} value={priority.value}>
                   {priority.label}
                 </SelectItem>

@@ -9,7 +9,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-import useTaskStore from "@/store/useTaskStore";
+import useTaskStore from "@/store/useCRUDTaskStore";
 import useToggleStore from "@/store/useToggleStore";
 import { getTodayDate } from "@/constants";
 

@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import useTaskStore from "@/store/useTaskStore";
+import useTaskStore from "@/store/useCRUDTaskStore";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
@@ -28,8 +28,8 @@ export default function AddTask() {
     defaultValues: {
       name: "",
       description: "",
-      priority: undefined, // We use `undefined` instead of empty string because zod validates it.
-      time: undefined,
+      priority: "asdf", // We use `undefined` instead of empty string because zod validates it.
+      time: "",
     },
   });
 
@@ -86,8 +86,8 @@ export default function AddTask() {
               reset({
                 name: "",
                 description: "",
-                priority: undefined,
-                time: undefined,
+                priority: "",
+                time: "",
               });
               setOpen("createTaskToggle", false);
             }}

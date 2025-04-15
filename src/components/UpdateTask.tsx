@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import useTaskStore from "@/store/useTaskStore";
+import useTaskStore from "@/store/useCRUDTaskStore";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
@@ -45,19 +45,12 @@ export default function UpdateTask({ id }: { id: number }) {
   const { setOpen, updateTaskToggle } = useToggleStore();
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
+
     if (!task || !task.id) return;
-    const updatedTask = {
-      ...task,
-      ...values,
-    };
-    updateTask(task.id, updatedTask);
+
+    updateTask(task.id, values);
     setOpen("updateTaskToggle", false);
-    reset({
-      name: "",
-      description: "",
-      priority: undefined,
-      time: undefined,
-    });
+
     toast("Your task has been updated", {
       description: getTodayDate(),
     });
@@ -91,7 +84,19 @@ export default function UpdateTask({ id }: { id: number }) {
               </div>
             </CardContent>
             <CardFooter className="flex justify-between my-4">
-              <Button type="submit">Update Task</Button>
+              <Button
+                type="submit"
+                onClick={() => {
+                  reset({
+                    name: "",
+                    description: "",
+                    priority: "",
+                    time: "",
+                  });
+                }}
+              >
+                Update Task
+              </Button>
               <Button
                 type="button"
                 variant={"outline"}
