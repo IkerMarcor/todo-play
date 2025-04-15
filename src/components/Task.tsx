@@ -31,7 +31,7 @@ export default function Task(props: TaskContentProps) {
   return (
     <>
       {props.status === "inProgress" ? (
-        <Card className="text-pretty break-words hover:drop-shadow-xl hover:-translate-y-2 duration-300 ease-in-out">
+        <Card className="text-pretty break-words">
           <CardHeader>
             <div className="flex justify-between">
               <Badge className="cursor-default">{props.index}</Badge>

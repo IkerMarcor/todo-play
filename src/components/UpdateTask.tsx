@@ -21,7 +21,8 @@ import TitleField from "@/components/TitleField";
 import PrioritySelect from "@/components/PrioritySelect";
 import TimeSelect from "@/components/TimeSelect";
 import DescriptionField from "@/components/DescriptionField";
-import { getTodayDate } from "@/constants";
+import { getTodayDate, Priority, TimeValues } from "@/constants";
+import { useEffect } from "react";
 
 export default function UpdateTask({ id }: { id: number }) {
   const { setSelectedTaskId } = useSelectedTaskStore();
@@ -32,20 +33,24 @@ export default function UpdateTask({ id }: { id: number }) {
   const form = useForm<Schema>({
     mode: "all",
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: task?.name,
-      description: task?.description,
-      priority: task?.priority,
-      time: task?.time,
-    },
   });
 
   const { control, reset, handleSubmit } = form;
   const { updateTask } = useTaskStore();
   const { setOpen, updateTaskToggle } = useToggleStore();
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  useEffect(() => {
+    if (updateTaskToggle && task) {
+      reset({
+        name: task.name,
+        description: task.description,
+        priority: task.priority as Priority,
+        time: task.time as TimeValues,
+      });
+    }
+  }, [updateTaskToggle, task, reset]);
 
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (!task || !task.id) return;
 
     updateTask(task.id, values);
@@ -84,29 +89,11 @@ export default function UpdateTask({ id }: { id: number }) {
               </div>
             </CardContent>
             <CardFooter className="flex justify-between my-4">
-              <Button
-                type="submit"
-                onClick={() => {
-                  reset({
-                    name: "",
-                    description: "",
-                    priority: "",
-                    time: "",
-                  });
-                }}
-              >
-                Update Task
-              </Button>
+              <Button type="submit">Update Task</Button>
               <Button
                 type="button"
                 variant={"outline"}
                 onClick={() => {
-                  reset({
-                    name: "",
-                    description: "",
-                    priority: undefined,
-                    time: undefined,
-                  });
                   setOpen("updateTaskToggle", false);
                   setSelectedTaskId(null);
                 }}

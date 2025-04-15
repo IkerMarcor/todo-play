@@ -16,7 +16,7 @@ export default function TaskList() {
           {tasks.map((task, index) => (
             <li
               key={task.id}
-              className="m-2 drop-shadow-sm"
+              className="m-2 drop-shadow-sm hover:drop-shadow-xl hover:-translate-y-2 duration-300 ease-in-out"
             >
               <Task
                 id={task.id}
