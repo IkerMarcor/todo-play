@@ -14,6 +14,8 @@ import {
 import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 import useToggleStore from "@/store/useToggleStore";
 import useCRUDTaskStore from "@/store/useCRUDTaskStore";
+import { toast } from "sonner";
+import { getTodayDate } from "@/constants";
 
 interface TaskContentProps {
   id: number;
@@ -55,6 +57,14 @@ export default function Task(props: TaskContentProps) {
               type="button"
               onClick={() => {
                 updateTask(props.id, { status: "Completed" });
+                toast(`🎉 Congrats on completing your task!`, {
+                  description: getTodayDate(),
+                  action: {
+                    label: "Undo",
+                    onClick: () =>
+                      updateTask(props.id, { status: "inProgress" }),
+                  },
+                });
               }}
             >
               <Check /> Mark as completed

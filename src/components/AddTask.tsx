@@ -25,12 +25,6 @@ export default function AddTask() {
   const form = useForm<Schema>({
     mode: "all",
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      description: "",
-      priority: "asdf", // We use `undefined` instead of empty string because zod validates it.
-      time: "",
-    },
   });
 
   const { control, reset, handleSubmit } = form;
@@ -46,8 +40,7 @@ export default function AddTask() {
       "inProgress"
     );
     setOpen("createTaskToggle", false);
-    reset();
-    toast("Your task has been successfully created!", {
+    toast("📝 Your task has been successfully created!", {
       description: getTodayDate(),
     });
   };
@@ -83,12 +76,6 @@ export default function AddTask() {
             type="button"
             variant={"outline"}
             onClick={() => {
-              reset({
-                name: "",
-                description: "",
-                priority: "",
-                time: "",
-              });
               setOpen("createTaskToggle", false);
             }}
           >

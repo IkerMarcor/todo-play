@@ -36,7 +36,7 @@ export default function DeleteTask({ id }: { id: number }) {
             onClick={() => {
               deleteTask(id);
               toggle("deleteTaskToggle");
-              toast("Your task has been deleted", {
+              toast("❌ Your task has been deleted successfully", {
                 description: getTodayDate(),
               });
             }}
