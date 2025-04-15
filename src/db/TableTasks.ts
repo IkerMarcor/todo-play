@@ -9,7 +9,7 @@ const tasks = [
       name: "Lorem",
       description: "loremasdfareuvmaosdkjf aoidnfaksjenf",
       priority: "D",
-      state: "Completed",
+      state: "completed",
     },
     {
       name: "Lorem",
@@ -22,6 +22,12 @@ const tasks = [
       description: "loremasdfareuvmaosdkjf aoidnfaksjenf",
       priority: "C",
       state: "notStarted",
+    },
+    {
+      name: "Lorem",
+      description: "loremasdfareuvmaosdkjf aoidnfaksjenf",
+      priority: "C",
+      state: "onPause",
     },
   ];
   

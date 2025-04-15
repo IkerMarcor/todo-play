@@ -1,4 +1,4 @@
-import { Check, Pencil, Play, Trash2 } from "lucide-react";
+import { Check, Pencil, Play, Pause, Trash2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -33,10 +33,10 @@ export default function Task(props: TaskContentProps) {
   return (
     <>
       {props.status === "inProgress" ? (
-        <Card className="text-pretty break-words">
+        <Card className="cursor-default text-pretty break-words hover:drop-shadow-xl hover:-translate-y-2 duration-300 ease-in-out">
           <CardHeader>
             <div className="flex justify-between">
-              <Badge className="cursor-default">{props.index}</Badge>
+              <Badge>{props.index}</Badge>
               <div></div>
               <Badge> Priority {props.priority}</Badge>
             </div>
@@ -55,8 +55,15 @@ export default function Task(props: TaskContentProps) {
             <Button
               className="w-full"
               type="button"
+              onClick={() => updateTask(props.id, { status: "onPause" })}
+            >
+              <Pause /> Pause
+            </Button>
+            <Button
+              className="w-full"
+              type="button"
               onClick={() => {
-                updateTask(props.id, { status: "Completed" });
+                updateTask(props.id, { status: "completed" });
                 toast(`🎉 Congrats on completing your task!`, {
                   description: getTodayDate(),
                   action: {
@@ -93,20 +100,53 @@ export default function Task(props: TaskContentProps) {
             </Button>
           </CardFooter>
         </Card>
-      ) : props.status === "Completed" ? (
-        <Button variant="outline" disabled>
+      ) : props.status === "completed" ? (
+        <Button variant="disabled" disabled>
           <Label className="text-green-600 line-through">{props.name}</Label>
-          <Badge variant="completed">
+          <Badge className="bg-green-600">
             <Check />
           </Badge>
         </Button>
-      ) : (
-        <Button variant="outline" disabled>
+      ) : props.status === "notStarted" ? (
+        <Button variant="disabled" onClick={() => updateTask(props.id,{status:"inProgress"})}>
           <Label>{props.name}</Label>
           <Badge>
             <Play />
           </Badge>
         </Button>
+      ) : (
+        <Card
+          className="opacity-40 text-pretty break-words hover:opacity-30 cursor-pointer hover:drop-shadow-xl hover:-translate-y-2 duration-300 ease-in-out"
+          onClick={() => updateTask(props.id, { status: "inProgress" })}
+        >
+          <CardHeader>
+            <div className="flex justify-between">
+              <Badge>{props.index}</Badge>
+              <div></div>
+              <Badge> Priority {props.priority}</Badge>
+            </div>
+            <h1 className="font-semibold line-clamp-2 text-xl">{props.name}</h1>
+          </CardHeader>
+
+          <CardContent className="grid gap-4">
+            <p className="text-gray-500 line-clamp-8">{props.description}</p>
+            <div className=" flex items-center space-x-4 rounded-md border p-4">
+              <p>20:20</p>
+              <Progress value={33} />
+              <p>40:00</p>
+            </div>
+          </CardContent>
+          <CardFooter className="flex-col space-y-2">
+            <Button
+              className="w-full"
+              type="button"
+              onClick={() => updateTask(props.id, { status: "inProgress" })}
+              disabled
+            >
+              <Play /> Play
+            </Button>
+          </CardFooter>
+        </Card>
       )}
     </>
   );

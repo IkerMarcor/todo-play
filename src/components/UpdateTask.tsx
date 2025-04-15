@@ -56,7 +56,7 @@ export default function UpdateTask({ id }: { id: number }) {
     updateTask(task.id, values);
     setOpen("updateTaskToggle", false);
 
-    toast("Your task has been updated", {
+    toast("💡 Your task has been updated successfully", {
       description: getTodayDate(),
     });
   };
@@ -67,8 +67,8 @@ export default function UpdateTask({ id }: { id: number }) {
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
             <CardHeader>
-              <CardTitle>Create a new task</CardTitle>
-              <CardDescription>Add your new task in one-click.</CardDescription>
+              <CardTitle>Edit task</CardTitle>
+              <CardDescription>Update your task in one-click.</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid w-full items-center gap-4">

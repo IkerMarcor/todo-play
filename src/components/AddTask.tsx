@@ -27,7 +27,7 @@ export default function AddTask() {
     resolver: zodResolver(formSchema),
   });
 
-  const { control, reset, handleSubmit } = form;
+  const { control, handleSubmit } = form;
   const { createTask } = useTaskStore();
   const { setOpen } = useToggleStore();
 
@@ -37,7 +37,7 @@ export default function AddTask() {
       values.description,
       values.priority,
       values.time,
-      "inProgress"
+      "notStarted"
     );
     setOpen("createTaskToggle", false);
     toast("📝 Your task has been successfully created!", {
