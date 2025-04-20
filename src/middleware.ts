@@ -7,11 +7,11 @@ export const getTaskById = (id:number): Task | undefined => {
 }
 
 export const convertTimeInSeconds = (number: string): string => {
-  return String(Number(number) * 10);
+  return String(Number(number) * 3600);
 }
 
 export const convertTimeInHours = (number: string): string => {
-  return String(Number(number) / 10);
+  return String(Number(number) / 3600);
 }
 
 export const getTodayDate = () => {

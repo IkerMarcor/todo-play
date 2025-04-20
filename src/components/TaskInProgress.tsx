@@ -16,7 +16,7 @@ import useCRUDTaskStore from "@/store/useTaskStore";
 import { useTimerStore } from "@/store/useTimerStore";
 
 export default function TaskInProgress({ id }: { id: number }) {
-  const { seconds, pause, reset } = useTimerStore();
+  const { pause, startReset, remainTime } = useTimerStore();
   const { updateTask } = useCRUDTaskStore();
   const { setSelectedTaskId } = useSelectedTaskStore();
   const { setOpen } = useToggleStore();
@@ -43,7 +43,7 @@ export default function TaskInProgress({ id }: { id: number }) {
           type="button"
           onClick={() => {
             setSelectedTaskId(id)
-            updateTask(id, { status: "onPause" });
+            updateTask(id, { status: "onPause" , remainTime: String(remainTime) });
             pause();
           }}
         >
@@ -60,7 +60,7 @@ export default function TaskInProgress({ id }: { id: number }) {
                 label: "Undo",
                 onClick: () => {
                   updateTask(id, { status: "inProgress" });
-                  reset(10); //TODO: time needs to reset to the initial selected
+                  startReset(Number(taskSelected?.initTime))
                 },
               },
             });

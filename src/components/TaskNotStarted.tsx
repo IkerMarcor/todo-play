@@ -9,14 +9,14 @@ import { useTimerStore } from "@/store/useTimerStore";
 export default function TaskNotStarted({ id }: { id: number }) {
   const task = getTaskById(id);
   const { updateTask } = useCRUDTaskStore();
-  const { start } = useTimerStore();
+  const { startReset } = useTimerStore();
 
   return (
     <Button
       variant="disabled"
       onClick={() => {
         updateTask(id, { status: "inProgress" });
-        start(Number(task?.initTime));
+        startReset(Number(task?.initTime));
       }}
     >
       <Label>{task?.name}</Label>

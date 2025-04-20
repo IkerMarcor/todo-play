@@ -24,7 +24,7 @@ export default function TaskOnPause({ id }: { id: number }) {
       onClick={() => {
         setSelectedTaskId(id);
         updateTask(id, { status: "inProgress" });
-        resume();
+        resume(Number(task?.initTime), Number(task?.remainTime));
       }}
     >
       <CardHeader>

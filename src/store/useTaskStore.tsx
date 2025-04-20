@@ -23,7 +23,7 @@ const useTaskStore = create<TaskStore>()(
         set((state) => ({
           tasks: [
             ...state.tasks,
-            { id: Date.now(), name, description, priority, initTime, status: "notStarted" },
+            { id: Date.now(), name, description, priority, initTime, remainTime: initTime, status: "notStarted" },
           ],
         })),
       deleteTask: (id) =>

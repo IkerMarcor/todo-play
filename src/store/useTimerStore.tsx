@@ -1,23 +1,22 @@
 import { create } from "zustand";
 
 interface TimerState {
-  initSeconds: number;
-  seconds: number;
+  initTime: number;
+  remainTime: number;
   isRunning: boolean;
-  start: (initSeconds: number) => void;
+  startReset: (initSeconds: number) => void;
+  resume: (initial: number, remaining: number) => void;
   pause: () => void;
-  resume: () => void;
-  reset: (initValue: number) => void;
 }
 
 export const useTimerStore = create<TimerState>((set) => ({
-  initSeconds: 0,
-  seconds: 0,
+  initTime: 0,
+  remainTime: 0,
   isRunning: false,
 
-  start: (initial) =>
-    set({ initSeconds: initial, seconds: initial, isRunning: true }),
+  startReset: (initial) =>
+    set({ initTime: initial, remainTime: initial, isRunning: true }),
+  resume: (initial, remaining) =>
+    set({ initTime: initial, remainTime: remaining, isRunning: true }),
   pause: () => set({ isRunning: false }),
-  resume: () => set({ isRunning: true }),
-  reset: (initValue) => set({ seconds: initValue, isRunning: false }),
 }));
