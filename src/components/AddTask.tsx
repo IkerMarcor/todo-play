@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import useTaskStore from "@/store/useCRUDTaskStore";
+import useTaskStore from "@/store/useTaskStore";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
@@ -19,7 +19,7 @@ import TitleField from "@/components/TitleField";
 import DescriptionField from "@/components/DescriptionField";
 import PrioritySelect from "@/components/PrioritySelect";
 import TimeSelect from "@/components/TimeSelect";
-import { getTodayDate } from "@/constants";
+import { getTodayDate, convertTimeInSeconds } from "@/middleware";
 
 export default function AddTask() {
   const form = useForm<Schema>({
@@ -36,8 +36,7 @@ export default function AddTask() {
       values.name,
       values.description,
       values.priority,
-      values.time,
-      "notStarted"
+      convertTimeInSeconds(values.time),
     );
     setOpen("createTaskToggle", false);
     toast("📝 Your task has been successfully created!", {

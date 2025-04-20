@@ -9,9 +9,9 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-import useTaskStore from "@/store/useCRUDTaskStore";
+import useTaskStore from "@/store/useTaskStore";
 import useToggleStore from "@/store/useToggleStore";
-import { getTodayDate } from "@/constants";
+import { getTodayDate } from "@/middleware";
 
 export default function DeleteTask({ id }: { id: number }) {
   const { deleteTask } = useTaskStore();

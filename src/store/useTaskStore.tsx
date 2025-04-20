@@ -1,15 +1,6 @@
+import { Task } from "@/types/taskTypes";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-// import { Priority } from "./constants/priorities";
-
-interface Task {
-  id: number;
-  name: string;
-  description: string;
-  priority: string;
-  time: string;
-  status: string;
-}
 
 interface TaskStore {
   tasks: Task[];
@@ -17,8 +8,7 @@ interface TaskStore {
     name: string,
     description: string,
     priority: string,
-    time: string,
-    status: string
+    initTime: string,
   ) => void;
   deleteTask: (id: number) => void;
   updateTask: (id: number, updatedData: Partial<Omit<Task, 'id'>>) => void;
@@ -29,11 +19,11 @@ const useTaskStore = create<TaskStore>()(
   persist(
     (set) => ({
       tasks: [],
-      createTask: (name, description, priority, time, status) =>
+      createTask: (name, description, priority, initTime) =>
         set((state) => ({
           tasks: [
             ...state.tasks,
-            { id: Date.now(), name, description, priority, time, status },
+            { id: Date.now(), name, description, priority, initTime, status: "notStarted" },
           ],
         })),
       deleteTask: (id) =>

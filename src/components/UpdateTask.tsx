@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import useTaskStore from "@/store/useCRUDTaskStore";
+import useTaskStore from "@/store/useTaskStore";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
@@ -21,14 +21,14 @@ import TitleField from "@/components/TitleField";
 import PrioritySelect from "@/components/PrioritySelect";
 import TimeSelect from "@/components/TimeSelect";
 import DescriptionField from "@/components/DescriptionField";
-import { getTodayDate, Priority, TimeValues } from "@/constants";
+import { Priority, TimeValues } from "@/constants";
+import { getTodayDate, convertTimeInHours } from "@/middleware";
 import { useEffect } from "react";
 
 export default function UpdateTask({ id }: { id: number }) {
   const { setSelectedTaskId } = useSelectedTaskStore();
 
-  const { tasks } = useTaskStore();
-  const task = tasks.find((t) => t.id === id);
+  const selectedTask = useSelectedTaskStore((state) => state.getSelectedTask());
 
   const form = useForm<Schema>({
     mode: "all",
@@ -40,20 +40,20 @@ export default function UpdateTask({ id }: { id: number }) {
   const { setOpen, updateTaskToggle } = useToggleStore();
 
   useEffect(() => {
-    if (updateTaskToggle && task) {
+    if (updateTaskToggle && selectedTask) {
       reset({
-        name: task.name,
-        description: task.description,
-        priority: task.priority as Priority,
-        time: task.time as TimeValues,
+        name: selectedTask.name,
+        description: selectedTask.description,
+        priority: selectedTask.priority as Priority,
+        time: convertTimeInHours(selectedTask.initTime) as TimeValues,
       });
     }
-  }, [updateTaskToggle, task, reset]);
+  }, [updateTaskToggle, selectedTask, reset]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    if (!task || !task.id) return;
+    if (!selectedTask || !selectedTask.id) return;
 
-    updateTask(task.id, values);
+    updateTask(selectedTask.id, values);
     setOpen("updateTaskToggle", false);
 
     toast("💡 Your task has been updated successfully", {
