@@ -3,7 +3,7 @@ export type TaskKeys =
   | "name"
   | "description"
   | "priority"
-  | "initTime"
+  | "time"
   | "remainTime"
   | "status";
 
@@ -12,7 +12,7 @@ export interface Task {
   name: string;
   description: string;
   priority: string;
-  initTime: string;
+  time: string;
   remainTime: string;
   status: string;
 }

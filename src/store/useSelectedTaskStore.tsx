@@ -14,7 +14,8 @@ const useSelectedTaskStore = create<SelectedTaskStore>((set, get) => ({
   getSelectedTask: () => {
     const id = get().selectedTaskId;
     const tasks = useTaskStore.getState().tasks;
-    return tasks.find((task: Task) => task.id === id);
+    if (id === null) return undefined;
+    return tasks[id];
   },
 }));
 

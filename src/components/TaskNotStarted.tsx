@@ -3,23 +3,30 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Play } from "lucide-react";
 import useCRUDTaskStore from "@/store/useTaskStore";
-import { getTaskById } from "@/middleware";
 import { useTimerStore } from "@/store/useTimerStore";
+import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 
-export default function TaskNotStarted({ id }: { id: number }) {
-  const task = getTaskById(id);
-  const { updateTask } = useCRUDTaskStore();
-  const { startReset } = useTimerStore();
+interface TaskNotStartedProps {
+  id: number;
+  name: string;
+  time: string;
+}
+
+export default function TaskNotStarted(props: TaskNotStartedProps) {
+  const setSelectedTaskId = useSelectedTaskStore((s) => s.setSelectedTaskId);
+  const updateTask = useCRUDTaskStore((s) => s.updateTask);
+  const startReset = useTimerStore((s) => s.startReset);
 
   return (
     <Button
       variant="disabled"
       onClick={() => {
-        updateTask(id, { status: "inProgress" });
-        startReset(Number(task?.initTime));
+        setSelectedTaskId(props.id);
+        updateTask(props.id, { status: "inProgress" });
+        startReset(Number(props.time));
       }}
     >
-      <Label>{task?.name}</Label>
+      <Label>{props.name}</Label>
       <Badge>
         <Play />
       </Badge>

@@ -3,41 +3,45 @@ import TaskCompleted from "./TaskCompleted";
 import TaskNotStarted from "./TaskNotStarted";
 import TaskOnPause from "./TaskOnPause";
 import { getTaskById } from "@/middleware";
-import { useTimerStore } from "@/store/useTimerStore";
-import { useEffect } from "react";
 
 export default function Task({ id }: { id: number }) {
-  const task = getTaskById(id);
-  // const { seconds, isRunning } = useTimerStore();
+  const taskSelected = getTaskById(id);
+  if (!taskSelected) return <li>Task not found</li>;
 
-  //   useEffect(() => {
-  //   if (!task) return;
-  //   let interval: NodeJS.Timeout | undefined;
-
-  //   if (isRunning && seconds > 0) {
-  //     console.log("Render");
-  //   } else {
-  //     console.log("Render2");
-  //     // clearInterval(interval);
-  //     // updateTask(task.id, { timeLeft: seconds.toFixed(2) });
-  //   }
-
-  //   return () => clearInterval(interval);
-  // }, [isRunning]);
-  
-  
   const renderTask = () => {
-    switch (task?.status) {
+    switch (taskSelected.status) {
       case "inProgress":
-        return <TaskInProgress id={id} />;
+        return (
+          <TaskInProgress
+            id={taskSelected.id}
+            name={taskSelected.name}
+            priority={taskSelected.priority}
+            description={taskSelected.description}
+          />
+        );
       case "completed":
-        return <TaskCompleted id={id} />;
+        return <TaskCompleted name={taskSelected.name} />;
       case "notStarted":
-        return <TaskNotStarted id={id} />;
+        return (
+          <TaskNotStarted
+            id={taskSelected.id}
+            name={taskSelected.name}
+            time={taskSelected.time}
+          />
+        );
       case "onPause":
-        return <TaskOnPause id={id} />;
+        return (
+          <TaskOnPause
+            id={taskSelected.id}
+            name={taskSelected.name}
+            priority={taskSelected.priority}
+            description={taskSelected.description}
+            time={taskSelected.time}
+            remainTime={taskSelected.remainTime}
+          />
+        );
       default:
-        return <p>Unknown status</p>;
+        return <p>Unknown status: {taskSelected.status}</p>;
     }
   };
 

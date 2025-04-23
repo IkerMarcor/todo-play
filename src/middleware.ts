@@ -1,18 +1,19 @@
 import { daysOfWeek, monthsOfYear } from "./constants";
-import useCRUDTaskStore from "./store/useTaskStore";
-import {Task} from "@/types/taskTypes"
+import useTaskStore from "./store/useTaskStore";
+import { Task } from "@/types/taskTypes";
 
-export const getTaskById = (id:number): Task | undefined => {
-    return useCRUDTaskStore((state) => state.tasks.find((task) => task.id === id));
-}
+export const getTaskById = (id: number): Task | undefined => {
+  const { tasks } = useTaskStore.getState();
+  return tasks[id] ?? null;
+};
 
 export const convertTimeInSeconds = (number: string): string => {
   return String(Number(number) * 3600);
-}
+};
 
 export const convertTimeInHours = (number: string): string => {
   return String(Number(number) / 3600);
-}
+};
 
 export const getTodayDate = () => {
   const padTime = (n: number) => String(n).padStart(2, "0");

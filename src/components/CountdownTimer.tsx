@@ -2,13 +2,10 @@ import { Progress } from "@/components/ui/progress";
 import { useEffect } from "react";
 import { formatTime } from "@/middleware";
 import { useTimerStore } from "@/store/useTimerStore";
-import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 
 export default function CountdownTimer() {
-  const { remainTime, isRunning } = useTimerStore();
-  const selectedTask = useSelectedTaskStore((state) => state.getSelectedTask());
-  const initialSeconds = Number(selectedTask?.initTime);
-
+  const {initTime, remainTime, isRunning } = useTimerStore();
+  
   useEffect(() => {
     if (!isRunning) return;
     let newSeconds: number;
@@ -30,7 +27,7 @@ export default function CountdownTimer() {
   return (
     <div className=" flex items-center space-x-4 rounded-md border p-4">
       <h1>{remainTime > 0 ? formatTime(remainTime) : "Time's up!"}</h1>
-      <Progress value={(remainTime * 100) / initialSeconds} />
+      <Progress value={(remainTime * 100) / initTime} />
     </div>
   );
 }

@@ -25,6 +25,12 @@ export default function AddTask() {
   const form = useForm<Schema>({
     mode: "all",
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      name:"",
+      description:"",
+      priority: undefined,
+      time: undefined,
+    }
   });
 
   const { control, handleSubmit } = form;
@@ -36,7 +42,7 @@ export default function AddTask() {
       values.name,
       values.description,
       values.priority,
-      convertTimeInSeconds(values.time),
+      convertTimeInSeconds(values.time)
     );
     setOpen("createTaskToggle", false);
     toast("📝 Your task has been successfully created!", {
