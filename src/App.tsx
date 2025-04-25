@@ -1,7 +1,5 @@
 import "./App.css";
 
-import { Play } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 
 import AddTask from "@/components/AddTaskDialog";

@@ -4,8 +4,8 @@ import { formatTime } from "@/middleware";
 import { useTimerStore } from "@/store/useTimerStore";
 
 export default function CountdownTimer() {
-  const {initTime, remainTime, isRunning } = useTimerStore();
-  
+  const { initTime, remainTime, isRunning } = useTimerStore();
+
   useEffect(() => {
     if (!isRunning) return;
     let newSeconds: number;
