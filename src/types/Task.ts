@@ -5,7 +5,8 @@ export type TaskKeys =
   | "priority"
   | "time"
   | "remainTime"
-  | "status";
+  | "status"
+  | "isLocked";
 
 export interface Task {
   id: number;
@@ -15,4 +16,5 @@ export interface Task {
   time: string;
   remainTime: string;
   status: string;
+  isLocked: boolean;
 }

@@ -3,8 +3,10 @@ import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 import useTaskStore from "@/store/useTaskStore";
 import UpdateTask from "@/components/UpdateTask";
 import DeleteTask from "@/components/DeleteTask";
+import useTaskLocking from "@/hooks/useTaskLocking"
 
 export default function TaskList() {
+  useTaskLocking();
   const { selectedTaskId } = useSelectedTaskStore();
   const { tasks } = useTaskStore();
 

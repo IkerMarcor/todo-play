@@ -105,7 +105,6 @@ export default function UpdateTask() {
                 variant={"outline"}
                 onClick={() => {
                   setOpen("updateTaskToggle", false);
-                  setSelectedTaskId(null);
                 }}
               >
                 Cancel

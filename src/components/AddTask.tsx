@@ -20,29 +20,32 @@ import DescriptionField from "@/components/DescriptionField";
 import PrioritySelect from "@/components/PrioritySelect";
 import TimeSelect from "@/components/TimeSelect";
 import { getTodayDate, convertTimeInSeconds } from "@/middleware";
+import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 
 export default function AddTask() {
   const form = useForm<Schema>({
     mode: "all",
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name:"",
-      description:"",
+      name: "",
+      description: "",
       priority: undefined,
       time: undefined,
-    }
+    },
   });
 
   const { control, handleSubmit } = form;
   const { createTask } = useTaskStore();
   const { setOpen } = useToggleStore();
+  const { selectedTaskId } = useSelectedTaskStore();
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     createTask(
       values.name,
       values.description,
       values.priority,
-      convertTimeInSeconds(values.time)
+      convertTimeInSeconds(values.time),
+      selectedTaskId ? true : false
     );
     setOpen("createTaskToggle", false);
     toast("📝 Your task has been successfully created!", {

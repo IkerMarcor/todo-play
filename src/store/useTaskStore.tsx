@@ -1,4 +1,4 @@
-import { Task } from "@/types/taskTypes";
+import { Task } from "@/types/Task";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
@@ -8,7 +8,8 @@ interface TaskStore {
     name: string,
     description: string,
     priority: string,
-    time: string
+    time: string,
+    isLocked: boolean,
   ) => void;
   deleteTask: (id: number) => void;
   updateTask: (id: number, updatedData: Partial<Omit<Task, "id">>) => void;
@@ -19,7 +20,7 @@ const useTaskStore = create<TaskStore>()(
   persist(
     (set) => ({
       tasks: {},
-      createTask: (name, description, priority, time) => {
+      createTask: (name, description, priority, time, isLocked) => {
         const id = Date.now();
         const newTask: Task = {
           id,
@@ -29,19 +30,20 @@ const useTaskStore = create<TaskStore>()(
           time,
           remainTime: time,
           status: "notStarted",
+          isLocked,
         };
         set((state) => ({
           tasks: {
             ...state.tasks,
-            [id] : newTask,
-          }
-        }))
+            [id]: newTask,
+          },
+        }));
       },
       deleteTask: (id) =>
         set((state) => {
-          const updatedTasks = {...state.tasks};
+          const updatedTasks = { ...state.tasks };
           delete updatedTasks[id];
-          return {tasks: updatedTasks}
+          return { tasks: updatedTasks };
         }),
       updateTask: (id, updatedData) =>
         set((state) => ({
@@ -50,7 +52,7 @@ const useTaskStore = create<TaskStore>()(
             [id]: {
               ...state.tasks[id],
               ...updatedData,
-            }
+            },
           },
         })),
     }),

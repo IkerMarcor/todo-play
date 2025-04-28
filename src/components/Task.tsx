@@ -27,6 +27,7 @@ export default function Task({ id }: { id: number }) {
             id={taskSelected.id}
             name={taskSelected.name}
             time={taskSelected.time}
+            isLocked={taskSelected.isLocked}
           />
         );
       case "onPause":
@@ -38,6 +39,7 @@ export default function Task({ id }: { id: number }) {
             description={taskSelected.description}
             time={taskSelected.time}
             remainTime={taskSelected.remainTime}
+            isLocked={taskSelected.isLocked}
           />
         );
       default:

@@ -1,6 +1,6 @@
 import { daysOfWeek, monthsOfYear } from "./constants";
 import useTaskStore from "./store/useTaskStore";
-import { Task } from "@/types/taskTypes";
+import { Task } from "@/types/Task";
 
 export const getTaskById = (id: number): Task | undefined => {
   const { tasks } = useTaskStore.getState();

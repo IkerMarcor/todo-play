@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 import useToggleStore from "@/store/useToggleStore";
-import useCRUDTaskStore from "@/store/useTaskStore";
+import useTaskStore from "@/store/useTaskStore";
 import { useTimerStore } from "@/store/useTimerStore";
 
 interface TaskInProgressProps {
@@ -24,7 +24,7 @@ interface TaskInProgressProps {
 
 export default function TaskInProgress(props: TaskInProgressProps) {
   const { pause, resume, remainTime } = useTimerStore();
-  const updateTask = useCRUDTaskStore((s) => s.updateTask);
+  const updateTask = useTaskStore((s) => s.updateTask);
   const setSelectedTaskId = useSelectedTaskStore((s) => s.setSelectedTaskId);
   const setOpen = useToggleStore((s) => s.setOpen);
 
@@ -48,6 +48,7 @@ export default function TaskInProgress(props: TaskInProgressProps) {
           className="w-full"
           type="button"
           onClick={() => {
+            setSelectedTaskId(null);
             updateTask(props.id, {
               status: "onPause",
               remainTime: String(remainTime),
@@ -62,6 +63,7 @@ export default function TaskInProgress(props: TaskInProgressProps) {
           type="button"
           onClick={() => {
             pause();
+            setSelectedTaskId(null);
             updateTask(props.id, { status: "completed" });
             toast(`🎉 Congrats on completing your task!`, {
               description: getTodayDate(),
@@ -69,6 +71,7 @@ export default function TaskInProgress(props: TaskInProgressProps) {
                 label: "Undo",
                 onClick: () => {
                   updateTask(props.id, { status: "inProgress" });
+                  setSelectedTaskId(props.id);
                   resume();
                 },
               },

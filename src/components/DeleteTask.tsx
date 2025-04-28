@@ -12,10 +12,12 @@ import {
 import useTaskStore from "@/store/useTaskStore";
 import useToggleStore from "@/store/useToggleStore";
 import { getTodayDate } from "@/middleware";
+import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 
 export default function DeleteTask({ id }: { id: number }) {
   const { deleteTask } = useTaskStore();
   const { deleteTaskToggle, toggle } = useToggleStore();
+  const { setSelectedTaskId } = useSelectedTaskStore();
   return (
     <AlertDialog open={deleteTaskToggle}>
       <AlertDialogContent>
@@ -39,6 +41,7 @@ export default function DeleteTask({ id }: { id: number }) {
               toast("❌ Your task has been deleted successfully", {
                 description: getTodayDate(),
               });
+              setSelectedTaskId(null);
             }}
           >
             Continue

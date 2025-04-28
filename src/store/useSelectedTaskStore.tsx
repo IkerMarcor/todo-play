@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Task } from "@/types/taskTypes";
+import { Task } from "@/types/Task";
 import useTaskStore from "@/store/useTaskStore";
 
 type SelectedTaskStore = {

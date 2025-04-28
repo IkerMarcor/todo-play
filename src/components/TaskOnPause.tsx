@@ -7,21 +7,22 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import useCRUDTaskStore from "@/store/useTaskStore";
+import useTaskStore from "@/store/useTaskStore";
 import { useTimerStore } from "@/store/useTimerStore";
 import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 
 interface TaskOnPauseProps {
   id: number;
-  name:string;
+  name: string;
   priority: string;
   description: string;
   time: string;
   remainTime: string;
+  isLocked: boolean;
 }
 
 export default function TaskOnPause(props: TaskOnPauseProps) {
-  const updateTask = useCRUDTaskStore((s) => s.updateTask);
+  const updateTask = useTaskStore((s) => s.updateTask);
   const resumeReset = useTimerStore((s) => s.resumeReset);
   const setSelectedTaskId = useSelectedTaskStore((s) => s.setSelectedTaskId);
 
@@ -29,9 +30,11 @@ export default function TaskOnPause(props: TaskOnPauseProps) {
     <Card
       className="opacity-40 text-pretty break-words hover:opacity-30 cursor-pointer hover:drop-shadow-xl hover:-translate-y-2 duration-300 ease-in-out"
       onClick={() => {
-        setSelectedTaskId(props.id);
-        updateTask(props.id, { status: "inProgress" });
-        resumeReset(Number(props.time), Number(props.remainTime));
+        if (!props.isLocked) {
+          setSelectedTaskId(props.id);
+          resumeReset(Number(props.time), Number(props.remainTime));
+          updateTask(props.id, { status: "inProgress" });
+        }
       }}
     >
       <CardHeader>
@@ -40,9 +43,7 @@ export default function TaskOnPause(props: TaskOnPauseProps) {
           <div></div>
           <Badge> Priority {props.priority}</Badge>
         </div>
-        <h1 className="font-semibold line-clamp-2 text-xl">
-          {props.name}
-        </h1>
+        <h1 className="font-semibold line-clamp-2 text-xl">{props.name}</h1>
       </CardHeader>
 
       <CardContent className="grid gap-4">
