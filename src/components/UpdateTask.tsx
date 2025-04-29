@@ -23,7 +23,6 @@ import TimeSelect from "@/components/TimeSelect";
 import DescriptionField from "@/components/DescriptionField";
 import { Priority, TimeValues } from "@/constants";
 import {
-  getTodayDate,
   convertTimeInHours,
   convertTimeInSeconds,
 } from "@/middleware";
