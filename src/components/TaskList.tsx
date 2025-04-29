@@ -15,9 +15,9 @@ export default function TaskList() {
         <h1 className="align-middle">You haven't add a Task yet :/</h1>
       ) : (
         <ul className="sm:grid sm:grid-cols-2 xl:grid xl:grid-cols-3">
-          {Object.keys(tasks).map((id) => (
+          {Object.keys(tasks).map((id, index) => (
             <li key={id} className="m-2 drop-shadow-sm">
-              <Task id={Number(id)}></Task>
+              <Task id={Number(id)} index={index + 1}></Task>
             </li>
           ))}
           {selectedTaskId !== null && <UpdateTask />}

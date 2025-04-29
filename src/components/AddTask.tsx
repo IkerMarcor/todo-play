@@ -48,7 +48,7 @@ export default function AddTask() {
       selectedTaskId ? true : false
     );
     setOpen("createTaskToggle", false);
-    toast("📝 Your task has been successfully created!", {
+    toast.success("Your task has been successfully created", {
       description: getTodayDate(),
     });
   };

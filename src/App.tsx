@@ -12,7 +12,7 @@ import DeleteAllTaskAlert from "./components/DeleteAllTaskAlert";
 function App() {
   return (
     <>
-      <Toaster/>
+      <Toaster richColors/>
 
       <ScrollArea className="h-[calc(100dvh*3/4)] w-full rounded-md border p-4">
         <TaskList />

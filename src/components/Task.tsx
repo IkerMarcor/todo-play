@@ -4,8 +4,13 @@ import TaskNotStarted from "./TaskNotStarted";
 import TaskOnPause from "./TaskOnPause";
 import { getTaskById } from "@/middleware";
 
-export default function Task({ id }: { id: number }) {
-  const taskSelected = getTaskById(id);
+interface TaskProps {
+  id: number;
+  index: number;
+}
+
+export default function Task(props: TaskProps) {
+  const taskSelected = getTaskById(props.id);
   if (!taskSelected) return <li>Task not found</li>;
 
   const renderTask = () => {
@@ -14,6 +19,7 @@ export default function Task({ id }: { id: number }) {
         return (
           <TaskInProgress
             id={taskSelected.id}
+            index={props.index}
             name={taskSelected.name}
             priority={taskSelected.priority}
             description={taskSelected.description}
@@ -34,6 +40,7 @@ export default function Task({ id }: { id: number }) {
         return (
           <TaskOnPause
             id={taskSelected.id}
+            index={props.index}
             name={taskSelected.name}
             priority={taskSelected.priority}
             description={taskSelected.description}

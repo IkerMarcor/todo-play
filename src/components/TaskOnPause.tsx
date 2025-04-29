@@ -13,6 +13,7 @@ import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 
 interface TaskOnPauseProps {
   id: number;
+  index: number;
   name: string;
   priority: string;
   description: string;
@@ -39,7 +40,7 @@ export default function TaskOnPause(props: TaskOnPauseProps) {
     >
       <CardHeader>
         <div className="flex justify-between">
-          <Badge></Badge>
+          <Badge>{props.index}</Badge>
           <div></div>
           <Badge> Priority {props.priority}</Badge>
         </div>

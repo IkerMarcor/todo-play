@@ -65,9 +65,7 @@ export default function UpdateTask() {
     startReset(Number(convertTimeInSeconds(values.time)));
     setOpen("updateTaskToggle", false);
 
-    toast("💡 Your task has been updated successfully", {
-      description: getTodayDate(),
-    });
+    toast.info("Your task has been updated");
   };
 
   return (
