@@ -6,6 +6,8 @@ import AddTask from "@/components/AddTaskDialog";
 import TaskList from "@/components/TaskList";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Toaster } from "sonner";
+import DeleteAllTaskButton from "@/components/DeleteAllTaskButton";
+import DeleteAllTaskAlert from "./components/DeleteAllTaskAlert";
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
 
       <div className="flex justify-between my-4">
         <Button className="w-2/5">Filter</Button>
+        <DeleteAllTaskButton/>
+        <DeleteAllTaskAlert/>
         <AddTask />
       </div>
     </>

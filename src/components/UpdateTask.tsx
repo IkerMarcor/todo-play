@@ -31,7 +31,6 @@ import { useEffect } from "react";
 import { useTimerStore } from "@/store/useTimerStore";
 
 export default function UpdateTask() {
-  const { setSelectedTaskId } = useSelectedTaskStore();
   const { startReset } = useTimerStore();
   const selectedTask = useSelectedTaskStore((state) => state.getSelectedTask());
 

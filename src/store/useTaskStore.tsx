@@ -9,9 +9,10 @@ interface TaskStore {
     description: string,
     priority: string,
     time: string,
-    isLocked: boolean,
+    isLocked: boolean
   ) => void;
   deleteTask: (id: number) => void;
+  deleteAllTask: () => void;
   updateTask: (id: number, updatedData: Partial<Omit<Task, "id">>) => void;
 }
 
@@ -45,6 +46,10 @@ const useTaskStore = create<TaskStore>()(
           delete updatedTasks[id];
           return { tasks: updatedTasks };
         }),
+      deleteAllTask: () =>
+        set(() => ({
+          tasks: {},
+        })),
       updateTask: (id, updatedData) =>
         set((state) => ({
           tasks: {

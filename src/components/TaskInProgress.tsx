@@ -1,4 +1,5 @@
-import { Check, Trash2, Pause, Pencil } from "lucide-react";
+import { Check, Pause, Pencil } from "lucide-react";
+import DeleteTaskButton from "./DeleteTaskButton";
 import { toast } from "sonner";
 import { getTodayDate } from "@/middleware";
 import { Button } from "@/components/ui/button";
@@ -80,17 +81,7 @@ export default function TaskInProgress(props: TaskInProgressProps) {
         >
           <Check /> Mark as completed
         </Button>
-        <Button
-          className="w-full"
-          type="button"
-          variant={"destructive"}
-          onClick={() => {
-            setSelectedTaskId(props.id);
-            setOpen("deleteTaskToggle", true);
-          }}
-        >
-          <Trash2 /> Delete
-        </Button>
+        <DeleteTaskButton id={props.id} />
         <Button
           className="w-full"
           type="button"
