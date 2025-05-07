@@ -12,7 +12,7 @@ export default function TaskList() {
   return (
     <>
       {Object.keys(tasks).length === 0 ? (
-        <h1 className="align-middle">You haven't add a Task yet :/</h1>
+        <h1 className="align-middle">Add Tasks to start Play!</h1>
       ) : (
         <ul className="sm:grid sm:grid-cols-2 xl:grid xl:grid-cols-3">
           {Object.keys(tasks).map((id, index) => (

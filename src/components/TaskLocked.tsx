@@ -1,40 +1,23 @@
 import { Play } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardHeader,
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import useTaskStore from "@/store/useTaskStore";
-import { useTimerStore } from "@/store/useTimerStore";
-import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 
 interface TaskOnPauseProps {
-  id: number;
   index: number;
   name: string;
   priority: string;
   description: string;
-  time: string;
-  remainTime: string;
 }
 
 export default function TaskOnPause(props: TaskOnPauseProps) {
-  const updateTask = useTaskStore((s) => s.updateTask);
-  const resumeReset = useTimerStore((s) => s.resumeReset);
-  const setSelectedTaskId = useSelectedTaskStore((s) => s.setSelectedTaskId);
-
   return (
-    <Card
-      className="opacity-40 text-pretty break-words hover:opacity-30 cursor-pointer hover:drop-shadow-xl hover:-translate-y-2 duration-300 ease-in-out"
-      onClick={() => {
-        setSelectedTaskId(props.id);
-        resumeReset(Number(props.time), Number(props.remainTime));
-        updateTask(props.id, { status: "inProgress" });
-      }}
-    >
+    <Card className="opacity-40 text-pretty break-words cursor-default">
       <CardHeader>
         <div className="flex justify-between">
           <Badge>{props.index}</Badge>

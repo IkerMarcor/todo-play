@@ -45,7 +45,7 @@ export default function AddTask() {
       values.description,
       values.priority,
       convertTimeInSeconds(values.time),
-      selectedTaskId ? true : false
+      selectedTaskId ? "notStartedLocked" : "notStarted"
     );
     setOpen("createTaskToggle", false);
     toast.success("Your task has been successfully created", {

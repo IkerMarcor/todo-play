@@ -9,7 +9,7 @@ interface TaskStore {
     description: string,
     priority: string,
     time: string,
-    isLocked: boolean
+    status: string
   ) => void;
   deleteTask: (id: number) => void;
   deleteAllTask: () => void;
@@ -21,7 +21,7 @@ const useTaskStore = create<TaskStore>()(
   persist(
     (set) => ({
       tasks: {},
-      createTask: (name, description, priority, time, isLocked) => {
+      createTask: (name, description, priority, time, status) => {
         const id = Date.now();
         const newTask: Task = {
           id,
@@ -30,8 +30,7 @@ const useTaskStore = create<TaskStore>()(
           priority,
           time,
           remainTime: time,
-          status: "notStarted",
-          isLocked,
+          status,
         };
         set((state) => ({
           tasks: {

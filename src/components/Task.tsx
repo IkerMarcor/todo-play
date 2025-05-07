@@ -1,7 +1,9 @@
 import TaskInProgress from "./TaskInProgress";
 import TaskCompleted from "./TaskCompleted";
 import TaskNotStarted from "./TaskNotStarted";
+import TaskNotStartedLocked from "./TaskNotStartedLocked";
 import TaskOnPause from "./TaskOnPause";
+import TaskLocked from "./TaskLocked";
 import { getTaskById } from "@/middleware";
 
 interface TaskProps {
@@ -33,7 +35,6 @@ export default function Task(props: TaskProps) {
             id={taskSelected.id}
             name={taskSelected.name}
             time={taskSelected.time}
-            isLocked={taskSelected.isLocked}
           />
         );
       case "onPause":
@@ -46,7 +47,21 @@ export default function Task(props: TaskProps) {
             description={taskSelected.description}
             time={taskSelected.time}
             remainTime={taskSelected.remainTime}
-            isLocked={taskSelected.isLocked}
+          />
+        );
+      case "locked":
+        return (
+          <TaskLocked
+            index={props.index}
+            name={taskSelected.name}
+            priority={taskSelected.priority}
+            description={taskSelected.description}
+          />
+        );
+        case "notStartedLocked":
+        return (
+          <TaskNotStartedLocked
+            name={taskSelected.name}
           />
         );
       default:

@@ -5,12 +5,13 @@ import { Play } from "lucide-react";
 import useTaskStore from "@/store/useTaskStore";
 import { useTimerStore } from "@/store/useTimerStore";
 import useSelectedTaskStore from "@/store/useSelectedTaskStore";
+import { toast } from "sonner";
+import { getTodayTime } from "@/middleware";
 
 interface TaskNotStartedProps {
   id: number;
   name: string;
   time: string;
-  isLocked: boolean;
 }
 
 export default function TaskNotStarted(props: TaskNotStartedProps) {
@@ -22,11 +23,10 @@ export default function TaskNotStarted(props: TaskNotStartedProps) {
     <Button
       variant="disabled"
       onClick={() => {
-        if (!props.isLocked) {
-          setSelectedTaskId(props.id);
-          updateTask(props.id, { status: "inProgress" });
-          startReset(Number(props.time));
-        }
+        setSelectedTaskId(props.id);
+        updateTask(props.id, { status: "inProgress" });
+        startReset(Number(props.time));
+        toast.info(`New task started at ${getTodayTime()}`);
       }}
     >
       <Label>{props.name}</Label>

@@ -1,10 +1,12 @@
 export type ToggleKey =
   | "createTaskToggle"
   | "deleteAllTaskToggle"
-  | "updateTaskToggle";
+  | "updateTaskToggle"
+  | "disableToggle";
 
 export interface Toggle {
   createTaskToggle: boolean;
   deleteAllTaskToggle: boolean;
   updateTaskToggle: boolean;
+  disableToggle:boolean;
 }

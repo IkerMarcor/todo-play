@@ -15,8 +15,9 @@ export const convertTimeInHours = (number: string): string => {
   return String(Number(number) / 3600);
 };
 
+const padTime = (n: number) => String(n).padStart(2,"0");
+
 export const getTodayDate = () => {
-  const padTime = (n: number) => String(n).padStart(2, "0");
   const d = new Date();
   return `${daysOfWeek[d.getDay()]}, ${
     monthsOfYear[d.getMonth()]
@@ -24,6 +25,11 @@ export const getTodayDate = () => {
     d.getMinutes()
   )}` as string;
 };
+
+export const getTodayTime = () => {
+  const d = new Date();
+  return `${padTime(d.getHours())}:${padTime(d.getMinutes())}` as string;
+}
 
 export const formatTime = (totalSeconds: number) => {
   const seconds = Math.floor(totalSeconds % 60);
