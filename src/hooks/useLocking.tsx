@@ -16,9 +16,9 @@ export default function useLocking() {
           id,
           task.status === "notStartedLocked" // TODO: toggle between notStarted and notStartedLocked
             ? { ...task, status: "notStarted" }
-            : task.status === "notStarted"
+            : task.status === "notStarted" && selectedTaskId
             ? { ...task, status: "notStartedLocked" }
-            : task.status === "completed" || task.status === "inProgress"
+            : task.status === "completed" || task.status === "inProgress"|| task.status === "notStarted"
             ? task
             : { ...task, status: status },
         ])

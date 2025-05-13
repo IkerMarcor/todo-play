@@ -21,7 +21,8 @@ export default function TaskNotStarted(props: TaskNotStartedProps) {
 
   return (
     <Button
-      variant="disabled"
+      className="opacity-40 text-pretty break-words hover:opacity-30 hover:drop-shadow-xl hover:-translate-y-2"
+      variant={"outline"}
       onClick={() => {
         setSelectedTaskId(props.id);
         updateTask(props.id, { status: "inProgress" });
