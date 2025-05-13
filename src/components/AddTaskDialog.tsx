@@ -8,7 +8,7 @@ export default function AddTaskDialog() {
   const { createTaskToggle, setOpen } = useToggleStore();
   return (
     <Dialog open={createTaskToggle}>
-      <Button className="basis-1/3" onClick={() => setOpen("createTaskToggle", true)}>
+      <Button variant={"outline"} onClick={() => setOpen("createTaskToggle", true)}>
         <Plus/> New task
       </Button>
       <DialogContent>
