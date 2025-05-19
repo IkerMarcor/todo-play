@@ -8,6 +8,7 @@ import DeleteAllTaskAlert from "./components/DeleteAllTaskAlert";
 import PlayButton from "./components/PlayButton";
 import useToggleStore from "./store/useToggleStore";
 import AddTaskDialog from "./components/AddTaskDialog";
+import SortDropdownMenu from "./components/SortDropdownMenu";
 
 function App() {
   const disableToggle = useToggleStore((s) => s.disableToggle);
@@ -27,6 +28,7 @@ function App() {
       <div className="grid grid-cols-1 md:grid-cols-3 justify-center gap-2 m-2">
         <PlayButton disabled={disableToggle} />
         <FilterDropdownMenu disabled={disableToggle} />
+        <SortDropdownMenu disabled={disableToggle} />
         <DeleteAllTaskButton disabled={disableToggle} />
         <DeleteAllTaskAlert />
       </div>

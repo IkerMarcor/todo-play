@@ -25,15 +25,18 @@ export default function TaskOnPause(props: TaskOnPauseProps) {
   const updateTask = useTaskStore((s) => s.updateTask);
   const resumeReset = useTimerStore((s) => s.resumeReset);
   const setSelectedTaskId = useSelectedTaskStore((s) => s.setSelectedTaskId);
-
+  
+  const actionHandler = () => {
+    setSelectedTaskId(props.id);
+    resumeReset(Number(props.time), Number(props.remainTime));
+    updateTask(props.id, { status: "inProgress" });
+  }
+  
   return (
     <Card
       className="opacity-40 text-pretty break-words hover:opacity-30 cursor-pointer hover:drop-shadow-xl hover:-translate-y-2 duration-300 ease-in-out"
-      onClick={() => {
-        setSelectedTaskId(props.id);
-        resumeReset(Number(props.time), Number(props.remainTime));
-        updateTask(props.id, { status: "inProgress" });
-      }}
+      onClick={actionHandler}
+      onKeyDown={(e) => e.key === "Enter" && actionHandler()}
     >
       <CardHeader>
         <div className="flex justify-between">

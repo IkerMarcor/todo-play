@@ -22,16 +22,14 @@ import PrioritySelect from "@/components/PrioritySelect";
 import TimeSelect from "@/components/TimeSelect";
 import DescriptionField from "@/components/DescriptionField";
 import { Priority, TimeValues } from "@/constants";
-import {
-  convertTimeInHours,
-  convertTimeInSeconds,
-} from "@/middleware";
-import { useEffect } from "react";
+import { convertTimeInHours, convertTimeInSeconds } from "@/middleware";
+import { use, useEffect } from "react";
 import { useTimerStore } from "@/store/useTimerStore";
 
 export default function UpdateTask() {
   const { startReset } = useTimerStore();
-  const selectedTask = useSelectedTaskStore((state) => state.getSelectedTask());
+  const selectedTask = useSelectedTaskStore((s) => s.getSelectedTask());
+  const resume = useTimerStore((s) => s.resume);
 
   const form = useForm<Schema>({
     mode: "all",
@@ -56,14 +54,16 @@ export default function UpdateTask() {
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (!selectedTask || !selectedTask.id) return;
 
-    updateTask(selectedTask.id, {
-      ...values,
-      time: convertTimeInSeconds(values.time),
-    });
-    
-    startReset(Number(convertTimeInSeconds(values.time)));
-    setOpen("updateTaskToggle", false);
+    const time = convertTimeInSeconds(values.time);
 
+    updateTask(selectedTask.id, { ...values, time: time });
+
+    if (time !== selectedTask.time) {
+      startReset(Number(time));
+    }
+    
+    setOpen("updateTaskToggle", false);
+    resume();
     toast.info("Your task has been updated");
   };
 
@@ -101,6 +101,7 @@ export default function UpdateTask() {
                 variant={"outline"}
                 onClick={() => {
                   setOpen("updateTaskToggle", false);
+                  resume();
                 }}
               >
                 Cancel

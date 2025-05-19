@@ -8,7 +8,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import CompleteTaskButton from "@/components/CompleteTaskButton";
-import EditTaskButton from "@/components/EditTaskButton";
+import UpdateTaskButton from "@/components/UpdateTaskButton";
 import PauseTaskButton from "./PauseTaskButton";
 
 interface TaskInProgressProps {
@@ -39,7 +39,7 @@ export default function TaskInProgress(props: TaskInProgressProps) {
         <PauseTaskButton id={props.id} />
         <CompleteTaskButton id={props.id} />
         <DeleteTaskButton id={props.id} />
-        <EditTaskButton id={props.id} />
+        <UpdateTaskButton id={props.id} />
       </CardFooter>
     </Card>
   );

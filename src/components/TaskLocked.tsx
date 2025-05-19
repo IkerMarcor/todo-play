@@ -17,7 +17,7 @@ interface TaskOnPauseProps {
 
 export default function TaskOnPause(props: TaskOnPauseProps) {
   return (
-    <Card className="opacity-40 text-pretty break-words cursor-default">
+    <Card tabIndex={-1} className="opacity-40 text-pretty break-words cursor-default">
       <CardHeader>
         <div className="flex justify-between">
           <Badge>{props.index}</Badge>
