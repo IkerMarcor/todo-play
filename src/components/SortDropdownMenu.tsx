@@ -1,4 +1,4 @@
-import { ArrowDownNarrowWide, ArrowUpNarrowWide, ArrowDownUp } from "lucide-react";
+import { ListFilter, ArrowDownUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -6,13 +6,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import useToggleSortStore from "@/store/useToggleSortStore";
+import useSortStore from "@/store/useSortStore";
 
 export default function SortDropdownMenu({ disabled }: { disabled: boolean }) {
-const nameSort = useToggleSortStore((s) => s.name);
-const dateSort = useToggleSortStore((s) => s.date);
-const toggleSort = useToggleSortStore((s) => s.toggle);
-
+  const sortTasks = useSortStore((s) => s.sortTasks);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -29,13 +26,33 @@ const toggleSort = useToggleSortStore((s) => s.toggle);
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem onClick={() => toggleSort("name")}>
-          {nameSort === "ASC" ? <ArrowDownNarrowWide className="mr-2" /> : <ArrowUpNarrowWide className="mr-2" />}
-          {nameSort} | Name
+        <DropdownMenuItem
+          onClick={() => {
+            sortTasks("name");
+          }}
+        >
+          <ListFilter className="mr-2" /> Name
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => toggleSort("date")}>
-          {dateSort === "ASC" ? <ArrowDownNarrowWide className="mr-2" /> : <ArrowUpNarrowWide className="mr-2" />}
-          {dateSort} | Date
+        <DropdownMenuItem
+          onClick={() => {
+            sortTasks("date");
+          }}
+        >
+          <ListFilter className="mr-2" /> Date created
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            sortTasks("priority");
+          }}
+        >
+          <ListFilter className="mr-2" /> Priority
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            sortTasks("time");
+          }}
+        >
+          <ListFilter className="mr-2" /> Duration
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

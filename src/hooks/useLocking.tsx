@@ -2,12 +2,14 @@ import { useEffect } from "react";
 import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 import useTaskStore from "@/store/useTaskStore";
 import useToggleStore from "@/store/useToggleStore";
+import useSortStore from "@/store/useSortStore";
 
 export default function useLocking() {
   const selectedTaskId = useSelectedTaskStore((s) => s.selectedTaskId);
   const setOpen = useToggleStore((s) => s.setOpen);
   const tasks = useTaskStore((s) => s.tasks);
-  
+  const backupTasks = useSortStore((s) => s.backupTasks);
+
   // Disable other tasks based on the selected task
   useEffect(() => {
     const updatedTasks = (status: string) => {
@@ -18,7 +20,9 @@ export default function useLocking() {
             ? { ...task, status: "notStarted" }
             : task.status === "notStarted" && selectedTaskId
             ? { ...task, status: "notStartedLocked" }
-            : task.status === "completed" || task.status === "inProgress"|| task.status === "notStarted"
+            : task.status === "completed" ||
+              task.status === "inProgress" ||
+              task.status === "notStarted"
             ? task
             : { ...task, status: status },
         ])
@@ -32,12 +36,15 @@ export default function useLocking() {
     }
   }, [selectedTaskId]);
 
-  // Disable buttons if there are less than 2 tasks or a task is selected
   useEffect(() => {
     if (Object.keys(tasks).length < 2 || selectedTaskId) {
-      setOpen("disableToggle", true);
+      if (Object.keys(backupTasks).length < 2 || selectedTaskId) {
+        setOpen("disableToggle", true);
+      } else {
+        setOpen("disableToggle", false);
+      }
     } else {
       setOpen("disableToggle", false);
     }
-  }, [tasks, selectedTaskId]);
+  }, [tasks, backupTasks, selectedTaskId]);
 }

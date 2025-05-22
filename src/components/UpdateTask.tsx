@@ -23,7 +23,7 @@ import TimeSelect from "@/components/TimeSelect";
 import DescriptionField from "@/components/DescriptionField";
 import { Priority, TimeValues } from "@/constants";
 import { convertTimeInHours, convertTimeInSeconds } from "@/middleware";
-import { use, useEffect } from "react";
+import { useEffect } from "react";
 import { useTimerStore } from "@/store/useTimerStore";
 
 export default function UpdateTask() {

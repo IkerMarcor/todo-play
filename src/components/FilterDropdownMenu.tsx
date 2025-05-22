@@ -8,8 +8,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import useSortStore from "@/store/useSortStore";
 
-export default function FilterDropdownMenu({ disabled }: { disabled: boolean }) {
+export default function FilterDropdownMenu({
+  disabled,
+}: {
+  disabled: boolean;
+}) {
+  const filterTasks = useSortStore((s) => s.filterTasks);
+  const clearFilters = useSortStore((s) => s.clearFilters);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -21,9 +28,13 @@ export default function FilterDropdownMenu({ disabled }: { disabled: boolean }) 
       <DropdownMenuContent>
         <DropdownMenuLabel>Filter Tasks</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>All</DropdownMenuItem>
-        <DropdownMenuItem>Completed</DropdownMenuItem>
-        <DropdownMenuItem>Pending</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => clearFilters()}>All</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => filterTasks("completed")}>
+          Completed
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => filterTasks("pending")}>
+          Pending
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

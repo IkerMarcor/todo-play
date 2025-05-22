@@ -1,8 +1,8 @@
-export type ToggleKey =
-  | "name"
-  | "date";
+export type Sort = "name" | "priority" | "time" | "date";
 
-export interface Toggle {
-  name: "ASC" | "DESC";
-  date: "ASC" | "DESC";
+export interface SortOption {
+  name: string;
+  priority: string;
+  time: string;
+  date: string;
 }

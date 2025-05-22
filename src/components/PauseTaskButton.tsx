@@ -18,7 +18,7 @@ export default function PauseTaskButton({ id }: { id: number }) {
         setSelectedTaskId(null);
         updateTask(id, {
           status: "onPause",
-          remainTime: String(remainTime),
+          remainTime: remainTime,
         });
         pause();
       }}

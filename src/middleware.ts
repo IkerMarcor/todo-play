@@ -7,11 +7,11 @@ export const getTaskById = (id: number): Task | undefined => {
   return tasks[id] ?? null;
 };
 
-export const convertTimeInSeconds = (number: string): string => {
-  return String(Number(number) * 3600);
+export const convertTimeInSeconds = (number: string): number => {
+  return Number(number) * 3600;
 };
 
-export const convertTimeInHours = (number: string): string => {
+export const convertTimeInHours = (number: number): string => {
   return String(Number(number) / 3600);
 };
 
