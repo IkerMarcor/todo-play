@@ -7,16 +7,21 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
-import useSortStore from "@/store/useSortStore";
+import useTaskStore from "@/store/useTaskStore";
+import { useState } from "react";
 
 export default function FilterDropdownMenu({
   disabled,
 }: {
   disabled: boolean;
 }) {
-  const filterTasks = useSortStore((s) => s.filterTasks);
-  const clearFilters = useSortStore((s) => s.clearFilters);
+  const filterTasks = useTaskStore((s) => s.filterTasks);
+  const clearFilters = useTaskStore((s) => s.clearFilters);
+  const [position, setPosition] = useState("all");
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -26,15 +31,24 @@ export default function FilterDropdownMenu({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>Filter Tasks</DropdownMenuLabel>
+        <DropdownMenuRadioGroup value={position} onValueChange={(value) => {
+          setPosition(value);
+          filterTasks(value);
+        }}>
+          <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="completed">Completed</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="pending">Pending</DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => clearFilters()}>All</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => filterTasks("completed")}>
-          Completed
+        <DropdownMenuItem
+          onClick={() => {
+            clearFilters();
+            setPosition("all");
+          }}
+        >
+          Clear Filters
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => filterTasks("pending")}>
-          Pending
-        </DropdownMenuItem>
+        
       </DropdownMenuContent>
     </DropdownMenu>
   );

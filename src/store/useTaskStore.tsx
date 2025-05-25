@@ -1,22 +1,26 @@
 import { Task } from "@/types/Task";
 import { create } from "zustand";
-import useSortStore from "@/store/useSortStore";
+import useBackupStore from "@/store/useBackupStore";
 import { persist, createJSONStorage } from "zustand/middleware";
+import { toast } from "sonner";
 
 interface TaskStore {
   tasks: Record<number, Task>;
+  sortBy: string | null;
+  filterBy: string | null;
   createTask: (
     name: string,
     description: string,
     priority: string,
     time: number,
-    status: string,
+    status: string
   ) => void;
   deleteTask: (id: number) => void;
   deleteAllTask: () => void;
-  setTasks: (tasks: Record<number, Task>) => void;
   updateTask: (id: number, updatedData: Partial<Omit<Task, "id">>) => void;
-  sortTasks: (sortBy: "name" | "date" | "priority" | "duration") => void;
+  filterTasks: (filterBy: string) => void;
+  sortTasks: (sortBy: string) => void;
+  clearFilters: () => void;
 }
 
 const useTaskStore = create<TaskStore>()(
@@ -24,6 +28,9 @@ const useTaskStore = create<TaskStore>()(
   persist(
     (set) => ({
       tasks: {},
+      sortBy: null,
+      filterBy: null,
+
       createTask: (name, description, priority, time, status) => {
         const id = Date.now();
         const createdAt = Date.now();
@@ -37,37 +44,30 @@ const useTaskStore = create<TaskStore>()(
           status,
           createdAt,
         };
-        useSortStore.getState().createBackup({
-          ...useSortStore.getState().backupTasks,
-          [id]: newTask,
-        });
+        useBackupStore.getState().addTask(newTask);
         set((state) => ({
           tasks: {
             ...state.tasks,
             [id]: newTask,
           },
         }));
-      },
-      deleteTask: (id) =>
+    },
+      deleteTask: (id) => {
+        useBackupStore.getState().deleteTask(id);
         set((state) => {
           const updatedTasks = { ...state.tasks };
           delete updatedTasks[id];
           return { tasks: updatedTasks };
-        }),
+        });
+      },
       deleteAllTask: () => {
-        const deleteBackup = useSortStore.getState().deleteBackup;
-        deleteBackup();
+        useBackupStore.getState().deleteBackup();
         set(() => ({
           tasks: {},
         }));
       },
-      setTasks: (tasks) =>
-        set(() => ({
-          tasks: tasks,
-        })),
       updateTask: (id, updatedData) => {
-        const updateBackup = useSortStore.getState().updateBackup;
-        updateBackup(id, updatedData);
+        useBackupStore.getState().updateBackup(id, updatedData);
         set((state) => ({
           tasks: {
             ...state.tasks,
@@ -76,29 +76,78 @@ const useTaskStore = create<TaskStore>()(
               ...updatedData,
             },
           },
-        }))},
-      sortTasks: (sortBy) =>
-        set((state) => {
-          const sortedTasks = Object.values(state.tasks).sort((a, b) => {
-            switch (sortBy) {
-              case "name":
-                return a.name.localeCompare(b.name);
-              case "date":
-                return (a.createdAt ?? 0) - (b.createdAt ?? 0);
-              case "priority":
-                return a.priority.localeCompare(b.priority);
-              case "duration":
-                return Number(a.time) - Number(b.time);
-              default:
-                return 0;
-            }
-          });
-          const sortedTasksObject: Record<number, Task> = {};
-          sortedTasks.forEach((task) => {
-            sortedTasksObject[task.id] = task;
-          });
-          return { tasks: sortedTasksObject };
-        }),
+        }));
+      },
+      filterTasks: (filterBy) => {
+        if (filterBy === useTaskStore.getState().filterBy) return;
+
+        const tasks = useTaskStore.getState().tasks;
+        let backupTasks = useBackupStore.getState().backupTasks;
+
+        if (Object.keys(tasks).length < 1) return;
+
+        if (!backupTasks || Object.keys(backupTasks).length === 0) {
+          useBackupStore.getState().createBackup(tasks);
+          backupTasks = useBackupStore.getState().backupTasks;
+        }
+        
+
+        const filtered = Object.entries(backupTasks).filter(([_, task]) => {
+          switch (filterBy) {
+            case "completed":
+              return task.status === "completed";
+            case "pending":
+              return task.status !== "completed";
+            case "all":
+              return true;
+            default:
+              return true;
+          }
+        });
+
+        if (filtered.length === 0) return;
+
+        set({ filterBy: filterBy });
+        set({ tasks: Object.fromEntries(filtered) });
+      },
+      sortTasks: (sortBy) => {
+        if (sortBy === useTaskStore.getState().sortBy) return;
+
+        const tasks = useTaskStore.getState().tasks;
+        const backupTasks = useBackupStore.getState().backupTasks;
+        const createBackup = useBackupStore.getState().createBackup;
+
+        if (Object.keys(tasks).length < 2) return;
+
+        if (!backupTasks || Object.keys(backupTasks).length === 0) {
+          createBackup(tasks);
+        }
+
+        const sortedArray = Object.entries(tasks).sort(([, a], [, b]) => {
+          const aVal = a[sortBy as keyof Task];
+          const bVal = b[sortBy as keyof Task];
+          if (typeof aVal === "number" && typeof bVal === "number") {
+            return aVal - bVal;
+          }
+          if (typeof aVal === "string" && typeof bVal === "string") {
+            return aVal.localeCompare(bVal);
+          }
+          return 0; // fallback in case of mismatched types or undefined values
+        });
+
+        set({ sortBy: sortBy });
+        set({ tasks: Object.fromEntries(sortedArray) });
+      },
+      clearFilters: () => {
+        const backupTasks = useBackupStore.getState().backupTasks;
+        if (!backupTasks || Object.keys(backupTasks).length === 0) {
+          toast.error("No backup found");
+          return;
+        }
+        set({ tasks: backupTasks, filterBy: null, sortBy: null });
+        useBackupStore.getState().deleteBackup();
+        toast.success("Filters cleared");
+      },
     }),
     {
       name: "task-storage",

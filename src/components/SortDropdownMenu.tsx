@@ -1,15 +1,18 @@
-import { ListFilter, ArrowDownUp } from "lucide-react";
+import { ArrowDownUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import useSortStore from "@/store/useSortStore";
+import useTaskStore from "@/store/useTaskStore";
+import { useState } from "react";
 
 export default function SortDropdownMenu({ disabled }: { disabled: boolean }) {
-  const sortTasks = useSortStore((s) => s.sortTasks);
+  const sortTasks = useTaskStore((s) => s.sortTasks);
+  const [sortBy, setSortBy] = useState("createdAt");
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -26,34 +29,23 @@ export default function SortDropdownMenu({ disabled }: { disabled: boolean }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem
-          onClick={() => {
-            sortTasks("name");
-          }}
-        >
-          <ListFilter className="mr-2" /> Name
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => {
-            sortTasks("date");
-          }}
-        >
-          <ListFilter className="mr-2" /> Date created
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => {
-            sortTasks("priority");
-          }}
-        >
-          <ListFilter className="mr-2" /> Priority
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => {
-            sortTasks("time");
-          }}
-        >
-          <ListFilter className="mr-2" /> Duration
-        </DropdownMenuItem>
+        <DropdownMenuRadioGroup value={sortBy} onValueChange={(value) => {
+          setSortBy(value);
+          sortTasks(value);
+        }}>
+          <DropdownMenuRadioItem value="name" >
+            Name
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="createdAt" >
+            Date Created
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="priority">
+            Priority
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="time" >
+            Duration
+          </DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );
