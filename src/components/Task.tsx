@@ -35,6 +35,7 @@ export default function Task(props: TaskProps) {
             id={taskSelected.id}
             name={taskSelected.name}
             time={taskSelected.time}
+            remainTime={taskSelected.remainTime}
           />
         );
       case "onPause":

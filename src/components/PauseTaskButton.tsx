@@ -1,26 +1,22 @@
 import { Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import useSelectedTaskStore from "@/store/useSelectedTaskStore";
-import useTaskStore from "@/store/useTaskStore";
 import { useTimerStore } from "@/store/useTimerStore";
+import useTaskStore from "@/store/useTaskStore";
+import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 
 export default function PauseTaskButton({ id }: { id: number }) {
-  const setSelectedTaskId = useSelectedTaskStore((s) => s.setSelectedTaskId);
-  const updateTask = useTaskStore((s) => s.updateTask);
   const pause = useTimerStore((s) => s.pause);
-  const remainTime = useTimerStore((s) => s.remainTime);
-  
+  const updateTask = useTaskStore((s) => s.updateTask);
+  const setSelectedTaskId = useSelectedTaskStore((s) => s.setSelectedTaskId);
+
   return (
     <Button
       className="w-full"
       type="button"
       onClick={() => {
-        setSelectedTaskId(null);
-        updateTask(id, {
-          status: "onPause",
-          remainTime: remainTime,
-        });
         pause();
+        updateTask(id, { status: "onPause" });
+        setSelectedTaskId(null);
       }}
     >
       <Pause /> Pause

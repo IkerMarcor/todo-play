@@ -59,7 +59,7 @@ export default function UpdateTask() {
     updateTask(selectedTask.id, { ...values, time: time });
 
     if (time !== selectedTask.time) {
-      startReset(Number(time));
+      startReset(time, selectedTask.remainTime);
     }
     
     setOpen("updateTaskToggle", false);

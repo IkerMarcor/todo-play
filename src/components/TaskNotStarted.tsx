@@ -11,7 +11,8 @@ import { getTodayTime } from "@/middleware";
 interface TaskNotStartedProps {
   id: number;
   name: string;
-  time: string;
+  time: number;
+  remainTime: number;
 }
 
 export default function TaskNotStarted(props: TaskNotStartedProps) {
@@ -26,7 +27,7 @@ export default function TaskNotStarted(props: TaskNotStartedProps) {
       onClick={() => {
         setSelectedTaskId(props.id);
         updateTask(props.id, { status: "inProgress" });
-        startReset(Number(props.time));
+        startReset(props.time, props.remainTime);
         toast.info(`New task started at ${getTodayTime()}`);
       }}
     >
