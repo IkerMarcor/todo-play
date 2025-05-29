@@ -3,12 +3,15 @@ import useTaskStore from "./useTaskStore";
 import useSelectedTaskStore from "./useSelectedTaskStore";
 import { useTimerStore } from "./useTimerStore";
 import { toast } from "sonner";
+import { Task } from "@/types/Task";
 
 interface PlayStore {
   currentTaskIndex: number;
+  filteredTasks: Task[];
   isPlayComplete: boolean;
   isPlaying: boolean;
-  startPlay: () => void;
+  initPlay: () => void;
+  play: () => void;
   nextTask: () => void;
   completePlay: () => void;
   stopPlay: () => void;
@@ -16,33 +19,61 @@ interface PlayStore {
 
 export const usePlayStore = create<PlayStore>((set, get) => ({
   currentTaskIndex: 0,
+  filteredTasks: [],
   isPlayComplete: false,
   isPlaying: false,
 
-  startPlay: () => {
+  initPlay: () => {
     const filteredTasks = useTaskStore.getState().filterTasks("pending");
+
+    if (!filteredTasks) {
+      set({
+        currentTaskIndex: 0,
+        isPlayComplete: true,
+        isPlaying: false,
+        filteredTasks: [],
+      });
+      toast.warning("Play not available");
+      return;
+    }
+
+    if (Object.values(filteredTasks).length < 2) {
+      set({
+        currentTaskIndex: 0,
+        isPlayComplete: true,
+        isPlaying: false,
+        filteredTasks: [],
+      });
+      toast.warning("Not enough tasks", {description: "Need more tasks to start playing"});
+      return;
+    }
+
+    set({
+      isPlaying: true,
+      filteredTasks: Object.values(filteredTasks),
+    });
+    usePlayStore.getState().play();
+  },
+  play: () => {
     const setSelectedTaskId = useSelectedTaskStore.getState().setSelectedTaskId;
 
-    if(filteredTasks === 1) {
-      set({ currentTaskIndex: 0, isPlayComplete: true, isPlaying: false });
-      toast.warning("Play not available");
-      setSelectedTaskId(null);
-      return;
-    };
-    set({ isPlaying: true });
     const { currentTaskIndex } = get();
-    const tasks = useTaskStore.getState().tasks;
-    const tasksList = Object.values(tasks);
-    const currentTask = tasksList[currentTaskIndex];
+    const { filteredTasks } = get();
+    const currentTask = filteredTasks[currentTaskIndex];
 
     if (!currentTask) {
-      set({ currentTaskIndex: 0, isPlayComplete: true, isPlaying: false });
+      set({
+        currentTaskIndex: 0,
+        isPlayComplete: true,
+        isPlaying: false,
+        filteredTasks: [],
+      });
       toast.success("Play completed");
       setSelectedTaskId(null);
       return;
     }
 
-    useSelectedTaskStore.getState().setSelectedTaskId(currentTask.id);
+    setSelectedTaskId(currentTask.id);
     useTaskStore
       .getState()
       .updateTask(currentTask.id, { status: "inProgressPlay" });
@@ -52,18 +83,20 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
   },
 
   nextTask: () => {
-    toast.info(<>Your task has been completed completed!</>, {
-      description: "Move on to the next task and keep playing",
-    });
     set({ currentTaskIndex: usePlayStore.getState().currentTaskIndex + 1 });
-    usePlayStore.getState().startPlay();
+    usePlayStore.getState().play();
   },
   completePlay: () => {
-    set({ currentTaskIndex: 0, isPlayComplete: true, isPlaying: false });
+    set({
+      currentTaskIndex: 0,
+      isPlayComplete: true,
+      isPlaying: false,
+      filteredTasks: [],
+    });
     toast.success("Play completed");
   },
 
-  stopPlay: () => set({ isPlaying: false }),
+  stopPlay: () => set({ isPlaying: false, filteredTasks: [] }),
 }));
 
 export default usePlayStore;

@@ -12,6 +12,7 @@ import usePlayStore from "@/store/usePlayStore";
 import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 import useTaskStore from "@/store/useTaskStore";
 import { useTimerStore } from "@/store/useTimerStore";
+import { toast } from "sonner";
 
 export default function FinalPlayDialog() {
   const selectedTask = useSelectedTaskStore((e) => e.getSelectedTask());
@@ -29,7 +30,7 @@ export default function FinalPlayDialog() {
             <AlertDialogTitle>You've ran out of time!</AlertDialogTitle>
             <AlertDialogDescription>
               You have two options you can choose from playing: Add 15 minutes
-              to the current task, Complete play.
+              to the current task or complete play.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -46,7 +47,10 @@ export default function FinalPlayDialog() {
             <Button
               type="button"
               onClick={() => {
-                updateTask(selectedTask.id, { status: "onPause" , remainTime: selectedTask.time});
+                updateTask(selectedTask.id, {
+                  status: "onPause",
+                  remainTime: selectedTask.time,
+                });
                 completePlay();
                 setSelectedTaskId(null);
                 setFinalDialogOpen(false);

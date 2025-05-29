@@ -12,6 +12,7 @@ import usePlayStore from "@/store/usePlayStore";
 import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 import useTaskStore from "@/store/useTaskStore";
 import { useTimerStore } from "@/store/useTimerStore";
+import { toast } from "sonner";
 
 export default function PlayDialog() {
   const selectedTask = useSelectedTaskStore((e) => e.getSelectedTask());
@@ -28,7 +29,7 @@ export default function PlayDialog() {
             <AlertDialogTitle>You've ran out of time!</AlertDialogTitle>
             <AlertDialogDescription>
               You have two options you can choose from playing: Add 15 minutes
-              to the current task, Move on to the next task
+              to the current task or move on to the next task.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -45,7 +46,13 @@ export default function PlayDialog() {
             <Button
               type="button"
               onClick={() => {
-                updateTask(selectedTask.id, { status: "onPause", remainTime: selectedTask.time});
+                toast.info("Your task has been sent to pending", {
+                  description: "You can always go back to it when you complete play.",
+                });
+                updateTask(selectedTask.id, {
+                  status: "onPause",
+                  remainTime: selectedTask.time,
+                });
                 nextTask();
                 setDialogOpen(false);
               }}

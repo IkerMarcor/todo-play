@@ -9,8 +9,6 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { useTimerStore } from "@/store/useTimerStore";
-import { toast } from "sonner";
-import { getTodayDate } from "@/middleware";
 import useTaskStore from "@/store/useTaskStore";
 import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 import usePlayStore from "@/store/usePlayStore";
@@ -25,7 +23,6 @@ interface TaskInProgressProps {
 
 export default function TaskInProgress(props: TaskInProgressProps) {
   const pause = useTimerStore().pause;
-  const resume = useTimerStore().resume;
   const updateTask = useTaskStore().updateTask;
   const setSelectedTaskId = useSelectedTaskStore().setSelectedTaskId;
   const stopPlay = usePlayStore().stopPlay;

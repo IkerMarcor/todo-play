@@ -18,7 +18,7 @@ interface TaskStore {
   deleteTask: (id: number) => void;
   deleteAllTask: () => void;
   updateTask: (id: number, updatedData: Partial<Omit<Task, "id">>) => void;
-  filterTasks: (filterBy: string) => number;
+  filterTasks: (filterBy: string) => Record<number, Task> | undefined;
   sortTasks: (sortBy: string) => void;
   clearFilters: () => void;
 }
@@ -79,8 +79,6 @@ const useTaskStore = create<TaskStore>()(
         }));
       },
       filterTasks: (filterBy) => {
-        if (filterBy === useTaskStore.getState().filterBy) return 1;
-
         const tasks = useTaskStore.getState().tasks;
         let backupTasks = useBackupStore.getState().backupTasks;
 
@@ -103,13 +101,13 @@ const useTaskStore = create<TaskStore>()(
         });
 
         if (filtered.length === 0) {
-          toast.warning("No tasks available");
-          return 1;
+          toast.info(`No ${filterBy} tasks found.`);
+          return;
         }
 
         set({ filterBy: filterBy });
         set({ tasks: Object.fromEntries(filtered) });
-        return 0;
+        return Object.fromEntries(filtered);
       },
       sortTasks: (sortBy) => {
         if (sortBy === useTaskStore.getState().sortBy) return;
