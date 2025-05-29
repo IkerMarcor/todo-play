@@ -22,7 +22,8 @@ export default function useLocking() {
             ? { ...task, status: "notStartedLocked" }
             : task.status === "completed" ||
               task.status === "inProgress" ||
-              task.status === "notStarted"
+              task.status === "notStarted" ||
+              task.status === "inProgressPlay"
             ? task
             : { ...task, status: status },
         ])

@@ -3,6 +3,8 @@ import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 import useTaskStore from "@/store/useTaskStore";
 import UpdateTask from "@/components/UpdateTask";
 import useLocking from "@/hooks/useLocking";
+import PlayDialog from "./PlayDialog";
+import FinalPlayDialog from "./FinalPlayDialog";
 
 export default function TaskList() {
   useLocking();
@@ -21,6 +23,8 @@ export default function TaskList() {
             </li>
           ))}
           {selectedTaskId !== null && <UpdateTask />}
+          <PlayDialog/>
+          <FinalPlayDialog/>
         </ul>
       )}
     </>

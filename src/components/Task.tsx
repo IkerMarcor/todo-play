@@ -1,4 +1,5 @@
 import TaskInProgress from "./TaskInProgress";
+import TaskInProgressPlay from "./TaskInProgressPlay"
 import TaskCompleted from "./TaskCompleted";
 import TaskNotStarted from "./TaskNotStarted";
 import TaskNotStartedLocked from "./TaskNotStartedLocked";
@@ -20,6 +21,16 @@ export default function Task(props: TaskProps) {
       case "inProgress":
         return (
           <TaskInProgress
+            id={taskSelected.id}
+            index={props.index}
+            name={taskSelected.name}
+            priority={taskSelected.priority}
+            description={taskSelected.description}
+          />
+        );
+      case "inProgressPlay":
+        return (
+          <TaskInProgressPlay
             id={taskSelected.id}
             index={props.index}
             name={taskSelected.name}
@@ -59,12 +70,8 @@ export default function Task(props: TaskProps) {
             description={taskSelected.description}
           />
         );
-        case "notStartedLocked":
-        return (
-          <TaskNotStartedLocked
-            name={taskSelected.name}
-          />
-        );
+      case "notStartedLocked":
+        return <TaskNotStartedLocked name={taskSelected.name} />;
       default:
         return <p>Unknown status: {taskSelected.status}</p>;
     }

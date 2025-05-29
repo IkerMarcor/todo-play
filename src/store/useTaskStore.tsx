@@ -18,7 +18,7 @@ interface TaskStore {
   deleteTask: (id: number) => void;
   deleteAllTask: () => void;
   updateTask: (id: number, updatedData: Partial<Omit<Task, "id">>) => void;
-  filterTasks: (filterBy: string) => void;
+  filterTasks: (filterBy: string) => number;
   sortTasks: (sortBy: string) => void;
   clearFilters: () => void;
 }
@@ -51,7 +51,7 @@ const useTaskStore = create<TaskStore>()(
             [id]: newTask,
           },
         }));
-    },
+      },
       deleteTask: (id) => {
         useBackupStore.getState().deleteTask(id);
         set((state) => {
@@ -79,18 +79,15 @@ const useTaskStore = create<TaskStore>()(
         }));
       },
       filterTasks: (filterBy) => {
-        if (filterBy === useTaskStore.getState().filterBy) return;
+        if (filterBy === useTaskStore.getState().filterBy) return 1;
 
         const tasks = useTaskStore.getState().tasks;
         let backupTasks = useBackupStore.getState().backupTasks;
-
-        if (Object.keys(tasks).length < 1) return;
 
         if (!backupTasks || Object.keys(backupTasks).length === 0) {
           useBackupStore.getState().createBackup(tasks);
           backupTasks = useBackupStore.getState().backupTasks;
         }
-        
 
         const filtered = Object.entries(backupTasks).filter(([_, task]) => {
           switch (filterBy) {
@@ -105,10 +102,14 @@ const useTaskStore = create<TaskStore>()(
           }
         });
 
-        if (filtered.length === 0) return;
+        if (filtered.length === 0) {
+          toast.warning("No tasks available");
+          return 1;
+        }
 
         set({ filterBy: filterBy });
         set({ tasks: Object.fromEntries(filtered) });
+        return 0;
       },
       sortTasks: (sortBy) => {
         if (sortBy === useTaskStore.getState().sortBy) return;

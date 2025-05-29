@@ -6,6 +6,7 @@ interface TimerState {
   initTime: number;
   remainTime: number;
   isRunning: boolean;
+  isCompleted: boolean;
   startReset: (initSeconds: number, remainTime: number) => void;
   resume: () => void;
   pause: () => void;
@@ -18,6 +19,7 @@ export const useTimerStore = create<TimerState>((set) => ({
   initTime: 0,
   remainTime: 0,
   isRunning: false,
+  isCompleted: false,
 
   startReset: (initSeconds: number, remainTime: number) => {
     // Clear any existing timer
@@ -30,6 +32,7 @@ export const useTimerStore = create<TimerState>((set) => ({
       initTime: initSeconds,
       remainTime: remainTime,
       isRunning: true,
+      isCompleted: false,
     });
 
     timerRef = setInterval(() => {
@@ -41,7 +44,7 @@ export const useTimerStore = create<TimerState>((set) => ({
         clearInterval(timerRef!);
         timerRef = null;
         // Reset the timer state when time is up
-        set({ remainTime: 0, isRunning: false });
+        set({ remainTime: 0, isRunning: false, isCompleted: true });
       }
     }, 100);
   },
