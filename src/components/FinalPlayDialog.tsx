@@ -12,7 +12,6 @@ import usePlayStore from "@/store/usePlayStore";
 import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 import useTaskStore from "@/store/useTaskStore";
 import { useTimerStore } from "@/store/useTimerStore";
-import { toast } from "sonner";
 
 export default function FinalPlayDialog() {
   const selectedTask = useSelectedTaskStore((e) => e.getSelectedTask());
