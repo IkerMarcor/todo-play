@@ -16,7 +16,7 @@ import { toast } from "sonner";
 
 export default function PlayDialog() {
   const selectedTask = useSelectedTaskStore((e) => e.getSelectedTask());
-  const startReset = useTimerStore((e) => e.startReset);
+  const { startReset, pause } = useTimerStore();
   const updateTask = useTaskStore((e) => e.updateTask);
   const nextTask = usePlayStore((e) => e.nextTask);
   const { dialogOpen, setDialogOpen } = usePlayDialog();
@@ -37,7 +37,7 @@ export default function PlayDialog() {
               type="button"
               variant={"secondary"}
               onClick={() => {
-                startReset(selectedTask.time, 15);
+                startReset(selectedTask.id);
                 setDialogOpen(false);
               }}
             >
@@ -47,12 +47,13 @@ export default function PlayDialog() {
               type="button"
               onClick={() => {
                 toast.info("Your task has been sent to pending", {
-                  description: "You can always go back to it when you complete play.",
+                  description:
+                    "You can always go back to it when you complete play.",
                 });
                 updateTask(selectedTask.id, {
                   status: "onPause",
-                  remainTime: selectedTask.time,
                 });
+                pause(selectedTask.id);
                 nextTask();
                 setDialogOpen(false);
               }}

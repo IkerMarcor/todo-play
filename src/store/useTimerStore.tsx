@@ -1,103 +1,161 @@
 import { create } from "zustand";
-import useTaskStore from "./useTaskStore";
-import useSelectedTaskStore from "./useSelectedTaskStore";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { Timer } from "@/types/Timer";
 
 interface TimerState {
-  initTime: number;
-  remainTime: number;
-  startTime: number | null;
-  isRunning: boolean;
-  isCompleted: boolean;
-  startReset: (initTime: number, remainTime: number) => void;
-  resume: () => void;
-  pause: () => void;
-  reset: () => void;
-  syncTime: () => void;
+  timers: Record<number, Timer>;
+  createTimer: (id: number, time: number) => void;
+  updateTimer: (id: number, updatedData: Partial<Omit<Timer, "id">>) => void;
+  deleteTimer: (id: number) => void;
+  deleteAllTimer: () => void;
+  startReset: (id: number) => void;
+  resume: (id: number) => void;
+  pause: (id: number) => void;
+  syncTime: (id: number) => void;
 }
 
-let timerRef: NodeJS.Timeout | null = null;
+let timerRef: Record<number, NodeJS.Timeout> = {};
 
-export const useTimerStore = create<TimerState>((set, get) => ({
-  initTime: 0,
-  remainTime: 0,
-  startTime: null,
-  isRunning: false,
-  isCompleted: false,
+export const useTimerStore = create<TimerState>()(
+  persist(
+    (set, get) => ({
+      timers: {},
 
-  startReset: (initTime, remainTime) => {
-    // Clear any existing timer
-    if (timerRef) clearInterval(timerRef);
+      createTimer: (id, time) => {
+        set((state) => ({
+          timers: {
+            ...state.timers,
+            [id]: {
+              id,
+              time,
+              elapsedTime: 0,
+              remainTime: time,
+              isRunning: false,
+              playedAt: null,
+              isCompleted: false,
+            },
+          },
+        }));
+      },
 
-    const now = Date.now();
-    set({
-      initTime,
-      remainTime,
-      isRunning: true,
-      isCompleted: false,
-      startTime: now,
-    });
+      updateTimer: (id, updatedData) => {
+        set((state) => {
+          const timer = state.timers[id];
+          if (!timer) return state;
+          return {
+            timers: {
+              ...state.timers,
+              [id]: {
+                ...timer,
+                ...updatedData,
+              },
+            },
+          };
+        });
+      },
 
-    timerRef = setInterval(() => {
-      get().syncTime();
-    }, 500);
-  },
-  resume: () => {
-    if (get().remainTime <= 0 || get().isRunning) return;
-    const now = Date.now();
-    set({
-      isRunning: true,
-      startTime: now - (get().initTime - get().remainTime) * 1000,
-    });
+      deleteTimer: (id) => {
+        clearInterval(timerRef[id]);
+        delete timerRef[id];
 
-    timerRef = setInterval(() => {
-      get().syncTime();
-    }, 500);
-  },
-  pause: () => {
-    if (timerRef) {
-      clearInterval(timerRef);
-      timerRef = null;
+        set((state) => {
+          const updatedTimers = { ...state.timers };
+          delete updatedTimers[id];
+          return { timers: updatedTimers };
+        });
+      },
+
+      deleteAllTimer: () => {
+        Object.values(timerRef).forEach(clearInterval);
+        timerRef = {};
+        set(() => ({ timers: {} }));
+      },
+
+      startReset: (id) => {
+        clearInterval(timerRef[id]);
+        const timer = get().timers[id];
+        if (!timer) return;
+
+        const now = Date.now();
+
+        get().updateTimer(id, {
+          elapsedTime: 0,
+          remainTime: timer.time,
+          isCompleted: false,
+          isRunning: true,
+          playedAt: now,
+        });
+
+        timerRef[id] = setInterval(() => {
+          get().syncTime(id);
+        }, 500);
+      },
+
+      resume: (id) => {
+        const timer = get().timers[id];
+        if (!timer || timer.isCompleted || timer.elapsedTime >= timer.time)
+          return;
+
+        clearInterval(timerRef[id]);
+        const now = Date.now();
+
+        get().updateTimer(id, {
+          isRunning: true,
+          playedAt: now,
+        });
+
+        timerRef[id] = setInterval(() => {
+          get().syncTime(id);
+        }, 500);
+      },
+
+      pause: (id) => {
+        clearInterval(timerRef[id]);
+        delete timerRef[id];
+
+        const timer = get().timers[id];
+        if (!timer || !timer.isRunning || !timer.playedAt) return;
+
+        const additionalElapsed = (Date.now() - timer.playedAt) / 1000;
+        const newElapsed = timer.elapsedTime + additionalElapsed;
+        const newRemain = Math.max(0, timer.time - newElapsed);
+
+        get().updateTimer(id, {
+          elapsedTime: newElapsed,
+          remainTime: newRemain,
+          isRunning: false,
+          playedAt: null,
+        });
+      },
+
+      syncTime: (id) => {
+        const timer = get().timers[id];
+        if (!timer || !timer.isRunning || !timer.playedAt) return;
+
+        const additionalElapsed = (Date.now() - timer.playedAt) / 1000;
+        const totalElapsed = timer.elapsedTime + additionalElapsed;
+        const remainTime = Math.max(0, timer.time - totalElapsed);
+
+        if (remainTime <= 0) {
+          clearInterval(timerRef[id]);
+          delete timerRef[id];
+          get().updateTimer(id, {
+            elapsedTime: timer.time,
+            remainTime: 0,
+            isCompleted: true,
+            isRunning: false,
+            playedAt: null,
+          });
+        } else {
+          get().updateTimer(id, {
+            remainTime,
+          });
+        }
+      },
+    }),
+    {
+      name: "timer-storage",
+      storage: createJSONStorage(() => localStorage),
     }
-    const elapsed = Date.now() - (get().startTime ?? Date.now());
-    const newRemain = Math.max(0, get().initTime - elapsed);
-
-    const id = useSelectedTaskStore.getState().selectedTaskId;
-
-    if (id) {
-      useTaskStore.getState().updateTask(id, { remainTime: newRemain });
-    }
-
-    set({
-      remainTime: newRemain,
-      isRunning: false,
-      startTime: null,
-    });
-  },
-  reset: () => {
-    if (timerRef) {
-      clearInterval(timerRef);
-      timerRef = null;
-    }
-    set({ remainTime: get().initTime, isRunning: false, startTime: null });
-  },
-  syncTime: () => {
-    const { isRunning, initTime, startTime } = get();
-    if (!isRunning || !startTime) return;
-
-    const elapsed = (Date.now() - startTime) / 1000;
-    const newRemain = Math.max(0, initTime - elapsed);
-
-    if (newRemain <= 0) {
-      clearInterval(timerRef!);
-      timerRef = null;
-      set({
-        remainTime: 0,
-        isRunning: false,
-        isCompleted: true,
-        startTime: null,
-      });
-    } else {
-      set({ remainTime: newRemain });
-    }
-  },
-}));
+  )
+);

@@ -27,9 +27,8 @@ import { useEffect } from "react";
 import { useTimerStore } from "@/store/useTimerStore";
 
 export default function UpdateTask() {
-  const { startReset } = useTimerStore();
   const selectedTask = useSelectedTaskStore((s) => s.getSelectedTask());
-  const resume = useTimerStore((s) => s.resume);
+  if (!selectedTask) return;
 
   const form = useForm<Schema>({
     mode: "all",
@@ -38,6 +37,7 @@ export default function UpdateTask() {
 
   const { control, reset, handleSubmit } = form;
   const { updateTask } = useTaskStore();
+  const { updateTimer, resume } = useTimerStore();
   const { setOpen, updateTaskToggle } = useToggleStore();
 
   useEffect(() => {
@@ -53,18 +53,37 @@ export default function UpdateTask() {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (!selectedTask || !selectedTask.id) return;
+    if (
+      selectedTask.name !== values.name ||
+      selectedTask.description !== values.description ||
+      selectedTask.priority !== values.priority ||
+      convertTimeInHours(selectedTask.time) !== values.time
+    ) {
+      updateTask(selectedTask.id, {
+        name: values.name,
+        description: values.description,
+        priority: values.priority,
+      });
+      if (convertTimeInHours(selectedTask.time) !== values.time) {
+        const time = convertTimeInSeconds(values.time);
 
-    const time = convertTimeInSeconds(values.time);
+        updateTask(selectedTask.id, {
+          time,
+        });
 
-    updateTask(selectedTask.id, { ...values, time: time });
+        updateTimer(selectedTask.id, {
+          time: time,
+          remainTime: time,
+        });
 
-    if (time !== selectedTask.time) {
-      startReset(time, time);
+        resume(selectedTask.id);
+      }
+
+      toast.info("Your task has been updated");
+    } else {
+      toast.warning("Nothing has been updated");
     }
-    
     setOpen("updateTaskToggle", false);
-    resume();
-    toast.info("Your task has been updated");
   };
 
   return (
@@ -101,7 +120,7 @@ export default function UpdateTask() {
                 variant={"outline"}
                 onClick={() => {
                   setOpen("updateTaskToggle", false);
-                  resume();
+                  resume(selectedTask.id);
                 }}
               >
                 Cancel

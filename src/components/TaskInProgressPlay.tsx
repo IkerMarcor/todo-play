@@ -41,7 +41,7 @@ export default function TaskInProgress(props: TaskInProgressProps) {
 
       <CardContent className="grid gap-4">
         <p className="text-gray-500 line-clamp-8">{props.description}</p>
-        <CountdownTimer />
+        <CountdownTimer id={props.id} />
       </CardContent>
       <CardFooter className="flex-col space-y-2">
         <Button
@@ -49,7 +49,7 @@ export default function TaskInProgress(props: TaskInProgressProps) {
           type="button"
           onClick={() => {
             stopPlay();
-            pause();
+            pause(props.id);
             updateTask(props.id, { status: "onPause" });
             setSelectedTaskId(null);
           }}
@@ -61,7 +61,7 @@ export default function TaskInProgress(props: TaskInProgressProps) {
           type="button"
           variant={"secondary"}
           onClick={() => {
-            pause();
+            pause(props.id);
             updateTask(props.id, { status: "completed" });
             nextTask();
           }}

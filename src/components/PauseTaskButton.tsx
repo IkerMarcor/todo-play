@@ -14,7 +14,7 @@ export default function PauseTaskButton({ id }: { id: number }) {
       className="w-full"
       type="button"
       onClick={() => {
-        pause();
+        pause(id);
         updateTask(id, { status: "onPause" });
         setSelectedTaskId(null);
       }}

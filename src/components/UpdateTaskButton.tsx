@@ -17,7 +17,7 @@ export default function UpdateTaskButton({ id }: { id: number }) {
       onClick={() => {
         setSelectedTaskId(id);
         setOpen("updateTaskToggle", true);
-        pause();
+        pause(id);
       }}
     >
       <Pencil /> Edit

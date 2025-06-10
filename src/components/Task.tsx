@@ -1,5 +1,5 @@
 import TaskInProgress from "./TaskInProgress";
-import TaskInProgressPlay from "./TaskInProgressPlay"
+import TaskInProgressPlay from "./TaskInProgressPlay";
 import TaskCompleted from "./TaskCompleted";
 import TaskNotStarted from "./TaskNotStarted";
 import TaskNotStartedLocked from "./TaskNotStartedLocked";
@@ -41,14 +41,7 @@ export default function Task(props: TaskProps) {
       case "completed":
         return <TaskCompleted name={taskSelected.name} />;
       case "notStarted":
-        return (
-          <TaskNotStarted
-            id={taskSelected.id}
-            name={taskSelected.name}
-            time={taskSelected.time}
-            remainTime={taskSelected.remainTime}
-          />
-        );
+        return <TaskNotStarted id={taskSelected.id} name={taskSelected.name} />;
       case "onPause":
         return (
           <TaskOnPause
@@ -57,8 +50,6 @@ export default function Task(props: TaskProps) {
             name={taskSelected.name}
             priority={taskSelected.priority}
             description={taskSelected.description}
-            time={taskSelected.time}
-            remainTime={taskSelected.remainTime}
           />
         );
       case "locked":

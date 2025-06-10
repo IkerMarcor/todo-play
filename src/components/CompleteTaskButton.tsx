@@ -17,7 +17,7 @@ export default function CompleteTaskButton({ id }: { id: number }) {
       className="w-full"
       type="button"
       onClick={() => {
-        pause();
+        pause(id);
         setSelectedTaskId(null);
         updateTask(id, { status: "completed" });
         toast(`🎉 Congrats on completing your task!`, {
@@ -27,7 +27,7 @@ export default function CompleteTaskButton({ id }: { id: number }) {
             onClick: () => {
               updateTask(id, { status: "inProgress" });
               setSelectedTaskId(id);
-              resume();
+              resume(id);
             },
           },
         });

@@ -17,21 +17,19 @@ interface TaskOnPauseProps {
   name: string;
   priority: string;
   description: string;
-  time: number;
-  remainTime: number;
 }
 
 export default function TaskOnPause(props: TaskOnPauseProps) {
   const updateTask = useTaskStore((s) => s.updateTask);
   const setSelectedTaskId = useSelectedTaskStore((s) => s.setSelectedTaskId);
-  const startReset = useTimerStore((s) => s.startReset);
+  const resume = useTimerStore((s) => s.resume);
 
   const actionHandler = () => {
     setSelectedTaskId(props.id);
-    startReset(props.time, props.remainTime);
+    resume(props.id);
     updateTask(props.id, { status: "inProgress" });
-  }
-  
+  };
+
   return (
     <Card
       className="opacity-40 text-pretty break-words hover:opacity-30 cursor-pointer hover:drop-shadow-xl hover:-translate-y-2 duration-300 ease-in-out"

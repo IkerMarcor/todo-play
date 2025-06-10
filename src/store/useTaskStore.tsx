@@ -3,6 +3,7 @@ import { create } from "zustand";
 import useBackupStore from "@/store/useBackupStore";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { toast } from "sonner";
+import { useTimerStore } from "./useTimerStore";
 
 interface TaskStore {
   tasks: Record<number, Task>;
@@ -27,23 +28,22 @@ const useTaskStore = create<TaskStore>()(
   //local storage middleware from zustand
   persist(
     (set) => ({
-      tasks: {},
+      tasks: {} as Record<number, Task>,
       sortBy: null,
       filterBy: null,
 
       createTask: (name, description, priority, time, status) => {
         const id = Date.now();
-        const createdAt = Date.now();
         const newTask: Task = {
           id,
           name,
           description,
           priority,
-          time,
-          remainTime: time,
           status,
-          createdAt,
+          time,
+          createdAt: id,
         };
+        useTimerStore.getState().createTimer(id, time);
         useBackupStore.getState().addTask(newTask);
         set((state) => ({
           tasks: {
@@ -54,6 +54,8 @@ const useTaskStore = create<TaskStore>()(
       },
       deleteTask: (id) => {
         useBackupStore.getState().deleteTask(id);
+        useTimerStore.getState().deleteTimer(id);
+        console.log(useTimerStore.getState().timers);
         set((state) => {
           const updatedTasks = { ...state.tasks };
           delete updatedTasks[id];
@@ -62,6 +64,8 @@ const useTaskStore = create<TaskStore>()(
       },
       deleteAllTask: () => {
         useBackupStore.getState().deleteBackup();
+        useTimerStore.getState().deleteAllTimer();
+        console.log(useTimerStore.getState().timers);
         set(() => ({
           tasks: {},
         }));
