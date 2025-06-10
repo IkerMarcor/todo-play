@@ -46,6 +46,8 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
       });
       toast.warning("Not enough tasks", {description: "Need more tasks to start playing"});
       return;
+    } else {
+      toast.info("Play started");
     }
 
     set({
