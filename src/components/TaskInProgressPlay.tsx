@@ -22,7 +22,7 @@ interface TaskInProgressProps {
 }
 
 export default function TaskInProgress(props: TaskInProgressProps) {
-  const pause = useTimerStore().pause;
+  const {pause, reset} = useTimerStore();
   const updateTask = useTaskStore().updateTask;
   const setSelectedTaskId = useSelectedTaskStore().setSelectedTaskId;
   const stopPlay = usePlayStore().stopPlay;
@@ -62,6 +62,7 @@ export default function TaskInProgress(props: TaskInProgressProps) {
           variant={"secondary"}
           onClick={() => {
             pause(props.id);
+            reset(props.id)
             updateTask(props.id, { status: "completed" });
             nextTask();
           }}

@@ -16,7 +16,7 @@ import { toast } from "sonner";
 
 export default function PlayDialog() {
   const selectedTask = useSelectedTaskStore((e) => e.getSelectedTask());
-  const { startReset, pause } = useTimerStore();
+  const { addTime } = useTimerStore();
   const updateTask = useTaskStore((e) => e.updateTask);
   const nextTask = usePlayStore((e) => e.nextTask);
   const { dialogOpen, setDialogOpen } = usePlayDialog();
@@ -37,7 +37,7 @@ export default function PlayDialog() {
               type="button"
               variant={"secondary"}
               onClick={() => {
-                startReset(selectedTask.id);
+                addTime(selectedTask.id, 15);
                 setDialogOpen(false);
               }}
             >
@@ -53,7 +53,6 @@ export default function PlayDialog() {
                 updateTask(selectedTask.id, {
                   status: "onPause",
                 });
-                pause(selectedTask.id);
                 nextTask();
                 setDialogOpen(false);
               }}

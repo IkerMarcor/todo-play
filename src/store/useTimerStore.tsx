@@ -4,6 +4,7 @@ import { Timer } from "@/types/Timer";
 
 interface TimerState {
   timers: Record<number, Timer>;
+  isCompleted: boolean;
   createTimer: (id: number, time: number) => void;
   updateTimer: (id: number, updatedData: Partial<Omit<Timer, "id">>) => void;
   deleteTimer: (id: number) => void;
@@ -11,6 +12,8 @@ interface TimerState {
   startReset: (id: number) => void;
   resume: (id: number) => void;
   pause: (id: number) => void;
+  reset: (id: number) => void;
+  addTime: (id: number, time: number) => void;
   syncTime: (id: number) => void;
 }
 
@@ -20,6 +23,7 @@ export const useTimerStore = create<TimerState>()(
   persist(
     (set, get) => ({
       timers: {},
+      isCompleted: false,
 
       createTimer: (id, time) => {
         set((state) => ({
@@ -86,6 +90,8 @@ export const useTimerStore = create<TimerState>()(
           playedAt: now,
         });
 
+        set({ isCompleted: false });
+
         timerRef[id] = setInterval(() => {
           get().syncTime(id);
         }, 500);
@@ -127,7 +133,26 @@ export const useTimerStore = create<TimerState>()(
           playedAt: null,
         });
       },
-
+      reset: (id) => {
+        set({isCompleted:false})
+        get().updateTimer(id, {
+          elapsedTime: 0,
+          isRunning: false,
+          playedAt: null,
+          isCompleted: false,
+        });
+      },
+      addTime: (id, time) => {
+        const timer = get().timers[id];
+        if (time >= timer.time) return;
+        set({ isCompleted: false });
+        get().updateTimer(id, {
+          remainTime: time,
+          isCompleted: false,
+          elapsedTime: timer.time - time,
+        });
+        get().resume(id);
+      },
       syncTime: (id) => {
         const timer = get().timers[id];
         if (!timer || !timer.isRunning || !timer.playedAt) return;
@@ -146,6 +171,7 @@ export const useTimerStore = create<TimerState>()(
             isRunning: false,
             playedAt: null,
           });
+          set({ isCompleted: true });
         } else {
           get().updateTimer(id, {
             remainTime,

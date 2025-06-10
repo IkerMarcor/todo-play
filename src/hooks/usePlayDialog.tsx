@@ -11,15 +11,12 @@ export default function usePlayDialog() {
   const currentTaskIndex = usePlayStore((e) => e.currentTaskIndex);
   const tasks = useTaskStore((s) => s.tasks);
   const tasksLength = Object.values(tasks).length - 1;
-
-  const currentTaskId = tasks[currentTaskIndex]?.id;
-  const currentTimer = useTimerStore((s) => currentTaskId !== undefined ? s.timers[currentTaskId] : undefined);
-  const isCompleted = currentTimer?.isCompleted;
+  const isCompleted = useTimerStore((s) => s.isCompleted);
 
 
   useEffect(() => {
     if (tasksLength === currentTaskIndex && isCompleted) {
-      setFinalDialogOpen(true);
+      setFinalDialogOpen(true)  ;
       return;
     }
     if (isCompleted && isPlaying ) {

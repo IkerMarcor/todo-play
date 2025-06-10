@@ -81,11 +81,16 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
       .updateTask(currentTask.id, { status: "inProgressPlay" });
     useTimerStore
       .getState()
-      .startReset(currentTask.id);
+      .resume(currentTask.id);
   },
 
   nextTask: () => {
-    set({ currentTaskIndex: usePlayStore.getState().currentTaskIndex + 1 });
+    const { currentTaskIndex } = get();
+    const { filteredTasks } = get();
+    const currentTask = filteredTasks[currentTaskIndex];
+    
+    set({ currentTaskIndex: currentTaskIndex + 1 });
+    useTimerStore.getState().reset(currentTask.id);
     usePlayStore.getState().play();
   },
   completePlay: () => {

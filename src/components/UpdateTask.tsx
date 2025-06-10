@@ -75,10 +75,9 @@ export default function UpdateTask() {
           time: time,
           remainTime: time,
         });
-
-        resume(selectedTask.id);
       }
 
+      resume(selectedTask.id);
       toast.info("Your task has been updated");
     } else {
       toast.warning("Nothing has been updated");
