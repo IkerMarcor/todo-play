@@ -7,17 +7,18 @@ import {
   AlertDialogFooter,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { useNotificationToast } from "@/hooks/useNotificationSound";
 import { getTodayDate } from "@/middleware";
 import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 import useTaskStore from "@/store/useTaskStore";
 import useToggleStore from "@/store/useToggleStore";
-import { toast } from "sonner";
 
 export default function DeleteAllTaskAlert() {
   const deleteAllTaskToggle = useToggleStore((s) => s.deleteAllTaskToggle);
   const setSelectedTaskId = useSelectedTaskStore((s) => s.setSelectedTaskId);
   const deleteAllTask = useTaskStore((s) => s.deleteAllTask);
   const toggle = useToggleStore((s) => s.toggle);
+  const notify = useNotificationToast();
   return (
     <AlertDialog open={deleteAllTaskToggle}>
       <AlertDialogContent>
@@ -39,7 +40,7 @@ export default function DeleteAllTaskAlert() {
               setSelectedTaskId(null);
               deleteAllTask();
               toggle("deleteAllTaskToggle");
-              toast("🗑️ All your tasks had been deleted successfully", {
+              notify("default","🗑️ All your tasks had been deleted successfully", {
                 description: getTodayDate(),
               });
             }}

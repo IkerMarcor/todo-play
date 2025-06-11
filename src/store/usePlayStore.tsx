@@ -2,8 +2,8 @@ import { create } from "zustand";
 import useTaskStore from "./useTaskStore";
 import useSelectedTaskStore from "./useSelectedTaskStore";
 import { useTimerStore } from "./useTimerStore";
-import { toast } from "sonner";
 import { Task } from "@/types/Task";
+import { useNotificationToast } from "@/hooks/useNotificationSound";
 
 interface PlayStore {
   currentTaskIndex: number;
@@ -12,10 +12,12 @@ interface PlayStore {
   isPlaying: boolean;
   initPlay: () => void;
   play: () => void;
-  nextTask: () => void;
+  nextTask: (option: string) => void;
   completePlay: () => void;
   stopPlay: () => void;
 }
+
+const notify = useNotificationToast();
 
 export const usePlayStore = create<PlayStore>((set, get) => ({
   currentTaskIndex: 0,
@@ -33,7 +35,7 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
         isPlaying: false,
         filteredTasks: [],
       });
-      toast.warning("Play not available");
+      notify("warning", "Play not available");
       return;
     }
 
@@ -44,10 +46,12 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
         isPlaying: false,
         filteredTasks: [],
       });
-      toast.warning("Not enough tasks", {description: "Need more tasks to start playing"});
+      notify("warning", "Not enough tasks", {
+        description: "Need more tasks to start playing",
+      });
       return;
     } else {
-      toast.info("Play started");
+      notify("info", "Play started");
     }
 
     set({
@@ -70,7 +74,7 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
         isPlaying: false,
         filteredTasks: [],
       });
-      toast.success("Play completed");
+      notify("success", "Play completed");
       setSelectedTaskId(null);
       return;
     }
@@ -79,16 +83,23 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
     useTaskStore
       .getState()
       .updateTask(currentTask.id, { status: "inProgressPlay" });
-    useTimerStore
-      .getState()
-      .resume(currentTask.id);
+    useTimerStore.getState().resume(currentTask.id);
   },
 
-  nextTask: () => {
+  nextTask: (option) => {
     const { currentTaskIndex } = get();
     const { filteredTasks } = get();
     const currentTask = filteredTasks[currentTaskIndex];
-    
+    if (option === "skipped") {
+      notify("info", "Your task has been sent to pending", {
+        description: "You can always go back to it.",
+      });
+    } else if (option === "completed") {
+      notify("success", "Good job", {
+        description: "Move on to your next task and complete play.",
+      });
+    }
+
     set({ currentTaskIndex: currentTaskIndex + 1 });
     useTimerStore.getState().reset(currentTask.id);
     usePlayStore.getState().play();
@@ -100,7 +111,7 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
       isPlaying: false,
       filteredTasks: [],
     });
-    toast.success("Play completed");
+    notify("success", "Play completed");
   },
 
   stopPlay: () => set({ isPlaying: false, filteredTasks: [] }),

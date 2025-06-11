@@ -37,7 +37,7 @@ export default function UpdateTask() {
 
   const { control, reset, handleSubmit } = form;
   const { updateTask } = useTaskStore();
-  const { updateTimer, resume } = useTimerStore();
+  const { updateTimer, resume, startReset } = useTimerStore();
   const { setOpen, updateTaskToggle } = useToggleStore();
 
   useEffect(() => {
@@ -75,11 +75,14 @@ export default function UpdateTask() {
           time: time,
           remainTime: time,
         });
+        startReset(selectedTask.id);
+      } else {
+        resume(selectedTask.id);
       }
 
-      resume(selectedTask.id);
       toast.info("Your task has been updated");
     } else {
+      resume(selectedTask.id);
       toast.warning("Nothing has been updated");
     }
     setOpen("updateTaskToggle", false);

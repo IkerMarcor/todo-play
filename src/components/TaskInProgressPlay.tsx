@@ -64,7 +64,7 @@ export default function TaskInProgress(props: TaskInProgressProps) {
             pause(props.id);
             reset(props.id)
             updateTask(props.id, { status: "completed" });
-            nextTask();
+            nextTask("completed");
           }}
         >
           <Check /> Mark as completed

@@ -12,7 +12,6 @@ import usePlayStore from "@/store/usePlayStore";
 import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 import useTaskStore from "@/store/useTaskStore";
 import { useTimerStore } from "@/store/useTimerStore";
-import { toast } from "sonner";
 
 export default function PlayDialog() {
   const selectedTask = useSelectedTaskStore((e) => e.getSelectedTask());
@@ -46,14 +45,10 @@ export default function PlayDialog() {
             <Button
               type="button"
               onClick={() => {
-                toast.info("Your task has been sent to pending", {
-                  description:
-                    "You can always go back to it when you complete play.",
-                });
                 updateTask(selectedTask.id, {
                   status: "onPause",
                 });
-                nextTask();
+                nextTask("skipped");
                 setDialogOpen(false);
               }}
             >

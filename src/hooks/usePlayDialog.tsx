@@ -15,7 +15,7 @@ export default function usePlayDialog() {
 
 
   useEffect(() => {
-    if (tasksLength === currentTaskIndex && isCompleted) {
+    if (tasksLength === currentTaskIndex && isCompleted && isPlaying) {
       setFinalDialogOpen(true)  ;
       return;
     }

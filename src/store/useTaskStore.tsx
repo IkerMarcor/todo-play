@@ -4,6 +4,7 @@ import useBackupStore from "@/store/useBackupStore";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { toast } from "sonner";
 import { useTimerStore } from "./useTimerStore";
+import { useNotificationToast } from "@/hooks/useNotificationSound";
 
 interface TaskStore {
   tasks: Record<number, Task>;
@@ -23,6 +24,8 @@ interface TaskStore {
   sortTasks: (sortBy: string) => void;
   clearFilters: () => void;
 }
+
+const notify = useNotificationToast();
 
 const useTaskStore = create<TaskStore>()(
   //local storage middleware from zustand
@@ -65,7 +68,6 @@ const useTaskStore = create<TaskStore>()(
       deleteAllTask: () => {
         useBackupStore.getState().deleteBackup();
         useTimerStore.getState().deleteAllTimer();
-        console.log(useTimerStore.getState().timers);
         set(() => ({
           tasks: {},
         }));
@@ -144,12 +146,12 @@ const useTaskStore = create<TaskStore>()(
       clearFilters: () => {
         const backupTasks = useBackupStore.getState().backupTasks;
         if (!backupTasks || Object.keys(backupTasks).length === 0) {
-          toast.error("No backup found");
+          notify("error", "No backup found")
           return;
         }
         set({ tasks: backupTasks, filterBy: null, sortBy: null });
         useBackupStore.getState().deleteBackup();
-        toast.success("Filters cleared");
+        notify("success","Filters cleared")
       },
     }),
     {

@@ -5,9 +5,11 @@ import UpdateTask from "@/components/UpdateTask";
 import useLocking from "@/hooks/useLocking";
 import PlayDialog from "./PlayDialog";
 import FinalPlayDialog from "./FinalPlayDialog";
+import useAlarm from "@/hooks/useAlarm";
 
 export default function TaskList() {
   useLocking();
+  useAlarm();
   const { selectedTaskId } = useSelectedTaskStore();
   const { tasks } = useTaskStore();
 
