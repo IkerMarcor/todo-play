@@ -2,7 +2,6 @@ import { Task } from "@/types/Task";
 import { create } from "zustand";
 import useBackupStore from "@/store/useBackupStore";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { toast } from "sonner";
 import { useTimerStore } from "./useTimerStore";
 import { useNotificationToast } from "@/hooks/useNotificationSound";
 
@@ -30,7 +29,7 @@ const notify = useNotificationToast();
 const useTaskStore = create<TaskStore>()(
   //local storage middleware from zustand
   persist(
-    (set) => ({
+    (set, get) => ({
       tasks: {} as Record<number, Task>,
       sortBy: null,
       filterBy: null,
@@ -85,7 +84,8 @@ const useTaskStore = create<TaskStore>()(
         }));
       },
       filterTasks: (filterBy) => {
-        const tasks = useTaskStore.getState().tasks;
+        const sortBy = get().sortBy;
+        let tasks = get().tasks;
         let backupTasks = useBackupStore.getState().backupTasks;
 
         if (!backupTasks || Object.keys(backupTasks).length === 0) {
@@ -93,7 +93,11 @@ const useTaskStore = create<TaskStore>()(
           backupTasks = useBackupStore.getState().backupTasks;
         }
 
-        const filtered = Object.entries(backupTasks).filter(([_, task]) => {
+        if(sortBy === null) {
+          tasks = backupTasks
+        }
+
+        const filtered = Object.entries(tasks).filter(([_, task]) => {
           switch (filterBy) {
             case "completed":
               return task.status === "completed";
@@ -107,7 +111,7 @@ const useTaskStore = create<TaskStore>()(
         });
 
         if (filtered.length === 0) {
-          toast.info(`No ${filterBy} tasks found.`);
+          notify("info", `No ${filterBy} tasks found.`);
           return;
         }
 
@@ -116,7 +120,7 @@ const useTaskStore = create<TaskStore>()(
         return Object.fromEntries(filtered);
       },
       sortTasks: (sortBy) => {
-        if (sortBy === useTaskStore.getState().sortBy) return;
+        if (sortBy === get().sortBy) return;
 
         const tasks = useTaskStore.getState().tasks;
         const backupTasks = useBackupStore.getState().backupTasks;

@@ -1,5 +1,6 @@
 import { Task } from "@/types/Task";
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 interface BackupStore {
   backupTasks: Record<number, Task>;
@@ -10,42 +11,49 @@ interface BackupStore {
   deleteBackup: () => void;
 }
 
-const useBackupStore = create<BackupStore>()((set) => ({
-  backupTasks: {},
-
-  addTask: (task) =>
-    set((state) => ({
-      backupTasks: {
-        ...state.backupTasks,
-        [task.id]: task,
-      },
-    })),
-  deleteTask: (id) =>
-    set((state) => {
-      const updatedTasks = { ...state.backupTasks };
-      delete updatedTasks[id];
-      return { backupTasks: updatedTasks };
-    }
-  ),
-  createBackup: (tasks) =>
-    set(() => ({
-      backupTasks: tasks,
-    })),
-  updateBackup: (id, updatedData) => {
-    set((state) => ({
-      backupTasks: {
-        ...state.backupTasks,
-        [id]: {
-          ...state.backupTasks[id],
-          ...updatedData,
-        },
-      },
-    }));
-  },
-  deleteBackup: () =>
-    set(() => ({
+const useBackupStore = create<BackupStore>()(
+  persist(
+    (set) => ({
       backupTasks: {},
-    })),
-}));
+
+      addTask: (task) =>
+        set((state) => ({
+          backupTasks: {
+            ...state.backupTasks,
+            [task.id]: task,
+          },
+        })),
+      deleteTask: (id) =>
+        set((state) => {
+          const updatedTasks = { ...state.backupTasks };
+          delete updatedTasks[id];
+          return { backupTasks: updatedTasks };
+        }),
+      createBackup: (tasks) =>
+        set(() => ({
+          backupTasks: tasks,
+        })),
+      updateBackup: (id, updatedData) => {
+        set((state) => ({
+          backupTasks: {
+            ...state.backupTasks,
+            [id]: {
+              ...state.backupTasks[id],
+              ...updatedData,
+            },
+          },
+        }));
+      },
+      deleteBackup: () =>
+        set(() => ({
+          backupTasks: {},
+        })),
+    }),
+    {
+      name: "backup-storage",
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+);
 
 export default useBackupStore;

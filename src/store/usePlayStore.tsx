@@ -18,6 +18,7 @@ interface PlayStore {
 }
 
 const notify = useNotificationToast();
+const filteredTasks = useTaskStore.getState().filterTasks;
 
 export const usePlayStore = create<PlayStore>((set, get) => ({
   currentTaskIndex: 0,
@@ -26,9 +27,8 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
   isPlaying: false,
 
   initPlay: () => {
-    const filteredTasks = useTaskStore.getState().filterTasks("pending");
-
-    if (!filteredTasks) {
+    const filtered = filteredTasks("pending");
+    if (!filtered) {
       set({
         currentTaskIndex: 0,
         isPlayComplete: true,
@@ -39,7 +39,7 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
       return;
     }
 
-    if (Object.values(filteredTasks).length < 2) {
+    if (Object.values(filtered).length < 2) {
       set({
         currentTaskIndex: 0,
         isPlayComplete: true,
@@ -56,7 +56,7 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
 
     set({
       isPlaying: true,
-      filteredTasks: Object.values(filteredTasks),
+      filteredTasks: Object.values(filtered),
     });
     usePlayStore.getState().play();
   },

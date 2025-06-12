@@ -1,4 +1,3 @@
-import { toast } from "sonner";
 import useTaskStore from "@/store/useTaskStore";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -53,7 +52,7 @@ export default function AddTask() {
       selectedTaskId ? "notStartedLocked" : "notStarted"
     );
     setOpen("createTaskToggle", false);
-    notify("success", "Your task has been successfully created", {
+    notify("default", "Your task has been successfully created", {
       description: getTodayDate(),
     });
   };
