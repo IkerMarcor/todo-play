@@ -84,18 +84,7 @@ const useTaskStore = create<TaskStore>()(
         }));
       },
       filterTasks: (filterBy) => {
-        const sortBy = get().sortBy;
         let tasks = get().tasks;
-        let backupTasks = useBackupStore.getState().backupTasks;
-
-        if (!backupTasks || Object.keys(backupTasks).length === 0) {
-          useBackupStore.getState().createBackup(tasks);
-          backupTasks = useBackupStore.getState().backupTasks;
-        }
-
-        if(sortBy === null) {
-          tasks = backupTasks
-        }
 
         const filtered = Object.entries(tasks).filter(([_, task]) => {
           switch (filterBy) {
@@ -120,17 +109,9 @@ const useTaskStore = create<TaskStore>()(
         return Object.fromEntries(filtered);
       },
       sortTasks: (sortBy) => {
-        if (sortBy === get().sortBy) return;
-
-        const tasks = useTaskStore.getState().tasks;
-        const backupTasks = useBackupStore.getState().backupTasks;
-        const createBackup = useBackupStore.getState().createBackup;
+        const tasks = get().tasks;
 
         if (Object.keys(tasks).length < 2) return;
-
-        if (!backupTasks || Object.keys(backupTasks).length === 0) {
-          createBackup(tasks);
-        }
 
         const sortedArray = Object.entries(tasks).sort(([, a], [, b]) => {
           const aVal = a[sortBy as keyof Task];
@@ -154,7 +135,6 @@ const useTaskStore = create<TaskStore>()(
           return;
         }
         set({ tasks: backupTasks, filterBy: null, sortBy: null });
-        useBackupStore.getState().deleteBackup();
         notify("success","Filters cleared")
       },
     }),

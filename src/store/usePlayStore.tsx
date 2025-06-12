@@ -83,7 +83,7 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
     useTaskStore
       .getState()
       .updateTask(currentTask.id, { status: "inProgressPlay" });
-    useTimerStore.getState().resume(currentTask.id);
+    useTimerStore.getState().startReset(currentTask.id);
   },
 
   nextTask: (option) => {
@@ -93,10 +93,12 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
     if (option === "skipped") {
       notify("info", "Your task has been sent to pending", {
         description: "You can always go back to it.",
+        duration: 4000,
       });
     } else if (option === "completed") {
       notify("success", "Good job", {
         description: "Move on to your next task and complete play.",
+        duration: 4000,
       });
     }
 
@@ -114,7 +116,7 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
     notify("success", "Play completed");
   },
 
-  stopPlay: () => set({ isPlaying: false, filteredTasks: [] }),
+  stopPlay: () => set({ isPlaying: false, filteredTasks: [], currentTaskIndex: 0, isPlayComplete: false }),
 }));
 
 export default usePlayStore;

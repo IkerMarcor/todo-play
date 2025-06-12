@@ -26,7 +26,7 @@ export default function TaskInProgress(props: TaskInProgressProps) {
         <div className="flex justify-between">
           <Badge>{props.index}</Badge>
           <div></div>
-          <Badge> Priority {props.priority}</Badge>
+          {props.priority !== "N" && <Badge> Priority {props.priority}</Badge>}
         </div>
         <h1 className="font-semibold line-clamp-2 text-xl">{props.name}</h1>
       </CardHeader>

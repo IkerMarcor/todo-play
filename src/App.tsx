@@ -9,9 +9,11 @@ import PlayButton from "./components/PlayButton";
 import useToggleStore from "./store/useToggleStore";
 import AddTaskDialog from "./components/AddTaskDialog";
 import SortDropdownMenu from "./components/SortDropdownMenu";
+import usePlayStore from "./store/usePlayStore";
 
 function App() {
   const disableToggle = useToggleStore((s) => s.disableToggle);
+  const isPlaying = usePlayStore((s) => s.isPlaying);
 
   return (
     <>
@@ -19,9 +21,11 @@ function App() {
 
       <ScrollArea className="h-[calc(100dvh*3/4)] w-full rounded-md border p-4">
         <TaskList />
-        <div className="absolute bottom-4 right-4 z-50 shadow-lg hover:shadow-xl transition-shadow">
-          <AddTaskDialog />
-        </div>
+        {!isPlaying && (
+          <div className="absolute bottom-4 right-4 z-50 shadow-lg hover:shadow-xl transition-shadow">
+            <AddTaskDialog />
+          </div>
+        )}
         <ScrollBar orientation="vertical" />
       </ScrollArea>
 

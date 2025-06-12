@@ -29,11 +29,22 @@ export default function TimeSelect({ control }: { control: any }) {
               </SelectTrigger>
             </FormControl>
             <SelectContent position="popper">
-              {timeOptions.map((hour, index) => (
-                <SelectItem key={index} value={hour.toString()}>
-                  {hour} hrs
-                </SelectItem>
-              ))}
+              {timeOptions.map((time, index) => {
+                let hour = Number(time); // Convert to number for consistent formatting
+                return hour % 1 !== 0 && hour < 1 ? (
+                  <SelectItem key={index} value={time}>
+                    {hour * 60} mins
+                  </SelectItem>
+                ) : hour % 1 !== 0 && hour >= 1 ? (
+                  <SelectItem key={index} value={time}>
+                    {hour - 0.5}:{Math.round((hour % 1) * 60)} mins
+                  </SelectItem>
+                ) : (
+                  <SelectItem key={index} value={time}>
+                    {time} hrs
+                  </SelectItem>
+                );
+              })}
             </SelectContent>
           </Select>
           <FormMessage />

@@ -12,6 +12,7 @@ import { useTimerStore } from "@/store/useTimerStore";
 import useTaskStore from "@/store/useTaskStore";
 import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 import usePlayStore from "@/store/usePlayStore";
+import { useNotificationToast } from "@/hooks/useNotificationSound";
 
 interface TaskInProgressProps {
   id: number;
@@ -27,6 +28,7 @@ export default function TaskInProgress(props: TaskInProgressProps) {
   const setSelectedTaskId = useSelectedTaskStore().setSelectedTaskId;
   const stopPlay = usePlayStore().stopPlay;
   const nextTask = usePlayStore().nextTask;
+  const notify = useNotificationToast();
 
   return (
     <Card className="cursor-default text-pretty break-words hover:drop-shadow-xl hover:-translate-y-2 duration-300 ease-in-out">
@@ -34,7 +36,7 @@ export default function TaskInProgress(props: TaskInProgressProps) {
         <div className="flex justify-between">
           <Badge>{props.index}</Badge>
           <div></div>
-          <Badge> Priority {props.priority}</Badge>
+          {props.priority !== "N" && <Badge> Priority {props.priority}</Badge>}
         </div>
         <h1 className="font-semibold line-clamp-2 text-xl">{props.name}</h1>
       </CardHeader>
@@ -52,6 +54,7 @@ export default function TaskInProgress(props: TaskInProgressProps) {
             pause(props.id);
             updateTask(props.id, { status: "onPause" });
             setSelectedTaskId(null);
+            notify("success","Play has been paused.");
           }}
         >
           <Pause /> Pause Play
