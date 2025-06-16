@@ -15,7 +15,7 @@ export default function DeleteTaskButton({ id }: { id: number }) {
       onClick={() => {
         setSelectedTaskId(null);
         deleteTask(id);
-        toast.info("Your task has been deleted");
+        toast("Your task has been deleted");
 
       }}
     >

@@ -28,7 +28,7 @@ export default function FinalPlayDialog() {
           <AlertDialogHeader>
             <AlertDialogTitle>You've ran out of time!</AlertDialogTitle>
             <AlertDialogDescription>
-              You have two options you can choose from playing: Add 15 minutes
+              You have two options you can choose from playing: Add some time
               to the current task or complete play.
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -37,11 +37,11 @@ export default function FinalPlayDialog() {
               type="button"
               variant={"secondary"}
               onClick={() => {
-                addTime(selectedTask.id, 15);
+                addTime(selectedTask.id);
                 setFinalDialogOpen(false);
               }}
             >
-              Add 15 min
+              Add Time
             </Button>
             <Button
               type="button"

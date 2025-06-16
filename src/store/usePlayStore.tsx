@@ -14,11 +14,16 @@ interface PlayStore {
   play: () => void;
   nextTask: (option: string) => void;
   completePlay: () => void;
-  stopPlay: () => void;
+  stopPlay: (message: string) => void;
+  resetPlay: () => void;
+  currentTask: () => Task | undefined;
 }
 
 const notify = useNotificationToast();
 const filteredTasks = useTaskStore.getState().filterTasks;
+const setSelectedTaskId = useSelectedTaskStore.getState().setSelectedTaskId;
+const updateTaskStatus = useTaskStore.getState().updateTask;
+const startResetTimer = useTimerStore.getState().startReset;
 
 export const usePlayStore = create<PlayStore>((set, get) => ({
   currentTaskIndex: 0,
@@ -27,69 +32,54 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
   isPlaying: false,
 
   initPlay: () => {
-    const filtered = filteredTasks("pending");
+    let filtered = filteredTasks("pending");
+
     if (!filtered) {
-      set({
-        currentTaskIndex: 0,
-        isPlayComplete: true,
-        isPlaying: false,
-        filteredTasks: [],
-      });
-      notify("warning", "Play not available");
+      get().stopPlay("No tasks found");
       return;
     }
 
     if (Object.values(filtered).length < 2) {
-      set({
-        currentTaskIndex: 0,
-        isPlayComplete: true,
-        isPlaying: false,
-        filteredTasks: [],
-      });
-      notify("warning", "Not enough tasks", {
-        description: "Need more tasks to start playing",
-      });
-      return;
+      get().stopPlay("You need at least 2 tasks to start play");
     } else {
+      get().resetPlay();
+      set({
+        isPlaying: true,
+        filteredTasks: Object.values(filtered),
+      });
+
       notify("info", "Play started");
+
+      get().play();
     }
-
-    set({
-      isPlaying: true,
-      filteredTasks: Object.values(filtered),
-    });
-    usePlayStore.getState().play();
   },
+  
   play: () => {
-    const setSelectedTaskId = useSelectedTaskStore.getState().setSelectedTaskId;
-
-    const { currentTaskIndex } = get();
-    const { filteredTasks } = get();
-    const currentTask = filteredTasks[currentTaskIndex];
+    let currentTask = get().currentTask();
 
     if (!currentTask) {
-      set({
-        currentTaskIndex: 0,
-        isPlayComplete: true,
-        isPlaying: false,
-        filteredTasks: [],
-      });
-      notify("success", "Play completed");
+      get().completePlay();
       setSelectedTaskId(null);
       return;
     }
 
+    updateTaskStatus(currentTask.id, { status: "inProgressPlay" });
+    startResetTimer(currentTask.id);
     setSelectedTaskId(currentTask.id);
-    useTaskStore
-      .getState()
-      .updateTask(currentTask.id, { status: "inProgressPlay" });
-    useTimerStore.getState().startReset(currentTask.id);
+    notify("info", `Now playing: ${currentTask.name}`, {
+      description: "Focus on your task and complete it.",
+      duration: 4000,
+    });
   },
 
   nextTask: (option) => {
-    const { currentTaskIndex } = get();
-    const { filteredTasks } = get();
-    const currentTask = filteredTasks[currentTaskIndex];
+    let currentTask = get().currentTask();
+
+    if (!currentTask) {
+      get().stopPlay("No current task found");
+      return;
+    }
+
     if (option === "skipped") {
       notify("info", "Your task has been sent to pending", {
         description: "You can always go back to it.",
@@ -102,21 +92,35 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
       });
     }
 
-    set({ currentTaskIndex: currentTaskIndex + 1 });
-    useTimerStore.getState().reset(currentTask.id);
-    usePlayStore.getState().play();
-  },
-  completePlay: () => {
-    set({
-      currentTaskIndex: 0,
-      isPlayComplete: true,
-      isPlaying: false,
-      filteredTasks: [],
-    });
-    notify("success", "Play completed");
+    set({ currentTaskIndex: get().currentTaskIndex + 1 });
+    startResetTimer(currentTask.id);
+    get().play();
   },
 
-  stopPlay: () => set({ isPlaying: false, filteredTasks: [], currentTaskIndex: 0, isPlayComplete: false }),
+  completePlay: () => {
+    get().resetPlay();
+    notify("success", "Play completed");
+    setSelectedTaskId(null);
+  },
+
+  stopPlay: (message) => {
+    get().resetPlay();
+    notify("warning", "Play stopped", {
+      description: message,
+      duration: 4000,
+    });
+    setSelectedTaskId(null);
+  },
+
+  resetPlay: () =>
+    set(() => ({
+      currentTaskIndex: 0,
+      filteredTasks: [],
+      isPlayComplete: false,
+      isPlaying: false,
+    })),
+
+  currentTask: () => get().filteredTasks[get().currentTaskIndex] || undefined,
 }));
 
 export default usePlayStore;

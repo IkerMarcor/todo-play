@@ -3,7 +3,7 @@ import { create } from "zustand";
 import useBackupStore from "@/store/useBackupStore";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { useTimerStore } from "./useTimerStore";
-import { useNotificationToast } from "@/hooks/useNotificationSound";
+import { toast } from "sonner";
 
 interface TaskStore {
   tasks: Record<number, Task>;
@@ -20,14 +20,20 @@ interface TaskStore {
   deleteAllTask: () => void;
   updateTask: (id: number, updatedData: Partial<Omit<Task, "id">>) => void;
   filterTasks: (filterBy: string) => Record<number, Task> | undefined;
-  sortTasks: (sortBy: string) => void;
+  sortTasks: (sortBy: string) => Record<number, Task> | undefined;
   clearFilters: () => void;
 }
 
-const notify = useNotificationToast();
+const createNewTimer = useTimerStore.getState().createTimer;
+const deleteTimer = useTimerStore.getState().deleteTimer;
+const deleteAllTimer = useTimerStore.getState().deleteAllTimer;
+const backupTasks = useBackupStore.getState().backupTasks;
+const addTaskToBackup = useBackupStore.getState().addTask;
+const deleteTaskFromBackup = useBackupStore.getState().deleteTask;
+const deleteBackup = useBackupStore.getState().deleteBackup;
+const updateTaskInBackup = useBackupStore.getState().updateBackup;
 
 const useTaskStore = create<TaskStore>()(
-  //local storage middleware from zustand
   persist(
     (set, get) => ({
       tasks: {} as Record<number, Task>,
@@ -45,8 +51,8 @@ const useTaskStore = create<TaskStore>()(
           time,
           createdAt: id,
         };
-        useTimerStore.getState().createTimer(id, time);
-        useBackupStore.getState().addTask(newTask);
+        createNewTimer(id, time);
+        addTaskToBackup(newTask);
         set((state) => ({
           tasks: {
             ...state.tasks,
@@ -55,9 +61,8 @@ const useTaskStore = create<TaskStore>()(
         }));
       },
       deleteTask: (id) => {
-        useBackupStore.getState().deleteTask(id);
-        useTimerStore.getState().deleteTimer(id);
-        console.log(useTimerStore.getState().timers);
+        deleteTaskFromBackup(id);
+        deleteTimer(id);
         set((state) => {
           const updatedTasks = { ...state.tasks };
           delete updatedTasks[id];
@@ -65,14 +70,14 @@ const useTaskStore = create<TaskStore>()(
         });
       },
       deleteAllTask: () => {
-        useBackupStore.getState().deleteBackup();
-        useTimerStore.getState().deleteAllTimer();
+        deleteBackup();
+        deleteAllTimer();
         set(() => ({
           tasks: {},
         }));
       },
       updateTask: (id, updatedData) => {
-        useBackupStore.getState().updateBackup(id, updatedData);
+        updateTaskInBackup(id, updatedData);
         set((state) => ({
           tasks: {
             ...state.tasks,
@@ -86,7 +91,7 @@ const useTaskStore = create<TaskStore>()(
       filterTasks: (filterBy) => {
         let tasks = get().tasks;
 
-        const filtered = Object.entries(tasks).filter(([_, task]) => {
+        let filtered = Object.entries(tasks).filter(([_, task]) => {
           switch (filterBy) {
             case "completed":
               return task.status === "completed";
@@ -100,7 +105,7 @@ const useTaskStore = create<TaskStore>()(
         });
 
         if (filtered.length === 0) {
-          notify("info", `No ${filterBy} tasks found.`);
+          toast.info(`No ${filterBy} tasks found.`);
           return;
         }
 
@@ -109,13 +114,11 @@ const useTaskStore = create<TaskStore>()(
         return Object.fromEntries(filtered);
       },
       sortTasks: (sortBy) => {
-        const tasks = get().tasks;
+        let tasks = get().tasks;
 
-        if (Object.keys(tasks).length < 2) return;
-
-        const sortedArray = Object.entries(tasks).sort(([, a], [, b]) => {
-          const aVal = a[sortBy as keyof Task];
-          const bVal = b[sortBy as keyof Task];
+        let sortedArray = Object.entries(tasks).sort(([, a], [, b]) => {
+          let aVal = a[sortBy as keyof Task];
+          let bVal = b[sortBy as keyof Task];
           if (typeof aVal === "number" && typeof bVal === "number") {
             return aVal - bVal;
           }
@@ -127,15 +130,15 @@ const useTaskStore = create<TaskStore>()(
 
         set({ sortBy: sortBy });
         set({ tasks: Object.fromEntries(sortedArray) });
+        return Object.fromEntries(sortedArray);
       },
       clearFilters: () => {
-        const backupTasks = useBackupStore.getState().backupTasks;
         if (!backupTasks || Object.keys(backupTasks).length === 0) {
-          notify("error", "No backup found")
+          toast.error("No backup found");
           return;
         }
         set({ tasks: backupTasks, filterBy: null, sortBy: null });
-        notify("success","Filters cleared")
+        toast.success("Filters cleared");
       },
     }),
     {

@@ -13,7 +13,7 @@ interface TimerState {
   resume: (id: number) => void;
   pause: (id: number) => void;
   reset: (id: number) => void;
-  addTime: (id: number, time: number) => void;
+  addTime: (id: number) => void;
   syncTime: (id: number) => void;
 }
 
@@ -44,7 +44,7 @@ export const useTimerStore = create<TimerState>()(
 
       updateTimer: (id, updatedData) => {
         set((state) => {
-          const timer = state.timers[id];
+          let timer = state.timers[id];
           if (!timer) return state;
           return {
             timers: {
@@ -63,7 +63,7 @@ export const useTimerStore = create<TimerState>()(
         delete timerRef[id];
 
         set((state) => {
-          const updatedTimers = { ...state.timers };
+          let updatedTimers = { ...state.timers };
           delete updatedTimers[id];
           return { timers: updatedTimers };
         });
@@ -77,10 +77,10 @@ export const useTimerStore = create<TimerState>()(
 
       startReset: (id) => {
         clearInterval(timerRef[id]);
-        const timer = get().timers[id];
+        let timer = get().timers[id];
         if (!timer) return;
 
-        const now = Date.now();
+        let now = Date.now();
 
         get().updateTimer(id, {
           elapsedTime: 0,
@@ -98,12 +98,12 @@ export const useTimerStore = create<TimerState>()(
       },
 
       resume: (id) => {
-        const timer = get().timers[id];
+        let timer = get().timers[id];
         if (!timer || timer.isCompleted || timer.elapsedTime >= timer.time)
           return;
 
         clearInterval(timerRef[id]);
-        const now = Date.now();
+        let now = Date.now();
 
         get().updateTimer(id, {
           isRunning: true,
@@ -119,12 +119,12 @@ export const useTimerStore = create<TimerState>()(
         clearInterval(timerRef[id]);
         delete timerRef[id];
 
-        const timer = get().timers[id];
+        let timer = get().timers[id];
         if (!timer || !timer.isRunning || !timer.playedAt) return;
 
-        const additionalElapsed = (Date.now() - timer.playedAt) / 1000;
-        const newElapsed = timer.elapsedTime + additionalElapsed;
-        const newRemain = Math.max(0, timer.time - newElapsed);
+        let additionalElapsed = (Date.now() - timer.playedAt) / 1000;
+        let newElapsed = timer.elapsedTime + additionalElapsed;
+        let newRemain = Math.max(0, timer.time - newElapsed);
 
         get().updateTimer(id, {
           elapsedTime: newElapsed,
@@ -142,24 +142,24 @@ export const useTimerStore = create<TimerState>()(
           isCompleted: false,
         });
       },
-      addTime: (id, time) => {
-        const timer = get().timers[id];
-        if (time >= timer.time) return;
+      addTime: (id) => {
+        let timer = get().timers[id];
+        let newTime = timer.time * 0.25;
         set({ isCompleted: false });
         get().updateTimer(id, {
-          remainTime: time,
+          remainTime: newTime,
           isCompleted: false,
-          elapsedTime: timer.time - time,
+          elapsedTime: timer.time - newTime,
         });
         get().resume(id);
       },
       syncTime: (id) => {
-        const timer = get().timers[id];
+        let timer = get().timers[id];
         if (!timer || !timer.isRunning || !timer.playedAt) return;
 
-        const additionalElapsed = (Date.now() - timer.playedAt) / 1000;
-        const totalElapsed = timer.elapsedTime + additionalElapsed;
-        const remainTime = Math.max(0, timer.time - totalElapsed);
+        let additionalElapsed = (Date.now() - timer.playedAt) / 1000;
+        let totalElapsed = timer.elapsedTime + additionalElapsed;
+        let remainTime = Math.max(0, timer.time - totalElapsed);
 
         if (remainTime <= 0) {
           clearInterval(timerRef[id]);
