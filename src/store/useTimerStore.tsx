@@ -5,6 +5,7 @@ import { Timer } from "@/types/Timer";
 interface TimerState {
   timers: Record<number, Timer>;
   isCompleted: boolean;
+  isRinging: boolean;
   createTimer: (id: number, time: number) => void;
   updateTimer: (id: number, updatedData: Partial<Omit<Timer, "id">>) => void;
   deleteTimer: (id: number) => void;
@@ -15,6 +16,7 @@ interface TimerState {
   reset: (id: number) => void;
   addTime: (id: number) => void;
   syncTime: (id: number) => void;
+  stopAlarm: () => void;
 }
 
 let timerRef: Record<number, NodeJS.Timeout> = {};
@@ -24,6 +26,7 @@ export const useTimerStore = create<TimerState>()(
     (set, get) => ({
       timers: {},
       isCompleted: false,
+      isRinging: false,
 
       createTimer: (id, time) => {
         set((state) => ({
@@ -134,7 +137,7 @@ export const useTimerStore = create<TimerState>()(
         });
       },
       reset: (id) => {
-        set({isCompleted:false})
+        set({ isCompleted: false });
         get().updateTimer(id, {
           elapsedTime: 0,
           isRunning: false,
@@ -171,13 +174,17 @@ export const useTimerStore = create<TimerState>()(
             isRunning: false,
             playedAt: null,
           });
-          set({ isCompleted: true });
+          set({ isCompleted: true, isRinging: true });
         } else {
           get().updateTimer(id, {
             remainTime,
           });
         }
       },
+      stopAlarm: () => {
+        set({ isRinging: false });
+      },
+
     }),
     {
       name: "timer-storage",

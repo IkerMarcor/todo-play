@@ -8,8 +8,8 @@ import FinalPlayDialog from "./FinalPlayDialog";
 import useAlarm from "@/hooks/useAlarm";
 
 export default function TaskList() {
-  useLocking();
   useAlarm();
+  useLocking();
   const { selectedTaskId } = useSelectedTaskStore();
   const { tasks } = useTaskStore();
 

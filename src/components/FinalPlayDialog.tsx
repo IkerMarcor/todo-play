@@ -16,7 +16,7 @@ import { useTimerStore } from "@/store/useTimerStore";
 export default function FinalPlayDialog() {
   const selectedTask = useSelectedTaskStore((e) => e.getSelectedTask());
   const setSelectedTaskId = useSelectedTaskStore((e) => e.setSelectedTaskId);
-  const { addTime, reset } = useTimerStore();
+  const { addTime, reset, stopAlarm } = useTimerStore();
   const updateTask = useTaskStore((e) => e.updateTask);
   const completePlay = usePlayStore((e) => e.completePlay);
   const { finalDialogOpen, setFinalDialogOpen } = usePlayDialog();
@@ -37,6 +37,7 @@ export default function FinalPlayDialog() {
               type="button"
               variant={"secondary"}
               onClick={() => {
+                stopAlarm();
                 addTime(selectedTask.id);
                 setFinalDialogOpen(false);
               }}
@@ -46,6 +47,7 @@ export default function FinalPlayDialog() {
             <Button
               type="button"
               onClick={() => {
+                stopAlarm();
                 updateTask(selectedTask.id, {
                   status: "onPause",
                 });

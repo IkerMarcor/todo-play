@@ -1,4 +1,3 @@
-import { BellOff } from "lucide-react";
 import DeleteTaskButton from "./DeleteTaskButton";
 import { Badge } from "@/components/ui/badge";
 import CountdownTimer from "./CountdownTimer";
@@ -11,8 +10,8 @@ import {
 import CompleteTaskButton from "@/components/CompleteTaskButton";
 import UpdateTaskButton from "@/components/UpdateTaskButton";
 import PauseTaskButton from "./PauseTaskButton";
-import { Button } from "./ui/button";
-import useAlarm from "@/hooks/useAlarm";
+import StopAlarmButton from "./StopAlarmButton";
+import { useTimerStore } from "@/store/useTimerStore";
 
 interface TaskInProgressProps {
   id: number;
@@ -23,7 +22,8 @@ interface TaskInProgressProps {
 }
 
 export default function TaskInProgress(props: TaskInProgressProps) {
-  const {isRinging, stopAlarm} = useAlarm();
+  const isRinging = useTimerStore((s) => s.isRinging);
+
   return (
     <Card className="cursor-default text-pretty break-words hover:drop-shadow-xl hover:-translate-y-2 duration-300 ease-in-out">
       <CardHeader>
@@ -40,12 +40,7 @@ export default function TaskInProgress(props: TaskInProgressProps) {
         <CountdownTimer id={props.id} />
       </CardContent>
       <CardFooter className="flex-col space-y-2">
-        {isRinging && (
-          <Button onClick={stopAlarm}>
-            <BellOff />
-            Stop Alarm
-          </Button>
-        )}
+        {isRinging && <StopAlarmButton />}
         <PauseTaskButton id={props.id} />
         <CompleteTaskButton id={props.id} />
         <DeleteTaskButton id={props.id} />
