@@ -8,11 +8,11 @@ export const getTaskById = (id: number): Task | undefined => {
 };
 
 export const convertTimeInSeconds = (number: string): number => {
-  return Number(number) * 36;
+  return Number(number) * 3600;
 };
 
 export const convertTimeInHours = (number: number): string => {
-  return String(Number(number) / 36);
+  return String(Number(number) / 3600);
 };
 
 const padTime = (n: number) => String(n).padStart(2,"0");
