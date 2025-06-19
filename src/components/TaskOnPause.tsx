@@ -22,11 +22,11 @@ interface TaskOnPauseProps {
 export default function TaskOnPause(props: TaskOnPauseProps) {
   const updateTask = useTaskStore((s) => s.updateTask);
   const setSelectedTaskId = useSelectedTaskStore((s) => s.setSelectedTaskId);
-  const resume = useTimerStore((s) => s.resume);
+  const {resume, timers, startReset} = useTimerStore();
 
   const actionHandler = () => {
+    timers[props.id].isCompleted ? startReset(props.id) : resume(props.id);
     setSelectedTaskId(props.id);
-    resume(props.id);
     updateTask(props.id, { status: "inProgress" });
   };
 

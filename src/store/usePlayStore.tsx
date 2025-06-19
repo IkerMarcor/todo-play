@@ -24,6 +24,7 @@ const filteredTasks = useTaskStore.getState().filterTasks;
 const setSelectedTaskId = useSelectedTaskStore.getState().setSelectedTaskId;
 const updateTaskStatus = useTaskStore.getState().updateTask;
 const startResetTimer = useTimerStore.getState().startReset;
+const resetTimer = useTimerStore.getState().reset;
 
 export const usePlayStore = create<PlayStore>((set, get) => ({
   currentTaskIndex: 0,
@@ -93,7 +94,7 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
     }
 
     set({ currentTaskIndex: get().currentTaskIndex + 1 });
-    startResetTimer(currentTask.id);
+    resetTimer(currentTask.id); // This resets the timer for the current task if its skipped or completed.
     get().play();
   },
 

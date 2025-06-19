@@ -4,6 +4,7 @@ import useBackupStore from "@/store/useBackupStore";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { useTimerStore } from "./useTimerStore";
 import { toast } from "sonner";
+import { use } from "react";
 
 interface TaskStore {
   tasks: Record<number, Task>;
@@ -27,7 +28,7 @@ interface TaskStore {
 const createNewTimer = useTimerStore.getState().createTimer;
 const deleteTimer = useTimerStore.getState().deleteTimer;
 const deleteAllTimer = useTimerStore.getState().deleteAllTimer;
-const backupTasks = useBackupStore.getState().backupTasks;
+// const backupTasks = useBackupStore.getState().backupTasks; the reason this is not used is because it is not updated in real-time.
 const addTaskToBackup = useBackupStore.getState().addTask;
 const deleteTaskFromBackup = useBackupStore.getState().deleteTask;
 const deleteBackup = useBackupStore.getState().deleteBackup;
@@ -133,6 +134,7 @@ const useTaskStore = create<TaskStore>()(
         return Object.fromEntries(sortedArray);
       },
       clearFilters: () => {
+        const backupTasks = useBackupStore.getState().backupTasks; // This makes the backupTasks update in real-time, so we can use the last state.
         if (!backupTasks || Object.keys(backupTasks).length === 0) {
           toast.error("No backup found");
           return;
