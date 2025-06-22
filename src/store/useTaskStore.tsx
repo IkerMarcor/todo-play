@@ -4,7 +4,6 @@ import useBackupStore from "@/store/useBackupStore";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { useTimerStore } from "./useTimerStore";
 import { toast } from "sonner";
-import { use } from "react";
 
 interface TaskStore {
   tasks: Record<number, Task>;
