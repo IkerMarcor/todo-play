@@ -54,7 +54,7 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
       get().play();
     }
   },
-  
+
   play: () => {
     let currentTask = get().currentTask();
 
@@ -64,13 +64,20 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
       return;
     }
 
+    if (currentTask.status.includes("break")) {
+      notify("info", `Time to take a break`, {
+        duration: 4000,
+      });
+    } else {
+      notify("info", `Now playing: ${currentTask.name}`, {
+        description: "Focus on your task and complete it.",
+        duration: 4000,
+      });
+    }
+
     updateTaskStatus(currentTask.id, { status: "inProgressPlay" });
     startResetTimer(currentTask.id);
     setSelectedTaskId(currentTask.id);
-    notify("info", `Now playing: ${currentTask.name}`, {
-      description: "Focus on your task and complete it.",
-      duration: 4000,
-    });
   },
 
   nextTask: (option) => {

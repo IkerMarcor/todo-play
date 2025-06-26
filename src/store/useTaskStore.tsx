@@ -98,8 +98,6 @@ const useTaskStore = create<TaskStore>()(
               return task.status === "completed";
             case "pending":
               return task.status !== "completed";
-            case "playDisabled":
-              return task.status !== "break";
             case "all":
               return true;
             default:
@@ -149,21 +147,24 @@ const useTaskStore = create<TaskStore>()(
           toast.warning("Please add a task before adding a break.");
           return;
         } else if (
-          Object.values(get().tasks).some((task) => task.status === "break")
+          Object.values(get().tasks).some((task) => task.status.includes("break"))
         ) {
           toast.warning("You can only add one break at a time.");
           return;
         }
         const id = Date.now();
+        const time = 15 * 60; // default break time of 15 minutes
         const newBreak: Task = {
           id,
           name: "Break",
           description: "Take a break",
           priority: "low",
-          status: "break",
-          time: 15 * 60, // default break time of 15 minutes
+          status: "breakNotStartedLocked",
+          time: time,
           createdAt: id,
         };
+        createNewTimer(id, time);
+        addTaskToBackup(newBreak);
         set((state) => ({
           tasks: {
             ...state.tasks,

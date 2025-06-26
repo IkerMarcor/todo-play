@@ -18,10 +18,7 @@ import TitleField from "@/components/TitleField";
 import DescriptionField from "@/components/DescriptionField";
 import PrioritySelect from "@/components/PrioritySelect";
 import TimeSelect from "@/components/TimeSelect";
-import {
-  getTodayDate,
-  convertTimeInSeconds,
-} from "@/middleware";
+import { getTodayDate, convertTimeInSeconds } from "@/middleware";
 import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 import { useNotificationToast } from "@/hooks/useNotificationSound";
 
@@ -41,6 +38,7 @@ export default function AddTask() {
   const { createTask } = useTaskStore();
   const { setOpen } = useToggleStore();
   const { selectedTaskId } = useSelectedTaskStore();
+  const playModeToggle = useToggleStore((s) => s.playModeToggle);
   const notify = useNotificationToast();
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -49,7 +47,7 @@ export default function AddTask() {
       values.description,
       values.priority,
       convertTimeInSeconds(values.time),
-      selectedTaskId ? "notStartedLocked" : "notStarted"
+      selectedTaskId || playModeToggle ? "notStartedLocked" : "notStarted"
     );
     setOpen("createTaskToggle", false);
     notify("default", "Your task has been successfully created", {

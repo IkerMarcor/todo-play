@@ -28,9 +28,11 @@ function App() {
         <TaskList />
         {!isPlaying && (
           <div className="flex space-x-1 absolute bottom-4 right-4 z-50">
-            <div className="shadow-lg hover:shadow-xl transition-shadow">
-              <AddBreak />
-            </div>
+            {playModeToggle && (
+              <div className="shadow-lg hover:shadow-xl transition-shadow">
+                <AddBreak />
+              </div>
+            )}
             <div className="shadow-lg hover:shadow-xl transition-shadow">
               <AddTaskDialog />
             </div>

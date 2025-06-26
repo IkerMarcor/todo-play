@@ -15,36 +15,36 @@ export default function useLocking() {
   useEffect(() => {
     const updatedTasks = (status: string) => {
       return Object.fromEntries(
-        Object.entries(tasks).map(([id, task]) => [
-          id,
-          task.status === "notStartedLocked"
-            ? { ...task, status: "notStarted" }
-            : task.status === "notStarted" && selectedTaskId
-            ? { ...task, status: "notStartedLocked" }
-            : task.status === "completed" ||
+        status === "Locked"
+          ? Object.entries(tasks).map(([id, task]) => [
+              id,
+              task.status === "completed" ||
               task.status === "inProgress" ||
-              task.status === "notStarted" ||
               task.status === "inProgressPlay"
-            ? task
-            : { ...task, status: status },
-        ])
+                ? task
+                : { ...task, status: task.status.includes("Locked") ? task.status : task.status + status },
+            ])
+          : Object.entries(tasks).map(([id, task]) => [
+              id,
+              { ...task, status: task.status.replace("Locked", "") },
+            ])
       );
     };
 
     if (selectedTaskId || playModeToggle) {
-      useTaskStore.setState({ tasks: updatedTasks("locked") });
+      useTaskStore.setState({ tasks: updatedTasks("Locked") });
     } else {
-      useTaskStore.setState({ tasks: updatedTasks("onPause") });
+      useTaskStore.setState({ tasks: updatedTasks("notLocked") });
     }
   }, [selectedTaskId, playModeToggle]);
 
   useEffect(() => {
     const numTasks = Object.values(tasks).reduce(
-      (count, task) => count + (task.status !== "break" ? 1 : 0),
+      (count, task) => count + (!task.status.includes("break") ? 1 : 0),
       0
     );
     const numBackupTasks = Object.values(backupTasks).reduce(
-      (count, task) => count + (task.status !== "break" ? 1 : 0),
+      (count, task) => count + (!task.status.includes("break") ? 1 : 0),
       0
     );
 
