@@ -22,6 +22,7 @@ interface TaskStore {
   filterTasks: (filterBy: string) => Record<number, Task> | undefined;
   sortTasks: (sortBy: string) => Record<number, Task> | undefined;
   clearFilters: () => void;
+  addBreak: () => void;
 }
 
 const createNewTimer = useTimerStore.getState().createTimer;
@@ -97,6 +98,8 @@ const useTaskStore = create<TaskStore>()(
               return task.status === "completed";
             case "pending":
               return task.status !== "completed";
+            case "playDisabled":
+              return task.status !== "break";
             case "all":
               return true;
             default:
@@ -140,6 +143,33 @@ const useTaskStore = create<TaskStore>()(
         }
         set({ tasks: backupTasks, filterBy: null, sortBy: null });
         toast.success("Filters cleared");
+      },
+      addBreak: () => {
+        if (Object.keys(get().tasks).length <= 0) {
+          toast.warning("Please add a task before adding a break.");
+          return;
+        } else if (
+          Object.values(get().tasks).some((task) => task.status === "break")
+        ) {
+          toast.warning("You can only add one break at a time.");
+          return;
+        }
+        const id = Date.now();
+        const newBreak: Task = {
+          id,
+          name: "Break",
+          description: "Take a break",
+          priority: "low",
+          status: "break",
+          time: 15 * 60, // default break time of 15 minutes
+          createdAt: id,
+        };
+        set((state) => ({
+          tasks: {
+            ...state.tasks,
+            [id]: newBreak,
+          },
+        }));
       },
     }),
     {

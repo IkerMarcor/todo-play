@@ -21,12 +21,12 @@ export default function TaskList() {
         <ul className="sm:grid sm:grid-cols-2 xl:grid xl:grid-cols-3">
           {Object.keys(tasks).map((id, index) => (
             <li key={id} className="m-2 drop-shadow-sm">
-              <Task id={Number(id)} index={index + 1}></Task>
+              <Task id={Number(id)} index={index + 1} />
             </li>
           ))}
           {selectedTaskId !== null && <UpdateTask />}
-          <PlayDialog/>
-          <FinalPlayDialog/>
+          <PlayDialog />
+          <FinalPlayDialog />
         </ul>
       )}
     </>

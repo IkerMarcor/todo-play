@@ -11,6 +11,7 @@ const useToggleStore = create<ToggleState>((set) => ({
   deleteAllTaskToggle: false,
   updateTaskToggle: false,
   disableToggle: false,
+  playModeToggle: false,
   setOpen: (key, value) => set((state) => ({...state, [key]: value})),
   toggle: (key) => set((state) => ({ ...state ,[key]: !state[key] })),
 }));

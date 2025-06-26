@@ -63,6 +63,15 @@ export default function Task(props: TaskProps) {
         );
       case "notStartedLocked":
         return <TaskNotStartedLocked name={taskSelected.name} />;
+      case "break":
+        return (
+          <TaskLocked
+            index={props.index}
+            name={taskSelected.name}
+            priority={taskSelected.priority}
+            description={taskSelected.description}
+          />
+        );
       default:
         return <p>Unknown status: {taskSelected.status}</p>;
     }

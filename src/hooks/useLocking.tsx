@@ -9,6 +9,7 @@ export default function useLocking() {
   const setOpen = useToggleStore((s) => s.setOpen);
   const tasks = useTaskStore((s) => s.tasks);
   const backupTasks = useSortStore((s) => s.backupTasks);
+  const playModeToggle = useToggleStore((s) => s.playModeToggle);
 
   // Disable other tasks based on the selected task
   useEffect(() => {
@@ -16,7 +17,7 @@ export default function useLocking() {
       return Object.fromEntries(
         Object.entries(tasks).map(([id, task]) => [
           id,
-          task.status === "notStartedLocked" // TODO: toggle between notStarted and notStartedLocked
+          task.status === "notStartedLocked"
             ? { ...task, status: "notStarted" }
             : task.status === "notStarted" && selectedTaskId
             ? { ...task, status: "notStartedLocked" }
@@ -30,16 +31,25 @@ export default function useLocking() {
       );
     };
 
-    if (selectedTaskId) {
+    if (selectedTaskId || playModeToggle) {
       useTaskStore.setState({ tasks: updatedTasks("locked") });
     } else {
       useTaskStore.setState({ tasks: updatedTasks("onPause") });
     }
-  }, [selectedTaskId]);
+  }, [selectedTaskId, playModeToggle]);
 
   useEffect(() => {
-    if (Object.keys(tasks).length < 2 || selectedTaskId) {
-      if (Object.keys(backupTasks).length < 2 || selectedTaskId) {
+    const numTasks = Object.values(tasks).reduce(
+      (count, task) => count + (task.status !== "break" ? 1 : 0),
+      0
+    );
+    const numBackupTasks = Object.values(backupTasks).reduce(
+      (count, task) => count + (task.status !== "break" ? 1 : 0),
+      0
+    );
+
+    if (numTasks < 2 || selectedTaskId) {
+      if (numBackupTasks < 2 || selectedTaskId) {
         setOpen("disableToggle", true);
       } else {
         setOpen("disableToggle", false);
