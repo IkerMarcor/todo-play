@@ -2,10 +2,9 @@ import TaskInProgress from "./TaskInProgress";
 import TaskInProgressPlay from "./TaskInProgressPlay";
 import TaskCompleted from "./TaskCompleted";
 import TaskNotStarted from "./TaskNotStarted";
-import TaskNotStartedLocked from "./TaskNotStartedLocked";
 import TaskOnPause from "./TaskOnPause";
-import TaskLocked from "./TaskLocked";
 import { getTaskById } from "@/middleware";
+import useToggleStore from "@/store/useToggleStore";
 
 interface TaskProps {
   id: number;
@@ -14,59 +13,82 @@ interface TaskProps {
 
 export default function Task(props: TaskProps) {
   const taskSelected = getTaskById(props.id);
+  const playModeToggle = useToggleStore((s) => s.playModeToggle);
   if (!taskSelected) return <li>Task not found</li>;
 
   const renderTask = () => {
-    switch (taskSelected.status) {
-      case "inProgress":
-        return (
-          <TaskInProgress
-            id={taskSelected.id}
-            index={props.index}
-            name={taskSelected.name}
-            priority={taskSelected.priority}
-            description={taskSelected.description}
-          />
-        );
-      case "inProgressPlay":
-        return (
-          <TaskInProgressPlay
-            id={taskSelected.id}
-            index={props.index}
-            name={taskSelected.name}
-            priority={taskSelected.priority}
-            description={taskSelected.description}
-          />
-        );
-      case "completed":
-        return <TaskCompleted name={taskSelected.name} />;
-      case "notStarted":
-        return <TaskNotStarted id={taskSelected.id} name={taskSelected.name} />;
-      case "onPause":
-        return (
-          <TaskOnPause
-            id={taskSelected.id}
-            index={props.index}
-            name={taskSelected.name}
-            priority={taskSelected.priority}
-            description={taskSelected.description}
-          />
-        );
-      case "onPauseLocked":
-        return (
-          <TaskLocked
-            index={props.index}
-            name={taskSelected.name}
-            priority={taskSelected.priority}
-            description={taskSelected.description}
-          />
-        );
-      case "notStartedLocked":
-        return <TaskNotStartedLocked name={taskSelected.name} />;
-      case "breakNotStartedLocked":
-        return <TaskNotStartedLocked name={taskSelected.name} />;
-      default:
-        return <p>Unknown status: {taskSelected.status}</p>;
+    if (playModeToggle) {
+      switch (taskSelected.state) {
+        case "inProgress":
+          return (
+            <TaskInProgressPlay
+              id={taskSelected.id}
+              index={props.index}
+              name={taskSelected.name}
+              priority={taskSelected.priority}
+              description={taskSelected.description}
+            />
+          );
+        case "completed":
+          return <TaskCompleted name={taskSelected.name} />;
+        case "notStarted":
+          return (
+            <TaskNotStarted
+              id={taskSelected.id}
+              name={taskSelected.name}
+              locked={taskSelected.locked}
+            />
+          );
+        case "onPause":
+          return (
+            <TaskOnPause
+              id={taskSelected.id}
+              index={props.index}
+              name={taskSelected.name}
+              priority={taskSelected.priority}
+              description={taskSelected.description}
+              locked={taskSelected.locked}
+            />
+          );
+        default:
+          return <p>Unknown state: {taskSelected.state}</p>;
+      }
+    } else {
+      switch (taskSelected.state) {
+        case "inProgress":
+          return (
+            <TaskInProgress
+              id={taskSelected.id}
+              index={props.index}
+              name={taskSelected.name}
+              priority={taskSelected.priority}
+              description={taskSelected.description}
+            />
+          );
+        case "completed":
+          return <TaskCompleted name={taskSelected.name} />;
+        case "notStarted":
+          return (
+            <TaskNotStarted
+              id={taskSelected.id}
+              name={taskSelected.name}
+              locked={taskSelected.locked}
+            />
+          );
+        case "onPause":
+          return (
+            <TaskOnPause
+              id={taskSelected.id}
+              index={props.index}
+              name={taskSelected.name}
+              priority={taskSelected.priority}
+              description={taskSelected.description}
+              locked={taskSelected.locked}
+            />
+          );
+        default:
+          return <p>Unknown state: {taskSelected.state}</p>;
+      }
     }
   };
 

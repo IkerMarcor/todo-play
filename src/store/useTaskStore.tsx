@@ -14,7 +14,8 @@ interface TaskStore {
     description: string,
     priority: string,
     time: number,
-    status: string
+    status: string,
+    locked: boolean
   ) => void;
   deleteTask: (id: number) => void;
   deleteAllTask: () => void;
@@ -41,16 +42,18 @@ const useTaskStore = create<TaskStore>()(
       sortBy: null,
       filterBy: null,
 
-      createTask: (name, description, priority, time, status) => {
+      createTask: (name, description, priority, time, state, locked) => {
         const id = Date.now();
         const newTask: Task = {
           id,
           name,
           description,
           priority,
-          status,
+          state,
           time,
+          locked,
           createdAt: id,
+          type: "task", // default type for tasks
         };
         createNewTimer(id, time);
         addTaskToBackup(newTask);
@@ -95,9 +98,9 @@ const useTaskStore = create<TaskStore>()(
         let filtered = Object.entries(tasks).filter(([_, task]) => {
           switch (filterBy) {
             case "completed":
-              return task.status === "completed";
+              return task.state === "completed";
             case "pending":
-              return task.status !== "completed";
+              return task.state !== "completed";
             case "all":
               return true;
             default:
@@ -147,7 +150,7 @@ const useTaskStore = create<TaskStore>()(
           toast.warning("Please add a task before adding a break.");
           return;
         } else if (
-          Object.values(get().tasks).some((task) => task.status.includes("break"))
+          Object.values(get().tasks).some((task) => task.type === "break")
         ) {
           toast.warning("You can only add one break at a time.");
           return;
@@ -158,10 +161,12 @@ const useTaskStore = create<TaskStore>()(
           id,
           name: "Break",
           description: "Take a break",
-          priority: "low",
-          status: "breakNotStartedLocked",
+          priority: "N",
+          state: "notStarted",
           time: time,
           createdAt: id,
+          type: "break", // type for breaks
+          locked: true, // breaks are locked by default
         };
         createNewTimer(id, time);
         addTaskToBackup(newBreak);

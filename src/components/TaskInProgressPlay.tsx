@@ -48,7 +48,7 @@ export default function TaskInProgress(props: TaskInProgressProps) {
           onClick={() => {
             stopPlay("This automatically resets Play");
             pause(props.id);
-            updateTask(props.id, { status: "onPause" });
+            updateTask(props.id, { state: "onPause" });
           }}
         >
           <Pause /> Pause Play
@@ -59,7 +59,7 @@ export default function TaskInProgress(props: TaskInProgressProps) {
           variant={"secondary"}
           onClick={() => {
             pause(props.id);
-            updateTask(props.id, { status: "completed" });
+            updateTask(props.id, { state: "completed" });
             nextTask("completed");
           }}
         >

@@ -20,13 +20,13 @@ export default function CompleteTaskButton({ id }: { id: number }) {
       onClick={() => {
         pause(id);
         setSelectedTaskId(null);
-        updateTask(id, { status: "completed" });
+        updateTask(id, { state: "completed" });
         notify("default", `🎉 Congrats on completing your task!`, {
           description: getTodayDate(),
           action: {
             label: "Undo",
             onClick: () => {
-              updateTask(id, { status: "inProgress" });
+              updateTask(id, { state: "inProgress" });
               setSelectedTaskId(id);
               resume(id);
             },

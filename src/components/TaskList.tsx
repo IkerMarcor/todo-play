@@ -27,7 +27,7 @@ export default function TaskList() {
                 </li>
               ))
             : Object.entries(tasks)
-                .filter(([_, task]) => task.name !== "Break")
+                .filter(([_, task]) => task.type !== "break")
                 .map(([id, _], index) => (
                   <li key={id} className="m-2 drop-shadow-sm">
                     <Task id={Number(id)} index={index + 1} />

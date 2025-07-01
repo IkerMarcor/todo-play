@@ -47,7 +47,8 @@ export default function AddTask() {
       values.description,
       values.priority,
       convertTimeInSeconds(values.time),
-      selectedTaskId || playModeToggle ? "notStartedLocked" : "notStarted"
+      "notStarted",
+      selectedTaskId || playModeToggle ? true : false,
     );
     setOpen("createTaskToggle", false);
     notify("default", "Your task has been successfully created", {

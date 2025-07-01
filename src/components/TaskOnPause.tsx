@@ -17,24 +17,45 @@ interface TaskOnPauseProps {
   name: string;
   priority: string;
   description: string;
+  locked: boolean; // Optional prop to indicate if the task is locked
 }
 
 export default function TaskOnPause(props: TaskOnPauseProps) {
   const updateTask = useTaskStore((s) => s.updateTask);
   const setSelectedTaskId = useSelectedTaskStore((s) => s.setSelectedTaskId);
-  const {resume, timers, startReset} = useTimerStore();
+  const { resume, timers, startReset } = useTimerStore();
 
   const actionHandler = () => {
     timers[props.id].isCompleted ? startReset(props.id) : resume(props.id);
     setSelectedTaskId(props.id);
-    updateTask(props.id, { status: "inProgress" });
+    updateTask(props.id, { state: "inProgress" });
+  };
+
+  const isLocked = props.locked;
+
+  const tabIndex = isLocked ? -1 : 0;
+
+  const className = [
+    "opacity-40 text-pretty break-words duration-300 ease-in-out",
+    isLocked
+      ? "cursor-default"
+      : "cursor-pointer hover:opacity-30 hover:drop-shadow-xl hover:-translate-y-2",
+  ].join(" ");
+
+  const handleClick = isLocked ? undefined : actionHandler;
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!isLocked && e.key === "Enter") {
+      actionHandler();
+    }
   };
 
   return (
     <Card
-      className="opacity-40 text-pretty break-words hover:opacity-30 cursor-pointer hover:drop-shadow-xl hover:-translate-y-2 duration-300 ease-in-out"
-      onClick={actionHandler}
-      onKeyDown={(e) => e.key === "Enter" && actionHandler()}
+      tabIndex={tabIndex}
+      className={className}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
     >
       <CardHeader>
         <div className="flex justify-between">

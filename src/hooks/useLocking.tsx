@@ -13,38 +13,24 @@ export default function useLocking() {
 
   // Disable other tasks based on the selected task
   useEffect(() => {
-    const updatedTasks = (status: string) => {
-      return Object.fromEntries(
-        status === "Locked"
-          ? Object.entries(tasks).map(([id, task]) => [
-              id,
-              task.status === "completed" ||
-              task.status === "inProgress" ||
-              task.status === "inProgressPlay"
-                ? task
-                : { ...task, status: task.status.includes("Locked") ? task.status : task.status + status },
-            ])
-          : Object.entries(tasks).map(([id, task]) => [
-              id,
-              { ...task, status: task.status.replace("Locked", "") },
-            ])
-      );
-    };
+    const toggleLocked = Object.fromEntries(
+      Object.entries(tasks).map(([id, task]) => [id, { ...task, locked: !task.locked }])
+    );
 
     if (selectedTaskId || playModeToggle) {
-      useTaskStore.setState({ tasks: updatedTasks("Locked") });
+      useTaskStore.setState({ tasks: toggleLocked });
     } else {
-      useTaskStore.setState({ tasks: updatedTasks("notLocked") });
+      useTaskStore.setState({ tasks: toggleLocked });
     }
   }, [selectedTaskId, playModeToggle]);
 
   useEffect(() => {
     const numTasks = Object.values(tasks).reduce(
-      (count, task) => count + (!task.status.includes("break") ? 1 : 0),
+      (count, task) => count + (task.type !== "break" ? 1 : 0),
       0
     );
     const numBackupTasks = Object.values(backupTasks).reduce(
-      (count, task) => count + (!task.status.includes("break") ? 1 : 0),
+      (count, task) => count + (task.type !== "break" ? 1 : 0),
       0
     );
 

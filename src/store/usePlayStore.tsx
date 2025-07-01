@@ -64,7 +64,7 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
       return;
     }
 
-    if (currentTask.status.includes("break")) {
+    if (currentTask.type === "break") {
       notify("info", `Time to take a break`, {
         duration: 4000,
       });
@@ -75,7 +75,7 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
       });
     }
 
-    updateTaskStatus(currentTask.id, { status: "inProgressPlay" });
+    updateTaskStatus(currentTask.id, { state: "inProgress" });
     startResetTimer(currentTask.id);
     setSelectedTaskId(currentTask.id);
   },

@@ -5,6 +5,7 @@ export interface Task {
   description: string;
   priority: string;
   time: number;
-  status: string;
+  state: string;
   createdAt: number;
+  type: string; // 'task' | 'break'
 }

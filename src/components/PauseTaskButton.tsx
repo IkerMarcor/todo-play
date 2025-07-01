@@ -15,7 +15,7 @@ export default function PauseTaskButton({ id }: { id: number }) {
       type="button"
       onClick={() => {
         pause(id);
-        updateTask(id, { status: "onPause" });
+        updateTask(id, { state: "onPause" });
         setSelectedTaskId(null);
       }}
     >

@@ -11,6 +11,7 @@ import { getTodayTime } from "@/middleware";
 interface TaskNotStartedProps {
   id: number;
   name: string;
+  locked: boolean; // Optional prop to indicate if the task is locked
 }
 
 export default function TaskNotStarted(props: TaskNotStartedProps) {
@@ -18,16 +19,21 @@ export default function TaskNotStarted(props: TaskNotStartedProps) {
   const updateTask = useTaskStore((s) => s.updateTask);
   const startReset = useTimerStore((s) => s.startReset);
 
+  const actionHandler = () => {
+    setSelectedTaskId(props.id);
+    updateTask(props.id, { state: "inProgress" });
+    startReset(props.id);
+    toast.info(`New task started at ${getTodayTime()}`);
+  };
+
+  const isLocked = props.locked;
+  const handleClick = isLocked ? undefined : actionHandler;
+
   return (
     <Button
       className="opacity-40 text-pretty break-words hover:opacity-30 hover:drop-shadow-xl hover:-translate-y-2"
       variant={"outline"}
-      onClick={() => {
-        setSelectedTaskId(props.id);
-        updateTask(props.id, { status: "inProgress" });
-        startReset(props.id);
-        toast.info(`New task started at ${getTodayTime()}`);
-      }}
+      onClick={handleClick}
     >
       <Label>{props.name}</Label>
       <Badge>
