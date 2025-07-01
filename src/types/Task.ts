@@ -8,4 +8,5 @@ export interface Task {
   state: string;
   createdAt: number;
   type: string; // 'task' | 'break'
+  locked: boolean; // Indicates if the task is locked
 }
