@@ -3,7 +3,6 @@ import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 import useTaskStore from "@/store/useTaskStore";
 import useToggleStore from "@/store/useToggleStore";
 import useSortStore from "@/store/useBackupStore";
-import useMergeStore from "@/store/useMergeStore";
 
 export default function useLocking() {
   const selectedTaskId = useSelectedTaskStore((s) => s.selectedTaskId);
@@ -27,8 +26,6 @@ export default function useLocking() {
   }, [selectedTaskId, playModeToggle]);
 
   useEffect(() => {
-    //console.log(useMergeStore.getState().mergedActivities)
-    // Updates the UI and makes the buttons disabled or enabled based on the number of tasks
     const numTasks = Object.values(tasks).reduce(
       (count, task) => count + (task.type !== "break" ? 1 : 0),
       0
