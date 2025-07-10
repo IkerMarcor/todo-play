@@ -8,27 +8,27 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import usePlayDialog from "@/hooks/usePlayDialog";
-import usePlayStore from "@/store/usePlayStore";
+import { usePlayStore } from "@/store/usePlayStore";
 import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 import useTaskStore from "@/store/useTaskStore";
 import { useTimerStore } from "@/store/useTimerStore";
 
-export default function PlayDialog() {
+export default function BreakDialog() {
   const selectedTask = useSelectedTaskStore((e) => e.getSelectedTask());
-  const { addTime, stopAlarm } = useTimerStore();
+  const stopAlarm = useTimerStore((e) => e.stopAlarm);
   const updateTask = useTaskStore((e) => e.updateTask);
   const nextTask = usePlayStore((e) => e.nextTask);
-  const { dialogOpen, resetDialogState } = usePlayDialog();
+  const { breakDialogOpen, resetDialogState } = usePlayDialog();
 
-  if (selectedTask)
+  if (selectedTask) {
     return (
-      <AlertDialog open={dialogOpen}>
+      <AlertDialog open={breakDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>You've ran out of time!</AlertDialogTitle>
+            <AlertDialogTitle>Break Over!</AlertDialogTitle>
             <AlertDialogDescription>
-              You have two options you can choose from playing: Add some time
-              to the current task and continue playing or move on to the next task.
+              Time to get back to work! Your break has ended, and it's time to
+              resume your tasks.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -37,27 +37,18 @@ export default function PlayDialog() {
               variant={"secondary"}
               onClick={() => {
                 stopAlarm();
-                addTime(selectedTask.id);
+                updateTask(selectedTask.id, {
+                  state: "onPause",
+                });
+                nextTask("break");
                 resetDialogState();
               }}
             >
               Add Time
             </Button>
-            <Button
-              type="button"
-              onClick={() => {
-                stopAlarm();
-                updateTask(selectedTask.id, {
-                  state: "onPause",
-                });
-                nextTask("skipped");
-                resetDialogState();
-              }}
-            >
-              Next Task
-            </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     );
+  }
 }

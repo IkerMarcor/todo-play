@@ -1,21 +1,23 @@
 import { daysOfWeek, monthsOfYear } from "./constants";
 import useTaskStore from "./store/useTaskStore";
+import useBreakStore from "./store/useBreakStore";
 import { Task } from "@/types/Task";
 
-export const getTaskById = (id: number): Task | undefined => {
+export const mergedBreaksTasks = (): Task[] => {
   const { tasks } = useTaskStore.getState();
-  return tasks[id] ?? null;
+  const { breaks } = useBreakStore.getState();
+  return [...Object.values(tasks), ...Object.values(breaks)]; 
 };
 
 export const convertTimeInSeconds = (number: string): number => {
-  return Number(number) * 3600;
+  return Number(number) * 36;
 };
 
 export const convertTimeInHours = (number: number): string => {
-  return String(Number(number) / 3600);
+  return String(Number(number) / 36);
 };
 
-const padTime = (n: number) => String(n).padStart(2,"0");
+const padTime = (n: number) => String(n).padStart(2, "0");
 
 export const getTodayDate = () => {
   const d = new Date();
@@ -29,7 +31,7 @@ export const getTodayDate = () => {
 export const getTodayTime = () => {
   const d = new Date();
   return `${padTime(d.getHours())}:${padTime(d.getMinutes())}` as string;
-}
+};
 
 export const formatTime = (totalSeconds: number) => {
   const seconds = Math.floor(totalSeconds % 60);

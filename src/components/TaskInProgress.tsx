@@ -19,13 +19,21 @@ interface TaskInProgressProps {
   name: string;
   priority: string;
   description: string;
+  type: string;
 }
 
 export default function TaskInProgress(props: TaskInProgressProps) {
   const isRinging = useTimerStore((s) => s.isRinging);
 
+  const className = [
+    "cursor-default text-pretty break-words hover:drop-shadow-xl hover:-translate-y-2 duration-300 ease-in-out",
+    props.type === "break"
+      ? "bg-yellow-100 dark:bg-yellow-900"
+      : "bg-blue-100 dark:bg-blue-900",
+  ].join(" ");
+
   return (
-    <Card className="cursor-default text-pretty break-words hover:drop-shadow-xl hover:-translate-y-2 duration-300 ease-in-out">
+    <Card className={className}>
       <CardHeader>
         <div className="flex justify-between">
           <Badge>{props.index}</Badge>

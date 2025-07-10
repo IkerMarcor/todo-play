@@ -18,6 +18,7 @@ interface TaskOnPauseProps {
   priority: string;
   description: string;
   locked: boolean; // Optional prop to indicate if the task is locked
+  type: string;
 }
 
 export default function TaskOnPause(props: TaskOnPauseProps) {
@@ -40,6 +41,9 @@ export default function TaskOnPause(props: TaskOnPauseProps) {
     isLocked
       ? "cursor-default"
       : "cursor-pointer hover:opacity-30 hover:drop-shadow-xl hover:-translate-y-2",
+    props.type === "break"
+      ? "bg-yellow-100 dark:bg-yellow-900"
+      : "bg-blue-100 dark:bg-blue-900",
   ].join(" ");
 
   const handleClick = isLocked ? undefined : actionHandler;

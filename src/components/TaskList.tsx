@@ -7,11 +7,17 @@ import PlayDialog from "./PlayDialog";
 import FinalPlayDialog from "./FinalPlayDialog";
 import useAlarm from "@/hooks/useAlarm";
 import useToggleStore from "@/store/useToggleStore";
+import BreakDialog from "./BreakDialog";
+import useMergeSync from "@/hooks/useMergeSync";
+import useMergeStore from "@/store/useMergeStore";
+
 export default function TaskList() {
+  useMergeSync();
   useAlarm();
   useLocking();
   const { selectedTaskId } = useSelectedTaskStore();
   const { tasks } = useTaskStore();
+  const { mergedList } = useMergeStore();
   const playModeToggle = useToggleStore((state) => state.playModeToggle);
 
   return (
@@ -21,22 +27,41 @@ export default function TaskList() {
       ) : (
         <ul className="sm:grid sm:grid-cols-2 xl:grid xl:grid-cols-3">
           {playModeToggle
-            ? Object.keys(tasks).map((id, index) => (
-                <li key={id} className="m-2 drop-shadow-sm">
-                  <Task id={Number(id)} index={index + 1} />
+            ? mergedList().map((task, index) => (
+                <li key={task.id} className="m-2 drop-shadow-sm">
+                  <Task
+                    id={task.id}
+                    index={index + 1}
+                    state={task.state}
+                    name={task.name}
+                    priority={task.priority}
+                    description={task.description}
+                    type={task.type}
+                    locked={task.locked}
+                  />
                 </li>
               ))
-            : Object.entries(tasks)
-                .filter(([_, task]) => task.type !== "break")
-                .map(([id, _], index) => (
-                  <li key={id} className="m-2 drop-shadow-sm">
-                    <Task id={Number(id)} index={index + 1} />
+            : mergedList()
+                .filter((task) => task.type !== "break")
+                .map((task, index) => (
+                  <li key={task.id} className="m-2 drop-shadow-sm">
+                    <Task
+                      id={task.id}
+                      index={index + 1}
+                      state={task.state}
+                      name={task.name}
+                      priority={task.priority}
+                      description={task.description}
+                      type={task.type}
+                      locked={task.locked}
+                    />
                   </li>
                 ))}
 
           {selectedTaskId !== null && <UpdateTask />}
           <PlayDialog />
           <FinalPlayDialog />
+          <BreakDialog />
         </ul>
       )}
     </>

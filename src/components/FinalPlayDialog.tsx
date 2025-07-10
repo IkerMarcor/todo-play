@@ -19,7 +19,7 @@ export default function FinalPlayDialog() {
   const { addTime, stopAlarm } = useTimerStore();
   const updateTask = useTaskStore((e) => e.updateTask);
   const completePlay = usePlayStore((e) => e.completePlay);
-  const { finalDialogOpen, setFinalDialogOpen } = usePlayDialog();
+  const { finalDialogOpen, resetDialogState } = usePlayDialog();
 
   if (selectedTask)
     return (
@@ -39,7 +39,7 @@ export default function FinalPlayDialog() {
               onClick={() => {
                 stopAlarm();
                 addTime(selectedTask.id);
-                setFinalDialogOpen(false);
+                resetDialogState();
               }}
             >
               Add Time
@@ -49,11 +49,11 @@ export default function FinalPlayDialog() {
               onClick={() => {
                 stopAlarm();
                 updateTask(selectedTask.id, {
-                  status: "onPause",
+                  state: "onPause",
                 });
                 completePlay();
                 setSelectedTaskId(null);
-                setFinalDialogOpen(false);
+                resetDialogState();
               }}
             >
               Complete Play

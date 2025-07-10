@@ -4,6 +4,7 @@ import useBackupStore from "@/store/useBackupStore";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { useTimerStore } from "./useTimerStore";
 import { toast } from "sonner";
+import useMergeStore from "./useMergeStore";
 
 interface TaskStore {
   tasks: Record<number, Task>;
@@ -23,7 +24,6 @@ interface TaskStore {
   filterTasks: (filterBy: string) => Record<number, Task> | undefined;
   sortTasks: (sortBy: string) => Record<number, Task> | undefined;
   clearFilters: () => void;
-  addBreak: () => void;
 }
 
 const createNewTimer = useTimerStore.getState().createTimer;
@@ -46,6 +46,7 @@ const useTaskStore = create<TaskStore>()(
         const id = Date.now();
         const newTask: Task = {
           id,
+          index: useMergeStore.getState().mergedLen(),
           name,
           description,
           priority,
@@ -144,39 +145,7 @@ const useTaskStore = create<TaskStore>()(
         }
         set({ tasks: backupTasks, filterBy: null, sortBy: null });
         toast.success("Filters cleared");
-      },
-      addBreak: () => {
-        if (Object.keys(get().tasks).length <= 0) {
-          toast.warning("Please add a task before adding a break.");
-          return;
-        } else if (
-          Object.values(get().tasks).some((task) => task.type === "break")
-        ) {
-          toast.warning("You can only add one break at a time.");
-          return;
-        }
-        const id = Date.now();
-        const time = 15 * 60; // default break time of 15 minutes
-        const newBreak: Task = {
-          id,
-          name: "Break",
-          description: "Take a break",
-          priority: "N",
-          state: "notStarted",
-          time: time,
-          createdAt: id,
-          type: "break", // type for breaks
-          locked: true, // breaks are locked by default
-        };
-        createNewTimer(id, time);
-        addTaskToBackup(newBreak);
-        set((state) => ({
-          tasks: {
-            ...state.tasks,
-            [id]: newBreak,
-          },
-        }));
-      },
+      }
     }),
     {
       name: "task-storage",

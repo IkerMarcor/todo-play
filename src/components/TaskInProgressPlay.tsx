@@ -18,6 +18,7 @@ interface TaskInProgressProps {
   name: string;
   priority: string;
   description: string;
+  type: string;
 }
 
 export default function TaskInProgress(props: TaskInProgressProps) {
@@ -26,8 +27,15 @@ export default function TaskInProgress(props: TaskInProgressProps) {
   const stopPlay = usePlayStore().stopPlay;
   const nextTask = usePlayStore().nextTask;
 
+  const className = [
+    "cursor-default text-pretty break-words hover:drop-shadow-xl hover:-translate-y-2 duration-300 ease-in-out",
+    props.type === "break"
+      ? "bg-yellow-100 dark:bg-yellow-900"
+      : "bg-blue-100 dark:bg-blue-900",
+  ].join(" ");
+
   return (
-    <Card className="cursor-default text-pretty break-words hover:drop-shadow-xl hover:-translate-y-2 duration-300 ease-in-out">
+    <Card className={className}>
       <CardHeader>
         <div className="flex justify-between">
           <Badge>{props.index}</Badge>
@@ -53,18 +61,20 @@ export default function TaskInProgress(props: TaskInProgressProps) {
         >
           <Pause /> Pause Play
         </Button>
-        <Button
-          className="w-full"
-          type="button"
-          variant={"secondary"}
-          onClick={() => {
-            pause(props.id);
-            updateTask(props.id, { state: "completed" });
-            nextTask("completed");
-          }}
-        >
-          <Check /> Mark as completed
-        </Button>
+        {props.type === "task" && (
+          <Button
+            className="w-full"
+            type="button"
+            variant={"secondary"}
+            onClick={() => {
+              pause(props.id);
+              updateTask(props.id, { state: "completed" });
+              nextTask("completed");
+            }}
+          >
+            <Check /> Mark as completed
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );
