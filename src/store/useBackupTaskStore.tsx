@@ -2,7 +2,7 @@ import { Task } from "@/types/Task";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
-interface BackupStore {
+interface BackupTaskStore {
   backupTasks: Record<number, Task>;
   addTask: (task: Task) => void;
   deleteTask: (id: number) => void;
@@ -11,7 +11,7 @@ interface BackupStore {
   deleteBackup: () => void;
 }
 
-const useBackupStore = create<BackupStore>()(
+const useBackupTaskStore = create<BackupTaskStore>()(
   persist(
     (set) => ({
       backupTasks: {},
@@ -50,10 +50,10 @@ const useBackupStore = create<BackupStore>()(
         })),
     }),
     {
-      name: "backup-storage",
+      name: "backup-task-storage",
       storage: createJSONStorage(() => localStorage),
     }
   )
 );
 
-export default useBackupStore;
+export default useBackupTaskStore;

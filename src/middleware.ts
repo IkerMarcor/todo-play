@@ -1,13 +1,4 @@
 import { daysOfWeek, monthsOfYear } from "./constants";
-import useTaskStore from "./store/useTaskStore";
-import useBreakStore from "./store/useBreakStore";
-import { Task } from "@/types/Task";
-
-export const mergedBreaksTasks = (): Task[] => {
-  const { tasks } = useTaskStore.getState();
-  const { breaks } = useBreakStore.getState();
-  return [...Object.values(tasks), ...Object.values(breaks)]; 
-};
 
 export const convertTimeInSeconds = (number: string): number => {
   return Number(number) * 36;

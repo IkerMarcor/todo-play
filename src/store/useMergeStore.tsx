@@ -4,42 +4,32 @@ import useTaskStore from "./useTaskStore";
 import useBreakStore from "./useBreakStore";
 
 interface MergeStore {
-  mergedActivities: Record<number, Task>;
-  merge: () => void;
-  mergedList: () => Task[];
-  mergedLen: () => number;
+  getMergedList: () => Task[];
+  getMergedLength: () => number;
 }
 
-const useMergeStore = create<MergeStore>()((set, get) => ({
-  mergedActivities: {} as Record<number, Task>,
-  merge: () => {
-    const { tasks } = useTaskStore.getState();
-    const { breaks } = useBreakStore.getState();
-    // Merging the two objects into one flat Record<number, Task>
-    const merged = {
-      ...tasks,
-      ...breaks,
-    };
-
-    set(() => ({
-      mergedActivities: merged,
-    }));
-  },
-  mergedList: () => {
+const useMergeStore = create<MergeStore>()((get) => ({
+  getMergedList: () => {
     const tasks = [...Object.values(useTaskStore.getState().tasks)];
     const breaks = Object.values(useBreakStore.getState().breaks);
 
-    breaks.sort((a, b) => a.index - b.index);
+    // Sort breaks by their index to ensure proper insertion order
+    const sortedBreaks = breaks.sort((a, b) => (a.index || 0) - (b.index || 0));
 
-    breaks.forEach((brk) => {
-      tasks.splice(brk.index, 0, brk);
+    // Create a new array with tasks and insert breaks at their indices
+    const merged = [...tasks];
+    sortedBreaks.forEach((brk) => {
+      const insertIndex = brk.index || merged.length;
+      merged.splice(insertIndex, 0, brk);
     });
 
-    return tasks;
+    return merged;
   },
 
-  mergedLen: () => {
-    return get().mergedList().length;
+  getMergedLength: () => {
+    const tasks = Object.values(useTaskStore.getState().tasks);
+    const breaks = Object.values(useBreakStore.getState().breaks);
+    return tasks.length + breaks.length;
   },
 }));
 

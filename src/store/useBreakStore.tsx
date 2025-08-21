@@ -12,6 +12,7 @@ interface BreakStore {
   createBreak: () => void;
   deleteBreak: (id: number) => void;
   updateBreak: (id: number, updatedData: Partial<Omit<Task, "id">>) => void;
+  deleteAllBreaks: () => void;
 }
 
 const createNewTimer = useTimerStore.getState().createTimer;
@@ -35,7 +36,7 @@ const useBreakStore = create<BreakStore>()(
         const time = convertTimeInSeconds("0.25"); // default break time of 15 minutes
         const newBreak: Task = {
           id,
-          index: useMergeStore.getState().mergedLen(),
+          index: useMergeStore.getState().getMergedLength(),
           name: "Break",
           description: "Take a break",
           priority: "N",
@@ -48,9 +49,6 @@ const useBreakStore = create<BreakStore>()(
 
         const breaks = Object.values(get().breaks);
 
-        // First error we are not merging
-        // Second error everytime we add a new break the li doesnt update
-
         if (breaks.length > 0) {
           const prevBreak = breaks[breaks.length - 1];
           const breakSpacing = newBreak.index - prevBreak.index;
@@ -62,12 +60,18 @@ const useBreakStore = create<BreakStore>()(
         }
 
         createNewTimer(id, time);
+        
+        // First add the break to our store
         set((state) => ({
           breaks: {
             ...state.breaks,
             [id]: newBreak,
           },
         }));
+
+        // Update the merged list
+        // Then merge the tasks after the break is added
+        useTaskStore.getState().mergeTasksWithBreaks();
       },
       deleteBreak: (id) => {
         deleteTimer(id);
@@ -86,6 +90,11 @@ const useBreakStore = create<BreakStore>()(
               ...updatedData,
             },
           },
+        }));
+      },
+      deleteAllBreaks: () => {
+        set(() => ({
+          breaks: {},
         }));
       },
     }),

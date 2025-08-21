@@ -1,6 +1,6 @@
 import { Plus } from "lucide-react"
 import AddTask from "@/components/AddTask";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import useToggleStore from "@/store/useToggleStore";
 
@@ -12,6 +12,7 @@ export default function AddTaskDialog() {
         <Plus/> New task
       </Button>
       <DialogContent>
+        <DialogTitle>Add New Task</DialogTitle>
         <AddTask />
       </DialogContent>
     </Dialog>

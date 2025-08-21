@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 import useTaskStore from "@/store/useTaskStore";
 import useToggleStore from "@/store/useToggleStore";
-import useSortStore from "@/store/useBackupStore";
+import useSortStore from "@/store/useBackupTaskStore";
 
 export default function useLocking() {
   const selectedTaskId = useSelectedTaskStore((s) => s.selectedTaskId);

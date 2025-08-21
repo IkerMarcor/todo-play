@@ -14,7 +14,7 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import useToggleStore from "@/store/useToggleStore";
 import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 import TitleField from "@/components/TitleField";
@@ -91,6 +91,7 @@ export default function UpdateTask() {
   return (
     <Dialog open={updateTaskToggle}>
       <DialogContent>
+        <DialogTitle className="sr-only">Edit Task</DialogTitle>
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
             <CardHeader>

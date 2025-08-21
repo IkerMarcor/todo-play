@@ -4,6 +4,7 @@ import useSelectedTaskStore from "./useSelectedTaskStore";
 import { useTimerStore } from "./useTimerStore";
 import { Task } from "@/types/Task";
 import { useNotificationToast } from "@/hooks/useNotificationSound";
+import useMergeStore from "./useMergeStore";
 
 interface PlayStore {
   currentTaskIndex: number;
@@ -20,7 +21,6 @@ interface PlayStore {
 }
 
 const notify = useNotificationToast();
-const filteredTasks = useTaskStore.getState().filterTasks;
 const setSelectedTaskId = useSelectedTaskStore.getState().setSelectedTaskId;
 const updateTaskStatus = useTaskStore.getState().updateTask;
 const startResetTimer = useTimerStore.getState().startReset;
@@ -33,20 +33,21 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
   isPlaying: false,
 
   initPlay: () => {
-    let filtered = filteredTasks("pending");
+    const mergedTasks = useMergeStore.getState().getMergedList();
+    const tasks = Object.values(useTaskStore.getState().tasks);
 
-    if (!filtered) {
+    if (!tasks || tasks.length === 0) {
       get().stopPlay("No tasks found");
       return;
     }
 
-    if (Object.values(filtered).length < 2) {
+    if (tasks.length < 2) {
       get().stopPlay("You need at least 2 tasks to start play");
     } else {
       get().resetPlay();
       set({
         isPlaying: true,
-        filteredTasks: Object.values(filtered),
+        filteredTasks: mergedTasks,
       });
 
       notify("info", "Play started");
@@ -88,7 +89,12 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
       return;
     }
 
-    if (option === "skipped") {
+    if (currentTask.type === "break") {
+      notify("success", "Break time is over", {
+        description: "Let's continue with your tasks!",
+        duration: 4000,
+      });
+    } else if (option === "skipped") {
       notify("info", "Your task has been sent to pending", {
         description: "You can always go back to it.",
         duration: 4000,
@@ -101,7 +107,7 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
     }
 
     set({ currentTaskIndex: get().currentTaskIndex + 1 });
-    resetTimer(currentTask.id); // This resets the timer for the current task if its skipped or completed.
+    resetTimer(currentTask.id);
     get().play();
   },
 
