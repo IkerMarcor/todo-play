@@ -33,15 +33,14 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
   isPlaying: false,
 
   initPlay: () => {
-    const mergedTasks = useMergeStore.getState().getMergedList();
-    const tasks = Object.values(useTaskStore.getState().tasks);
+    const mergedTasks = Object.values(useMergeStore.getState().mergedList);
 
-    if (!tasks || tasks.length === 0) {
+    if (!mergedTasks || mergedTasks.length === 0) {
       get().stopPlay("No tasks found");
       return;
     }
 
-    if (tasks.length < 2) {
+    if (mergedTasks.length < 2) {
       get().stopPlay("You need at least 2 tasks to start play");
     } else {
       get().resetPlay();

@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import Task from "@/components/Task";
 import useSelectedTaskStore from "@/store/useSelectedTaskStore";
 import useTaskStore from "@/store/useTaskStore";
-import useBreakStore from "@/store/useBreakStore";
 import UpdateTask from "@/components/UpdateTask";
 import useLocking from "@/hooks/useLocking";
 import PlayDialog from "./PlayDialog";
@@ -18,15 +17,14 @@ export default function TaskList() {
   useLocking();
   const { selectedTaskId } = useSelectedTaskStore();
   const { tasks } = useTaskStore();
-  const { breaks } = useBreakStore();
-  const getMergedList = useMergeStore((state) => state.getMergedList);
+  const mergedList = useMergeStore((state) => state.mergedList);
   const playModeToggle = useToggleStore((state) => state.playModeToggle);
 
   // Memoize the filtered list to prevent unnecessary recalculations
-  const displayList = useMemo(() => {
-    const mergedList = getMergedList();
-    return playModeToggle ? mergedList : mergedList.filter((task: TaskType) => task.type !== "break");
-  }, [getMergedList, playModeToggle, tasks, breaks]);
+  const filteredList = useMemo(() => {
+    const mergedArray = Object.values(mergedList);
+    return playModeToggle ? mergedArray : mergedArray.filter((task: TaskType) => task.type !== "break");
+  }, [mergedList, playModeToggle]);
 
   return (
     <>
@@ -34,7 +32,7 @@ export default function TaskList() {
         <h1 className="align-middle">Add Tasks to start Play!</h1>
       ) : (
         <ul className="sm:grid sm:grid-cols-2 xl:grid xl:grid-cols-3">
-          {displayList.map((task: TaskType, index: number) => (
+          {filteredList.map((task: TaskType, index: number) => (
             <li key={task.id} className="m-2 drop-shadow-sm">
               <Task
                 id={task.id}

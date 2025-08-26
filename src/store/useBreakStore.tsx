@@ -20,14 +20,14 @@ const deleteTimer = useTimerStore.getState().deleteTimer;
 
 const useBreakStore = create<BreakStore>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       breaks: {} as Record<number, Task>,
 
       createBreak: () => {
-        const tasks = useTaskStore.getState().tasks;
-        const tasksLen = Object.values(tasks).length;
+        const mergedList = Object.values(useTaskStore.getState().tasks);
+        const mergedLength = mergedList.length;
 
-        if (tasksLen <= 0) {
+        if (mergedLength <= 0) {
           toast.warning("Please add a task before adding a break.");
           return;
         }
@@ -36,7 +36,6 @@ const useBreakStore = create<BreakStore>()(
         const time = convertTimeInSeconds("0.25"); // default break time of 15 minutes
         const newBreak: Task = {
           id,
-          index: useMergeStore.getState().getMergedLength(),
           name: "Break",
           description: "Take a break",
           priority: "N",
@@ -47,13 +46,10 @@ const useBreakStore = create<BreakStore>()(
           locked: true, // breaks are locked by default
         };
 
-        const breaks = Object.values(get().breaks);
+        if (mergedLength > 0) {
+          const prevItem = mergedList[mergedLength - 1];
 
-        if (breaks.length > 0) {
-          const prevBreak = breaks[breaks.length - 1];
-          const breakSpacing = newBreak.index - prevBreak.index;
-
-          if (breakSpacing === 1) {
+          if (prevItem.type === "break") {
             toast.warning("You cannot add a break next to each other");
             return;
           }
@@ -71,7 +67,7 @@ const useBreakStore = create<BreakStore>()(
 
         // Update the merged list
         // Then merge the tasks after the break is added
-        useTaskStore.getState().mergeTasksWithBreaks();
+        useMergeStore.getState().updateMergedList([newBreak]);
       },
       deleteBreak: (id) => {
         deleteTimer(id);

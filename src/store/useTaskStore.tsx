@@ -5,7 +5,6 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { useTimerStore } from "./useTimerStore";
 import { toast } from "sonner";
 import useMergeStore from "./useMergeStore";
-import useBreakStore from "./useBreakStore";
 
 interface TaskStore {
   tasks: Record<number, Task>;
@@ -25,7 +24,6 @@ interface TaskStore {
   filterTasks: (filterBy: string) => Record<number, Task> | undefined;
   sortTasks: (sortBy: string) => Record<number, Task> | undefined;
   clearFilters: () => void;
-  mergeTasksWithBreaks: () => void;
 }
 
 const createNewTimer = useTimerStore.getState().createTimer;
@@ -48,7 +46,6 @@ const useTaskStore = create<TaskStore>()(
         const id = Date.now();
         const newTask: Task = {
           id,
-          index: Object.keys(get().tasks).length,
           name,
           description,
           priority,
@@ -66,6 +63,8 @@ const useTaskStore = create<TaskStore>()(
             [id]: newTask,
           },
         }));
+        // Update the merged list
+        useMergeStore.getState().updateMergedList([newTask]);
       },
       deleteTask: (id) => {
         deleteTaskFromBackup(id);
@@ -147,31 +146,6 @@ const useTaskStore = create<TaskStore>()(
         }
         set({ tasks: backupTasks, filterBy: null, sortBy: null });
         toast.success("Filters cleared");
-      },
-
-      mergeTasksWithBreaks: () => {
-        const { tasks } = get();
-        const breaks = useBreakStore.getState().breaks;
-        
-        // Convert tasks to array and create a copy to avoid mutating the original
-        const taskArray = [...Object.values(tasks)];
-        const breakArray = Object.values(breaks) as Task[];
-      
-        // Sort breaks by their index to ensure proper insertion order
-        const sortedBreaks = breakArray.sort((a: Task, b: Task) => ((a.index || 0) - (b.index || 0)));
-      
-        // Insert breaks at their specified indices
-        sortedBreaks.forEach((breakItem: Task) => {
-          const insertIndex = breakItem.index || taskArray.length;
-          taskArray.splice(insertIndex, 0, breakItem);
-        });
-      
-        // Convert array back to Record and update the store
-        const mergedTasks = Object.fromEntries(
-          taskArray.map((task) => [task.id, task])
-        ) as Record<number, Task>;
-        
-        set({ tasks: mergedTasks });
       }
     }),
     {
