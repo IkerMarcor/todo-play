@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import useTaskStore from "./useTaskStore";
 import useSelectedTaskStore from "./useSelectedTaskStore";
 import { useTimerStore } from "./useTimerStore";
 import { Task } from "@/types/Task";
@@ -22,7 +21,6 @@ interface PlayStore {
 
 const notify = useNotificationToast();
 const setSelectedTaskId = useSelectedTaskStore.getState().setSelectedTaskId;
-const updateTaskStatus = useTaskStore.getState().updateTask;
 const startResetTimer = useTimerStore.getState().startReset;
 const resetTimer = useTimerStore.getState().reset;
 
@@ -50,13 +48,15 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
       });
 
       notify("info", "Play started");
-
+      
       get().play();
     }
   },
 
   play: () => {
     let currentTask = get().currentTask();
+    // console.log("Play started with tasks:", get().filteredTasks);
+    //   console.log("Task Index:", get().currentTaskIndex);
 
     if (!currentTask) {
       get().completePlay();
@@ -75,7 +75,7 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
       });
     }
 
-    updateTaskStatus(currentTask.id, { state: "inProgress" });
+    useMergeStore.getState().updateTaskState(currentTask.id, "inProgress");
     startResetTimer(currentTask.id);
     setSelectedTaskId(currentTask.id);
   },
