@@ -3,7 +3,7 @@ import useSelectedTaskStore from "./useSelectedTaskStore";
 import { useTimerStore } from "./useTimerStore";
 import { Task } from "@/types/Task";
 import { useNotificationToast } from "@/hooks/useNotificationSound";
-import useMergeStore from "./useMergeStore";
+import useTaskStore from "./useTaskStore";
 
 interface PlayStore {
   currentTaskIndex: number;
@@ -31,20 +31,20 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
   isPlaying: false,
 
   initPlay: () => {
-    const mergedTasks = Object.values(useMergeStore.getState().mergedList);
+    const tasks = useTaskStore.getState().visibleTasks;
 
-    if (!mergedTasks || mergedTasks.length === 0) {
+    if (tasks.length === 0) {
       get().stopPlay("No tasks found");
       return;
     }
 
-    if (mergedTasks.length < 2) {
+    if (tasks.length < 2) {
       get().stopPlay("You need at least 2 tasks to start play");
     } else {
       get().resetPlay();
       set({
         isPlaying: true,
-        filteredTasks: mergedTasks,
+        filteredTasks: tasks,
       });
 
       notify("info", "Play started");
@@ -55,8 +55,6 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
 
   play: () => {
     let currentTask = get().currentTask();
-    // console.log("Play started with tasks:", get().filteredTasks);
-    //   console.log("Task Index:", get().currentTaskIndex);
 
     if (!currentTask) {
       get().completePlay();
@@ -75,7 +73,7 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
       });
     }
 
-    useMergeStore.getState().updateTaskState(currentTask.id, "inProgress");
+    useTaskStore.getState().updateTask(currentTask.id, { state: "inProgress" });
     startResetTimer(currentTask.id);
     setSelectedTaskId(currentTask.id);
   },
@@ -98,11 +96,13 @@ export const usePlayStore = create<PlayStore>((set, get) => ({
         description: "You can always go back to it.",
         duration: 4000,
       });
+      useTaskStore.getState().updateTask(currentTask.id, { state: "notStarted" });
     } else if (option === "completed") {
       notify("success", "Good job", {
         description: "Move on to your next task and complete play.",
         duration: 4000,
       });
+      useTaskStore.getState().updateTask(currentTask.id, { state: "completed" });
     }
 
     set({ currentTaskIndex: get().currentTaskIndex + 1 });

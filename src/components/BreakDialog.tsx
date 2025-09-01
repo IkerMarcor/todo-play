@@ -34,7 +34,6 @@ export default function BreakDialog() {
           <AlertDialogFooter>
             <Button
               type="button"
-              variant={"secondary"}
               onClick={() => {
                 stopAlarm();
                 updateTask(selectedTask.id, {
@@ -44,7 +43,7 @@ export default function BreakDialog() {
                 resetDialogState();
               }}
             >
-              Add Time
+              Continue
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

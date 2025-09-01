@@ -4,10 +4,10 @@ import useBackupStore from "@/store/useBackupTaskStore";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { useTimerStore } from "./useTimerStore";
 import { toast } from "sonner";
-import useMergeStore from "./useMergeStore";
 
 interface TaskStore {
   tasks: Record<number, Task>;
+  visibleTasks: Task[];
   sortBy: string | null;
   filterBy: string | null;
   createTask: (
@@ -19,17 +19,18 @@ interface TaskStore {
     locked: boolean
   ) => void;
   deleteTask: (id: number) => void;
-  deleteAllTask: () => void;
   updateTask: (id: number, updatedData: Partial<Omit<Task, "id">>) => void;
-  filterTasks: (filterBy: string) => Record<number, Task> | undefined;
-  sortTasks: (sortBy: string) => Record<number, Task> | undefined;
+  deleteAllTasks: () => void;
+  updateAllTasks: (updatedData: Partial<Omit<Task, "id">>) => void;
+  filterTasks: (filterBy: string) => void;
+  sortTasks: (sortBy: string) => void;
   clearFilters: () => void;
+  appendTask: (task: Task) => void;
 }
 
 const createNewTimer = useTimerStore.getState().createTimer;
 const deleteTimer = useTimerStore.getState().deleteTimer;
 const deleteAllTimer = useTimerStore.getState().deleteAllTimer;
-// const backupTasks = useBackupStore.getState().backupTasks; the reason this is not used is because it is not updated in real-time.
 const addTaskToBackup = useBackupStore.getState().addTask;
 const deleteTaskFromBackup = useBackupStore.getState().deleteTask;
 const deleteBackup = useBackupStore.getState().deleteBackup;
@@ -39,6 +40,7 @@ const useTaskStore = create<TaskStore>()(
   persist(
     (set, get) => ({
       tasks: {} as Record<number, Task>,
+      visibleTasks: [] as Task[], // mirror of tasks initially
       sortBy: null,
       filterBy: null,
 
@@ -53,58 +55,58 @@ const useTaskStore = create<TaskStore>()(
           time,
           locked,
           createdAt: id,
-          type: "task", // default type for tasks
+          type: "task",
         };
         createNewTimer(id, time);
         addTaskToBackup(newTask);
-        set((state) => ({
-          tasks: {
-            ...state.tasks,
-            [id]: newTask,
-          },
-        }));
-        // Update the merged list
-        useMergeStore.getState().updateMergedList([newTask]);
+        get().appendTask(newTask);
       },
-      deleteTask: (id) => {
+
+      deleteTask: (id: number) => {
         deleteTaskFromBackup(id);
         deleteTimer(id);
         set((state) => {
-          const updatedTasks = { ...state.tasks };
-          delete updatedTasks[id];
-          return { tasks: updatedTasks };
+          const updated = { ...state.tasks };
+          delete updated[id];
+          return { tasks: updated, visibleTasks: Object.values(updated) };
         });
       },
-      deleteAllTask: () => {
+
+      updateTask: (id: number, updatedData: Partial<Omit<Task, "id">>) => {
+        updateTaskInBackup(id, updatedData);
+        set((state) => {
+          const updated = { ...state.tasks };
+          updated[id] = { ...updated[id], ...updatedData };
+          return { tasks: updated, visibleTasks: Object.values(updated) };
+        });
+      },
+
+       deleteAllTasks: () => {
         deleteBackup();
         deleteAllTimer();
-        set(() => ({
-          tasks: {},
-        }));
+        set(() => ({ tasks: [], visibleTasks: [] }));
       },
-      updateTask: (id, updatedData) => {
-        updateTaskInBackup(id, updatedData);
-        set((state) => ({
-          tasks: {
-            ...state.tasks,
-            [id]: {
-              ...state.tasks[id],
-              ...updatedData,
-            },
-          },
-        }));
-      },
-      filterTasks: (filterBy) => {
-        let tasks = get().tasks;
 
-        let filtered = Object.entries(tasks).filter(([_, task]) => {
+      updateAllTasks: (updatedData: Partial<Omit<Task, "id">>) => {
+        const tasks = Object.values(get().tasks);
+        const updated = tasks.map((task) => ({ ...task, ...updatedData }));
+        set({ tasks: Object.fromEntries(updated.map((task) => [task.id, task])), visibleTasks: updated });
+      },
+
+      filterTasks: (filterBy: string) => {
+        const tasks = Object.values(get().tasks);
+        const filtered = tasks.filter((task) => {
+          if (task.type === "break") return false;
           switch (filterBy) {
-            case "completed":
-              return task.state === "completed";
-            case "pending":
+            case "Pending":
               return task.state !== "completed";
-            case "all":
-              return true;
+            case "Completed":
+              return task.state === "completed";
+            case "A":
+            case "B":
+            case "C":
+              return task.priority === filterBy;
+            case "All":
             default:
               return true;
           }
@@ -115,42 +117,45 @@ const useTaskStore = create<TaskStore>()(
           return;
         }
 
-        set({ filterBy: filterBy });
-        set({ tasks: Object.fromEntries(filtered) });
-        return Object.fromEntries(filtered);
+        set({ filterBy, visibleTasks: filtered });
       },
-      sortTasks: (sortBy) => {
-        let tasks = get().tasks;
 
-        let sortedArray = Object.entries(tasks).sort(([, a], [, b]) => {
-          let aVal = a[sortBy as keyof Task];
-          let bVal = b[sortBy as keyof Task];
-          if (typeof aVal === "number" && typeof bVal === "number") {
-            return aVal - bVal;
+      sortTasks: (sortBy: string) => {
+        const tasks = [...get().visibleTasks]; // sort only visible list
+        const sorted = tasks.sort((a, b) => {
+          switch (sortBy) {
+            case "name":
+              return a.name.localeCompare(b.name);
+            case "priority":
+              return a.priority.localeCompare(b.priority);
+            case "createdAt":
+              return a.createdAt - b.createdAt;
+            case "time":
+              return a.time - b.time;
+            default:
+              return 0;
           }
-          if (typeof aVal === "string" && typeof bVal === "string") {
-            return aVal.localeCompare(bVal);
-          }
-          return 0; // fallback in case of mismatched types or undefined values
         });
 
-        set({ sortBy: sortBy });
-        set({ tasks: Object.fromEntries(sortedArray) });
-        return Object.fromEntries(sortedArray);
+        set({ sortBy, visibleTasks: sorted });
       },
+
       clearFilters: () => {
-        const backupTasks = useBackupStore.getState().backupTasks; // This makes the backupTasks update in real-time, so we can use the last state.
-        if (!backupTasks || Object.keys(backupTasks).length === 0) {
-          toast.error("No backup found");
-          return;
-        }
-        set({ tasks: backupTasks, filterBy: null, sortBy: null });
+        const tasks = Object.values(get().tasks);
+        set({ visibleTasks: tasks, filterBy: null, sortBy: null });
         toast.success("Filters cleared");
-      }
+      },
+
+      appendTask: (task: Task) => {
+        set((state) => {
+          const updated = { ...state.tasks, [task.id]: task };
+          return { tasks: updated, visibleTasks: Object.values(updated) };
+        });
+      },
     }),
     {
       name: "task-storage",
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => localStorage)
     }
   )
 );

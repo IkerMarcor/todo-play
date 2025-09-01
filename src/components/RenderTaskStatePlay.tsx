@@ -1,4 +1,4 @@
-import TaskInProgress from "./TaskInProgress";
+import TaskInProgressPlay from "./TaskInProgressPlay";
 import TaskCompleted from "./TaskCompleted";
 import TaskNotStarted from "./TaskNotStarted";
 import TaskOnPause from "./TaskOnPause";
@@ -14,12 +14,12 @@ interface TaskProps {
   locked: boolean;
 }
 
-export default function Task(props: TaskProps) {
+export default function RenderTaskState(props: TaskProps) {
   const renderTask = () => {
     switch (props.state) {
       case "inProgress":
         return (
-          <TaskInProgress
+          <TaskInProgressPlay
             id={props.id}
             index={props.index}
             name={props.name}

@@ -7,21 +7,18 @@ import useSortStore from "@/store/useBackupTaskStore";
 export default function useLocking() {
   const selectedTaskId = useSelectedTaskStore((s) => s.selectedTaskId);
   const setOpen = useToggleStore((s) => s.setOpen);
-  const tasks = useTaskStore((s) => s.tasks);
+  const tasks = useTaskStore((s) => s.visibleTasks);
   const backupTasks = useSortStore((s) => s.backupTasks);
   const playModeToggle = useToggleStore((s) => s.playModeToggle);
+  const updateAllTasks = useTaskStore((s) => s.updateAllTasks);
 
   
   useEffect(() => {
-    // Changes the state of all tasks inside the store
-    const toggleLocked = Object.fromEntries(
-      Object.entries(tasks).map(([id, task]) => [id, { ...task, locked: !task.locked }])
-    );
 
     if (selectedTaskId || playModeToggle) {
-      useTaskStore.setState({ tasks: toggleLocked });
+      updateAllTasks({ locked: true });
     } else {
-      useTaskStore.setState({ tasks: toggleLocked });
+      updateAllTasks({ locked: false });
     }
   }, [selectedTaskId, playModeToggle]);
 

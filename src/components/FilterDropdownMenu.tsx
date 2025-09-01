@@ -2,6 +2,7 @@ import { ListFilter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
+  DropdownMenuLabel,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
@@ -30,13 +31,25 @@ export default function FilterDropdownMenu({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuRadioGroup value={position} onValueChange={(value) => {
-          setPosition(value);
-          filterTasks(value);
-        }}>
-          <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="completed">Completed</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="pending">Pending</DropdownMenuRadioItem>
+        <DropdownMenuRadioGroup
+          value={position}
+          onValueChange={(value) => {
+            setPosition(value);
+            filterTasks(value);
+          }}
+        >
+          <DropdownMenuLabel>State</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuRadioItem value="All">All</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="Completed">
+            Completed
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="Pending">Pending</DropdownMenuRadioItem>
+          <DropdownMenuLabel>Priority</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuRadioItem value="A">A</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="B">B</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="C">C</DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -47,7 +60,6 @@ export default function FilterDropdownMenu({
         >
           Clear Filters
         </DropdownMenuItem>
-        
       </DropdownMenuContent>
     </DropdownMenu>
   );
