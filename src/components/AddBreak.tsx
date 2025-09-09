@@ -6,8 +6,8 @@ export default function AddBreak() {
   const createBreak = useBreakStore((state) => state.createBreak);
   
   return (
-    <Button variant={"outline"} onClick={createBreak}>
-      <Plus /> Add Break
+    <Button className="shadow-lg hover:shadow-xl transition-shadow" variant={"outline"} onClick={createBreak}>
+      <Plus /> Break
     </Button>
   );
 }

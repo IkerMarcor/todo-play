@@ -16,7 +16,7 @@ import useToggleStore from "@/store/useToggleStore";
 export default function DeleteAllTaskAlert() {
   const deleteAllTaskToggle = useToggleStore((s) => s.deleteAllTaskToggle);
   const setSelectedTaskId = useSelectedTaskStore((s) => s.setSelectedTaskId);
-  const deleteAllTask = useTaskStore((s) => s.deleteAllTask);
+  const deleteAllTasks = useTaskStore((s) => s.deleteAllTasks);
   const toggle = useToggleStore((s) => s.toggle);
   const notify = useNotificationToast();
   return (
@@ -38,7 +38,7 @@ export default function DeleteAllTaskAlert() {
             variant={"destructive"}
             onClick={() => {
               setSelectedTaskId(null);
-              deleteAllTask();
+              deleteAllTasks();
               toggle("deleteAllTaskToggle");
               notify("default","🗑️ All your tasks had been deleted successfully", {
                 description: getTodayDate(),

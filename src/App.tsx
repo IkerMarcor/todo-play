@@ -13,6 +13,7 @@ import SortDropdownMenu from "./components/SortDropdownMenu";
 import usePlayStore from "./store/usePlayStore";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import AddPresetTask from "@/components/AddPresetTask";
 
 function App() {
   const disableToggle = useToggleStore((s) => s.disableToggle);
@@ -28,14 +29,9 @@ function App() {
         <TaskList />
         {!isPlaying && (
           <div className="flex space-x-1 absolute bottom-4 right-4 z-50">
-            {playModeToggle && (
-              <div className="shadow-lg hover:shadow-xl transition-shadow">
-                <AddBreak />
-              </div>
-            )}
-            <div className="shadow-lg hover:shadow-xl transition-shadow">
-              <AddTaskDialog />
-            </div>
+            <AddTaskDialog />
+            <AddPresetTask />
+            {playModeToggle && <AddBreak />}
           </div>
         )}
         <ScrollBar orientation="vertical" />

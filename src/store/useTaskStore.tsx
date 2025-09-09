@@ -15,7 +15,6 @@ interface TaskStore {
     description: string,
     priority: string,
     time: number,
-    status: string,
     locked: boolean
   ) => void;
   deleteTask: (id: number) => void;
@@ -44,14 +43,14 @@ const useTaskStore = create<TaskStore>()(
       sortBy: null,
       filterBy: null,
 
-      createTask: (name, description, priority, time, state, locked) => {
+      createTask: (name, description, priority, time, locked) => {
         const id = Date.now();
         const newTask: Task = {
           id,
           name,
           description,
           priority,
-          state,
+          state: "notStarted",
           time,
           locked,
           createdAt: id,
@@ -81,7 +80,7 @@ const useTaskStore = create<TaskStore>()(
         });
       },
 
-       deleteAllTasks: () => {
+      deleteAllTasks: () => {
         deleteBackup();
         deleteAllTimer();
         set(() => ({ tasks: [], visibleTasks: [] }));
@@ -90,7 +89,10 @@ const useTaskStore = create<TaskStore>()(
       updateAllTasks: (updatedData: Partial<Omit<Task, "id">>) => {
         const tasks = Object.values(get().tasks);
         const updated = tasks.map((task) => ({ ...task, ...updatedData }));
-        set({ tasks: Object.fromEntries(updated.map((task) => [task.id, task])), visibleTasks: updated });
+        set({
+          tasks: Object.fromEntries(updated.map((task) => [task.id, task])),
+          visibleTasks: updated,
+        });
       },
 
       filterTasks: (filterBy: string) => {
@@ -155,7 +157,7 @@ const useTaskStore = create<TaskStore>()(
     }),
     {
       name: "task-storage",
-      storage: createJSONStorage(() => localStorage)
+      storage: createJSONStorage(() => localStorage),
     }
   )
 );
